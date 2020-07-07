@@ -1,0 +1,7 @@
+﻿public class Program{
+	public static string thing;
+	static int AverageTwoNumbers(int a, int b)
+	{
+		return (a + b) / 2;
+	}
+}
