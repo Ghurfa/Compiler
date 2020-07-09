@@ -17,13 +17,9 @@ namespace Compiler.SyntaxTreeItems
             LinkedList<Statement> statements = new LinkedList<Statement>();
             while (!tokens.PopIfMatches(out CloseBrace, TokenType.SyntaxChar, "}"))
             {
-                statements.AddLast(readStatement(tokens));
+                statements.AddLast(Statement.ReadStatement(tokens));
             }
             Statements = statements.ToArray();
-        }
-        private Statement readStatement(LinkedList<Token> tokens)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -6,5 +6,9 @@ namespace Compiler.SyntaxTreeItems
 {
     public abstract class Statement
     {
+        public static Statement ReadStatement(LinkedList<Token> tokens)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

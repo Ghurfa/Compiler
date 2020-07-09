@@ -1,4 +1,10 @@
-myArray int[4] = new int[]{101, 102, 103, 104},
+out parameter
+semicolons ?
+tuples
+why not type inference for local vars?
+
+
+myArray int[4] = {101, 102, 103, 104},
 
 i := 0
 
@@ -11,17 +17,41 @@ i := 0
 {
 
 }
+=== Field Declarations ===
+myVar = Type
+	x = int
+	x = myClass
+myVar = DefaultVal : Modifiers Type
+	x = 2 : public static int
+	x = new myClass() : public myClass
+	x = getX(12) : public int
+myVar := DefaultVal : Modifiers
+    x := 2 : public static
+
+=== Property Declarations ===
+myProp => expression : Modifiers Type
+	getX => x : public static int
+myProp :> expression : Modifiers
+	getX :> 17 : public static
+myProp {get set stuff}
+
+=== Method Declarations ===
+myMethod:public static int(param1:type1, param2:type2, param3:out type3) {statements}
+	add public static int(a:int, b:int)
+	{
+
+	}
 
 ===Statements===
 variable declaration
-	a int;
-	a int = 3;
-	a var = 3;
+	a = int
+	a = null : LinkedList<int>
+	a := 3;
 embedded statement
 	{} block
 	statement expression
 		functionCall()
-		a.functionCall();
+		a.functionCall()
 		a += b
 		a++
 		++a

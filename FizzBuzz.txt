@@ -1,0 +1,18 @@
+FizzBuzz namespace
+{
+    FizzBuzz class
+    {
+        FizzBuzz public static void(start:int, end:int)
+        {
+            (a int, b int) c;
+            (i := start; i < end; i++)
+            {
+                i = 1
+                fizz := i % 3 == 0
+                buzz := i % 5 == 0;
+                string print = fizz && buzz ? "FizzBuzz" : fizz ? "Fizz" : buzz ? "Buzz" : i.ToString[];
+
+            }
+        }
+    }
+}

@@ -2,40 +2,40 @@ myNamespace namespace
 {
     Program class
     {
-        myDouble double;
-        ctor(myFloat float)
+        myDouble:double;
+        ctor(myFloat:float)
         {
             myDouble = <double>((<int>myFloat) % 2);
         }
 
-        Average static int(a int, b int)
+        Average static int(a:int, b:int)
         {
             return ((a + b++) / 2);
         }
 
-        Main static void(args string[])
+        Main static void(args:string[])
         {
-            number int = Random.RandInt[0, 64],
-            guess int = -1,
+            number:int = Random.RandInt[0, 64],
+            guess:int = -1,
             
-            end var = false,
+            end:var = false,
             while(!end)
             {
                 while (guess != number)
                 {
-                    guess = Console.ReadLine[],
+                    guess = Console.ReadLine(),
                     (guess < number) ?
-                        Console.PrintLine["Too low"],
-                        (Average[guess, number] - guess > 10) ? Console.PrintLine["Very off"];
+                        Console.PrintLine("Too low"),
+                        (Average(guess, number) - guess > 10) ? Console.PrintLine("Very off");
                     : (guess > number) ?
-                        Console.PrintLine["Too high"]
+                        Console.PrintLine("Too high")
                     : 
-                        Console.Println["Correct"],
-                        (guess != number) ? throw NotImplementedException.[];
+                        Console.Println("Correct"),
+                        (guess != number) ? throw new NotImplementedException();
                     ;
                 }
-                Console.Println["Continue? (y/n)"],
-                option var = Console.ReadLine[],
+                Console.Println("Continue? (y/n)"),
+                option:var = Console.ReadLine(),
                 end = option == "y" || option == "n",
             }
         }
