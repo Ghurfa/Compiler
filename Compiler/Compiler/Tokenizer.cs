@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace SimpleTokenizer
+namespace Compiler
 {
     public enum TokenType
     {
@@ -13,7 +13,9 @@ namespace SimpleTokenizer
         Whitespace,
         SyntaxChar,
         Operator,
-        Literal,
+        IntLiteral,
+        StringLiteral,
+        CharLiteral,
     }
     [DebuggerDisplay("{Type} \t {Text}")]
     public struct Token
@@ -26,7 +28,7 @@ namespace SimpleTokenizer
             Type = type;
         }
     }
-    public static class SimpleTokenizer
+    public static class Tokenizer
     {
         static string[] keywords = new string[]
         {
@@ -34,6 +36,7 @@ namespace SimpleTokenizer
             "private",
             "static",
             "class",
+            "namespace",
             "int",
             "float",
             "double",
@@ -42,20 +45,21 @@ namespace SimpleTokenizer
             "bool",
             "string",
             "void",
-            "return"
+            "return",
+            "var",
+            "ctor"
         };
-        static string[] syntaxChars = new string[] { "{", "}", "[", "]", "(", ")", "<", ">", ";", ",", ".",":" };
-        static string[] operators = new string[] {  "=", 
+        static string[] syntaxChars = new string[] { ".", ",", "(", ")", "[", "]", "{", "}", "<", ">", ">", "?", ":", ";" };
+        static string[] operators = new string[] {  "=", ":=",
                                                     "+", "-", "*", "/", "%",
                                                     "+=", "-=", "*-", "/=", "%=",
                                                     "++", "--",
-                                                    "==", "!=", "<", ">", "<=", ">=", 
+                                                    "==", "!=", "<", ">", "<=", ">=",
                                                     "&&", "||", "!",
                                                     "&", "|", "^", "<<", ">>", "~",
-                                                    "??", "?"
         };
 
-        static char[] nonPunctuationSymbols = new char[] { '+', '=', '<', '>', '|'};
+        static char[] nonPunctuationSymbols = new char[] { '+', '=', '<', '>', '|' };
         static bool isSymbol(char character)
         {
             if (char.IsPunctuation(character))
@@ -128,7 +132,7 @@ namespace SimpleTokenizer
             }
             if (i - start == 0) throw new TokenizingException(i);
             string numString = text.Substring(start, i - start);
-            tokens.AddLast(new Token(numString, TokenType.Literal));
+            tokens.AddLast(new Token(numString, TokenType.IntLiteral));
         }
         static void parseStringLiteral(string text, ref int i, LinkedList<Token> tokens)
         {
@@ -152,7 +156,7 @@ namespace SimpleTokenizer
                 }
             }
             if (!foundCloseQuote) throw new TokenizingException(i);
-            tokens.AddLast(new Token(literal, TokenType.Literal));
+            tokens.AddLast(new Token(literal, TokenType.StringLiteral));
             tokens.AddLast(new Token("\"", TokenType.SyntaxChar));
             i++;
         }
@@ -177,7 +181,7 @@ namespace SimpleTokenizer
                 }
             }
             if (!foundCloseQuote) throw new TokenizingException(i);
-            tokens.AddLast(new Token(literal, TokenType.Literal));
+            tokens.AddLast(new Token(literal, TokenType.CharLiteral));
             tokens.AddLast(new Token("\'", TokenType.SyntaxChar));
             i++;
         }
@@ -227,6 +231,20 @@ namespace SimpleTokenizer
                 }
             }
             return tokens;
+        }
+        public static void RemoveWhitespaceTokens(LinkedList<Token> tokens)
+        {
+            if (tokens.Count == 0) return;
+            LinkedListNode<Token> node = tokens.First;
+            while (node != null)
+            {
+                LinkedListNode<Token> nextNode = node.Next;
+                if (node.Value.Type == TokenType.Whitespace)
+                {
+                    tokens.Remove(node);
+                }
+                node = nextNode;
+            }
         }
     }
 }

@@ -1,0 +1,35 @@
+myArray int[4] = new int[]{101, 102, 103, 104},
+
+i := 0
+
+(condition)
+?
+
+;
+
+()
+{
+
+}
+
+===Statements===
+variable declaration
+	a int;
+	a int = 3;
+	a var = 3;
+embedded statement
+	{} block
+	statement expression
+		functionCall()
+		a.functionCall();
+		a += b
+		a++
+		++a
+	selection block
+		if
+		switch
+	iteration block
+		while
+		for
+		foreach
+	try block
