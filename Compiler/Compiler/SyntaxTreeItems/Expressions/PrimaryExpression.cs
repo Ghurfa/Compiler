@@ -5,12 +5,26 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems.Expressions
 {
-    public abstract class PrimaryExpression : Expression
+    public abstract class PrimaryExpression : UnaryExpression
     {
         public static PrimaryExpression ReadPrimaryExpression(LinkedList<Token> tokens)
         {
             PrimaryExpression baseExpr;
-            if (tokens.PopIfMatches(out Token newKeyword, TokenType.NewKeyword))
+
+            if (tokens.PopIfMatches(out Token openPeren, TokenType.SyntaxChar, "("))
+            {
+                Expression innerExpr = Expression.ReadExpression(tokens);
+                if (tokens.PopIfMatches(out Token closePeren, TokenType.SyntaxChar, ")"))
+                {
+                    baseExpr = new PerenthesizedExpression(tokens, openPeren, innerExpr, closePeren);
+                }
+                else if (tokens.PopIfMatches(out Token comma, TokenType.SyntaxChar, ")"))
+                {
+                    baseExpr = new TupleExpression(tokens, openPeren, innerExpr, comma);
+                }
+                else throw new SyntaxTreeBuildingException();
+            }
+            else if (tokens.PopIfMatches(out Token newKeyword, TokenType.NewKeyword))
             {
                 baseExpr = new NewObjectExpression(tokens, newKeyword);
             }

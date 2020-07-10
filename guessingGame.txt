@@ -7,7 +7,7 @@ myNamespace namespace
 
         ctor(myFloat:float)
         {
-            myDouble = (double)myFloat;
+            myDouble = myFloat:double;
         }
 
         Average static int(a:int, b:int)
@@ -17,19 +17,19 @@ myNamespace namespace
 
         Main static void(args:string[])
         {
-            number = Random.RandInt[0, 64] : int
-            guess:int = -1,
+            number:int = Random.RandInt[0, 64]
+            guess:int = -1
             
-            end:var = false,
+            end := false
             while(!end)
             {
                 while (guess != number)
                 {
-                    guess = Console.ReadLine(),
+                    guess = Console.ReadLine()
                     if (guess < number)
                     {
-                        Console.PrintLine("Too low"),
-                        if (Average(guess, number) - guess > 10) Console.PrintLine("Very off");
+                        Console.PrintLine("Too low")
+                        if (Average(guess, number) - guess > 10) Console.PrintLine("Very off")
                     } 
                     else if(guess > number) 
                     {
@@ -37,13 +37,13 @@ myNamespace namespace
                     }
                     else
                     {
-                        Console.Println("Correct"),
-                        if (guess != number) throw new NotImplementedException();
+                        Console.Println("Correct")
+                        if (guess != number) throw new NotImplementedException()
                     }
                 }
-                Console.Println("Continue? (y/n)"),
-                option:var = Console.ReadLine(),
-                end = option == "y" || option == "n",
+                Console.Println("Continue? (y/n)")
+                option := Console.ReadLine()
+                end = option == "y" || option == "n"
             }
         }
     }

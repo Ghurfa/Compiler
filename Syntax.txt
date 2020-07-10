@@ -31,9 +31,9 @@ myVar:Modifiers Type
 	x:int
 	x:public myClass
 myVar = DefaultVal : Modifiers Type
-	x = 2 : public static int
-	x = new myClass() : public myClass
-	x = getX(12) : public int
+	x : public static int = 2 
+	x : public myClass = new myClass() 
+	x : public int = getX(12) 
 myVar := DefaultVal : Modifiers
     x := 2 : public static
     x := 2 ;
@@ -56,6 +56,7 @@ myMethod public static int(param1:type1, param2:type2, param3:out type3) {statem
 ===Expressions===
 expr operator expr
 expr  "?"  expr  ":"  expr
+unaryExpr assignmentOperator expr
 
 Unary Expression
     -unaryExpr
@@ -66,6 +67,19 @@ Unary Expression
     Cast Expression
 	    "("  type  ")"  unaryExpr
 	    unaryExpr  ":"  type
+            myFloat:float
+            myDouble = myFloat:double
+	    "("  unaryExpr  ")"  ":"  type
+            myDouble = (myFloat):double :double
+            myDouble:double = (myFloat):double
+	    "("  unaryExpr  ":"  type  ")"
+            myDouble = (myFloat:double) : double
+                assignment or declaration
+	    "["  unaryExpr  ":"  type  "]"
+            myDouble = [myFloat:double] : double
+                assignment or declaration
+        unaryExpr "as" type
+            myDouble:double = myFloat as double 
     Primary Expression
         Tuple Expression
             "(" {expr + ","}+ ")"

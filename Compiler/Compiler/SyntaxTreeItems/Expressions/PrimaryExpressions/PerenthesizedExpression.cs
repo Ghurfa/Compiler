@@ -10,11 +10,11 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
         public readonly Expression Expression;
         public readonly Token ClosePerentheses;
 
-        public PerenthesizedExpression(LinkedList<Token> tokens, Token openPeren)
+        public PerenthesizedExpression(LinkedList<Token> tokens, Token openPeren, Expression expression, Token closePeren)
         {
             OpenPerentheses = openPeren;
-            Expression = ReadExpression(tokens);
-            ClosePerentheses = tokens.GetToken(TokenType.SyntaxChar, ")");
+            Expression = expression;
+            ClosePerentheses = closePeren;
         }
     }
 }
