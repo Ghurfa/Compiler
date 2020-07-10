@@ -1,43 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Compiler
 {
-    public enum TokenType
-    {
-        Keyword,
-        Identifier,
-        Whitespace,
-        SyntaxChar,
-        Operator,
-        IntLiteral,
-        StringLiteral,
-        CharLiteral,
-    }
-    [DebuggerDisplay("{Type} \t {Text}")]
-    public struct Token
-    {
-        public string Text;
-        public TokenType Type;
-        public Token(string text, TokenType type)
-        {
-            Text = text;
-            Type = type;
-        }
-    }
     public static class Tokenizer
     {
-        static string[] keywords = new string[]
+        static string[] modifierKeywords = new string[]
         {
             "public",
             "private",
-            "static",
-            "class",
+            "static"
+        };
+        static string[] markerKeywords = new string[]
+        {
             "namespace",
+            "class",
+            "ctor"
+        };
+        static string[] primitiveTypes = new string[]
+        {
             "int",
             "float",
             "double",
@@ -46,11 +29,26 @@ namespace Compiler
             "bool",
             "string",
             "void",
-            "return",
-            "var",
-            "ctor"
+            "object",
         };
-        static string[] syntaxChars = new string[] { ".", ",", "(", ")", "[", "]", "{", "}", "<", ">", ">", "?", ":", ";" };
+        static string[] controlKeywords = new string[]
+        {
+            "if",
+            "for",
+            "foreach",
+            "while",
+            "return",
+            "break",
+            "continue"
+        };
+        static string[] valueKeywords = new string[]
+        {
+            "this",
+            "base",
+            "value"
+        };
+
+        static string[] syntaxChars = new string[] { ".", ",", "(", ")", "[", "]", "{", "}", "?", ":", ";" };
         static string[] operators = new string[] {  "=", ":=",
                                                     "+", "-", "*", "/", "%",
                                                     "+=", "-=", "*-", "/=", "%=",
@@ -135,29 +133,76 @@ namespace Compiler
             string numString = text.Substring(start, i - start);
             tokens.AddLast(new Token(numString, TokenType.IntLiteral));
         }
+        static bool IsHexadecimal(char character) => (character >= '0' && character <= '9') ||
+                                                       (character >= 'a' && character <= 'f') ||
+                                                       (character >= 'A' && character <= 'F');
+        static char parseEscapedChar(string text, ref int i)
+        {
+            int start;
+            i++;
+            switch (text[i++])
+            {
+                case '\\':
+                case '\'':
+                case '"':
+                    return text[i];
+                case '0': return (char)0;
+                case 'a': return (char)7;
+                case 'b': return (char)8;
+                case 't': return (char)9;
+                case 'n': return (char)10;
+                case 'v': return (char)11;
+                case 'f': return (char)12;
+                case 'r': return (char)13;
+                case 'u':
+                    for (start = i; i < start + 4; i++)
+                    {
+                        if (!IsHexadecimal(text[i])) throw new TokenizingException(i);
+                    }
+                    return (char)int.Parse(text.Substring(start, 4), System.Globalization.NumberStyles.HexNumber);
+                case 'x':
+                    for (start = i; i < start + 4; i++)
+                    {
+                        if (!IsHexadecimal(text[i])) break;
+                    }
+                    if (i == start) throw new TokenizingException(i);
+                    return (char)int.Parse(text.Substring(start, i - start), System.Globalization.NumberStyles.HexNumber);
+                case 'U':
+                    for (start = i; i < start + 8; i++)
+                    {
+                        if (!IsHexadecimal(text[i])) throw new TokenizingException(i);
+                    }
+                    return (char)int.Parse(text.Substring(start, 8), System.Globalization.NumberStyles.HexNumber);
+                default: throw new TokenizingException(i);
+            }
+        }
         static void parseStringLiteral(string text, ref int i, LinkedList<Token> tokens)
         {
             tokens.AddLast(new Token("\"", TokenType.SyntaxChar));
             i++;
             int start = i;
-            string literal = "";
+            LinkedList<char> literal = new LinkedList<char>();
             bool foundCloseQuote = false;
-            for (; i < text.Length; i++)
+            for (; i < text.Length; )
             {
                 if (text[i] == '\\')
                 {
-                    //todo: implement escaped chars
-                    i++;
+                    literal.AddLast(parseEscapedChar(text, ref i));
                 }
                 else if (text[i] == '"')
                 {
                     foundCloseQuote = true;
-                    literal = text.Substring(start, i - start);
+                    i++;
                     break;
+                }
+                else
+                {
+                    literal.AddLast(text[i]);
+                    i++;
                 }
             }
             if (!foundCloseQuote) throw new TokenizingException(i);
-            tokens.AddLast(new Token(literal, TokenType.StringLiteral));
+            tokens.AddLast(new Token(new string(literal.ToArray()), TokenType.StringLiteral));
             tokens.AddLast(new Token("\"", TokenType.SyntaxChar));
             i++;
         }
@@ -189,14 +234,26 @@ namespace Compiler
         static void parseText(string text, ref int i, LinkedList<Token> tokens)
         {
             string word = readWord(text, ref i);
-            if (keywords.Contains(word))
-            {
-                tokens.AddLast(new Token(word, TokenType.Keyword));
-            }
+            if (modifierKeywords.Contains(word))
+                tokens.AddLast(new Token(word, TokenType.Modifier));
+
+            else if (controlKeywords.Contains(word))
+                tokens.AddLast(new Token(word, TokenType.ControlKeyword));
+
+            else if (word == "new")
+                tokens.AddLast(new Token(word, TokenType.NewKeyword));
+
+            else if (primitiveTypes.Contains(word))
+                tokens.AddLast(new Token(word, TokenType.PrimitiveType));
+
+            else if (markerKeywords.Contains(word))
+                tokens.AddLast(new Token(word, TokenType.BlockMarker));
+
+            else if (valueKeywords.Contains(word))
+                tokens.AddLast(new Token(word, TokenType.ValueKeyword));
+
             else
-            {
                 tokens.AddLast(new Token(word, TokenType.Identifier));
-            }
         }
         public static LinkedList<Token> Tokenize(string text)
         {

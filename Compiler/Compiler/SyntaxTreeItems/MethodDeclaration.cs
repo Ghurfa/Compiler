@@ -10,12 +10,12 @@ namespace Compiler.SyntaxTreeItems
         public readonly TypeToken ReturnType;
         public readonly MethodParamsListDeclaration ParameterList;
         public readonly MethodBodyDeclaration MethodBody;
-        public MethodDeclaration(LinkedList<Token> tokens, Token identifierToken, Token[] modifierTokens, TypeToken returnTypeToken, Token openPerenToken)
+        public MethodDeclaration(LinkedList<Token> tokens, Token identifierToken)
         {
             Identifier = identifierToken;
-            AccessModifiers = modifierTokens;
-            ReturnType = returnTypeToken;
-            ParameterList = new MethodParamsListDeclaration(tokens, openPerenToken);
+            AccessModifiers = tokens.GetModifiers();
+            ReturnType = new TypeToken(tokens);
+            ParameterList = new MethodParamsListDeclaration(tokens);
             MethodBody = new MethodBodyDeclaration(tokens);
         }
     }

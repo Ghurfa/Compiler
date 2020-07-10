@@ -30,6 +30,7 @@ namespace TestProgram
             var tokens = Tokenizer.Tokenize(text);
             Tokenizer.RemoveWhitespaceTokens(tokens);
             printTokenList(tokens, false);
+            Console.ReadLine();
             NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);
             Console.ReadLine();
         }

@@ -2,10 +2,17 @@ myNamespace namespace
 {
     Program class
     {
-        myDouble:double;
+        "\a"
+        "\u2abc"
+        "\x2"
+        "\n"
+        "\tabc"
+        myInt := 2: public static 
+        myDouble:double
+
         ctor(myFloat:float)
         {
-            myDouble = <double>((<int>myFloat) % 2);
+            myDouble = (double)myFloat;
         }
 
         Average static int(a:int, b:int)
@@ -15,7 +22,7 @@ myNamespace namespace
 
         Main static void(args:string[])
         {
-            number:int = Random.RandInt[0, 64],
+            number = Random.RandInt[0, 64] : int
             guess:int = -1,
             
             end:var = false,
@@ -24,15 +31,20 @@ myNamespace namespace
                 while (guess != number)
                 {
                     guess = Console.ReadLine(),
-                    (guess < number) ?
+                    if (guess < number)
+                    {
                         Console.PrintLine("Too low"),
-                        (Average(guess, number) - guess > 10) ? Console.PrintLine("Very off");
-                    : (guess > number) ?
-                        Console.PrintLine("Too high")
-                    : 
+                        if (Average(guess, number) - guess > 10) Console.PrintLine("Very off");
+                    } 
+                    else if(guess > number) 
+                    {
+                       Console.PrintLine("Too high")
+                    }
+                    else
+                    {
                         Console.Println("Correct"),
-                        (guess != number) ? throw new NotImplementedException();
-                    ;
+                        if (guess != number) throw new NotImplementedException();
+                    }
                 }
                 Console.Println("Continue? (y/n)"),
                 option:var = Console.ReadLine(),

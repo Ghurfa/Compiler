@@ -15,7 +15,7 @@ namespace Compiler
         public NamespaceDeclaration(LinkedList<Token> tokens)
         {
             Identifier = tokens.GetToken(TokenType.Identifier);
-            NamespaceKeyword = tokens.GetToken(TokenType.Keyword, "namespace");
+            NamespaceKeyword = tokens.GetToken(TokenType.BlockMarker, "namespace");
             OpenBrace = tokens.GetToken(TokenType.SyntaxChar, "{");
 
             LinkedList<ClassDeclaration> classes = new LinkedList<ClassDeclaration>();

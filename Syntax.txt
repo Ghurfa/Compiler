@@ -3,6 +3,15 @@ semicolons ?
 tuples
 why not type inference for local vars?
 
+problem w/ how symbols are tokenized
+genericThing<thing<int>>
+cannot have }} operator or anything similar
+something like ::> couldn't be parsed if :: is not defined
+
+todo: convert LinkedList<token> to tokenCollection
+    make tokentypes more specific
+    convert tokens text to spans (better space)
+
 
 myArray int[4] = {101, 102, 103, 104},
 
@@ -18,15 +27,17 @@ i := 0
 
 }
 === Field Declarations ===
-myVar = Type
-	x = int
-	x = myClass
+myVar:Modifiers Type
+	x:int
+	x:public myClass
 myVar = DefaultVal : Modifiers Type
 	x = 2 : public static int
 	x = new myClass() : public myClass
 	x = getX(12) : public int
 myVar := DefaultVal : Modifiers
     x := 2 : public static
+    x := 2 ;
+    See https://docs.microsoft.com/en-us/archive/blogs/ericlippert/why-no-var-on-fields
 
 === Property Declarations ===
 myProp => expression : Modifiers Type
@@ -36,30 +47,106 @@ myProp :> expression : Modifiers
 myProp {get set stuff}
 
 === Method Declarations ===
-myMethod:public static int(param1:type1, param2:type2, param3:out type3) {statements}
+myMethod public static int(param1:type1, param2:type2, param3:out type3) {statements}
 	add public static int(a:int, b:int)
 	{
 
 	}
 
+===Expressions===
+Literal
+    int literal
+        hexadecimal
+    string literal
+    char literal
+expr operator expr
+expr  "?"  expr  ":"  expr
+Tuple Expression
+    "(" {expr + ","}+ ")"
+Cast Expression
+	"("  type  ")"  unaryExpr
+	unaryExpr  ":"  type
+	
+Unary Expression
+    -unaryExpr
+    ++unaryExpr
+    --unaryExpr
+    !unaryExpr
+    ~unaryExpr
+    "("  type  ")"  unaryExpr
+    Primary Expression
+        "new"  type  "("  arguments  ")"
+            public class B {
+                static int staticVal;
+                int val;
+                public B(int val) => this.val = val;
+                public void SetBStaticVal() => staticVal = val;
+            }
+            public class C {
+                public void M() {
+                    new B(2).SetBStaticVal();
+                }
+            }
+        "new"  type  "["  count?  "]"
+        identifier
+        "("  expr  ")"
+        "this"
+        "typeof"  "("  type  ")"
+        Assignable Expression
+            identifier                          duplicate
+            primaryExpr  "("  arguments  ")"
+            primaryExpr  "."  identifier
+            predefinedType  "."  identifier
+            "base"  "."  identifier
+            "base"  "["  expressions  "]"
+            primaryExpr  "["  expressions  "]"
+            primaryExpr++                       should include?
+            
+        Complete Expression
+            primaryExpr  "("  arguments  ")"    duplicate
+            primaryExpr++
+                num++.ToString();
+            primaryExpr--
+===Statement Expressions===
+    completeExpression
+    ++primaryExpression         should allow?
+    --primaryExpression
+    unaryExpr assignment expression (spec)
+        ???
+        ++a += 2   (won't include)
+    assignableExpr assignment expression
+
 ===Statements===
-variable declaration
-	a = int
-	a = null : LinkedList<int>
-	a := 3;
-embedded statement
-	{} block
-	statement expression
-		functionCall()
-		a.functionCall()
-		a += b
-		a++
-		++a
-	selection block
-		if
-		switch
-	iteration block
-		while
-		for
-		foreach
-	try block
+Variable Declaration
+    {identifier "," }+  ":"  type
+	    a:int
+        a,b,c:int
+    {identifier "," }+  ":="  expression  ";"
+	    a := 3;
+	    a,b,c := 3;
+    {identifier "," }+  "="  expression  ":" type
+        a = null : Ball
+Tuple Declarations
+    Should not allow? Non-named tuples not useful
+        (a,b):(int, int)
+        (a,b) = (2, 3) : (int, int)
+        (a,b) := (2, 3)
+    Normal var declarations
+        c = (a, b) : (int, int)
+        c := (a, b)
+Code Block
+    "{"  statement+  "}"
+    ";"
+Control Block
+    "if"  "("  condition  ")"  codeBlock
+    "switch"  "("  expression  ")"  switchCodeBlock
+    "while"  "("  condition  ")"  codeBlock
+    "for"  "("  statement statement statement  ")"  codeBlock
+    "foreach"  "("  identifier  ":"  type  "in"  expression  ")"  codeBlock
+Jump Statement
+    "break"
+    "continue"
+    "return"
+    "throw"
+Statement Expression
+    statementExpression  ";"

@@ -10,7 +10,7 @@ namespace Compiler
         public static ClassItemDeclaration ReadClassItem(LinkedList<Token> tokens)
         {
             Token firstToken = tokens.GetToken();
-            if (firstToken.Type == TokenType.Keyword)
+            if (firstToken.Type == TokenType.BlockMarker)
             {
                 if (firstToken.Text != "ctor") throw new SyntaxTreeBuildingException(firstToken);
                 return new ConstructorDeclaration(tokens, firstToken);
@@ -18,20 +18,15 @@ namespace Compiler
             else if (firstToken.Type == TokenType.Identifier)
             {
                 Token identifier = firstToken;
-                Token[] modifiers = tokens.GetModifiers();
-                TypeToken type = new TypeToken(tokens);
-                Token syntaxChar = tokens.GetToken(TokenType.SyntaxChar);
-                if (syntaxChar.Text == "(")
+                if (tokens.PopIfMatches(out Token syntaxChar, TokenType.SyntaxChar, ":") ||
+                    tokens.PopIfMatches(out syntaxChar, TokenType.Operator, "=") ||
+                    tokens.PopIfMatches(out syntaxChar, TokenType.Operator, ":="))
                 {
-                    return new MethodDeclaration(tokens, identifier, modifiers, type, syntaxChar);
-                }
-                else if (syntaxChar.Text == "{")
-                {
-                    throw new NotImplementedException();
+                    return new FieldDeclaration(tokens, identifier, syntaxChar);
                 }
                 else
                 {
-                    return new FieldDeclaration(tokens, identifier, modifiers, type, syntaxChar);
+                    return new MethodDeclaration(tokens, identifier);
                 }
             }
             else throw new SyntaxTreeBuildingException(firstToken);

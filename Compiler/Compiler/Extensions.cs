@@ -82,7 +82,7 @@ namespace Compiler
         {
             LinkedList<Token> modifiers = new LinkedList<Token>();
             Token token;
-            while (tokens.PopIfMatches(out token, TokenType.Keyword, validModifiers))
+            while (tokens.PopIfMatches(out token, TokenType.Modifier, validModifiers))
             {
                 modifiers.AddLast(token);
             }

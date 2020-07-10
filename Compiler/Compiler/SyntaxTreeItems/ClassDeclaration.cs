@@ -19,7 +19,7 @@ namespace Compiler
         {
             Identifier = tokens.GetToken(TokenType.Identifier);
             AccessModifiers = tokens.GetModifiers();
-            ClassKeyword = tokens.GetToken(TokenType.Keyword, "class");
+            ClassKeyword = tokens.GetToken(TokenType.BlockMarker, "class");
             OpenBrace = tokens.GetToken(TokenType.SyntaxChar, "{");
 
             LinkedList<ClassItemDeclaration> items = new LinkedList<ClassItemDeclaration>();

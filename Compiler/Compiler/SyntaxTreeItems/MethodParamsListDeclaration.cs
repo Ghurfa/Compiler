@@ -13,13 +13,8 @@ namespace Compiler.SyntaxTreeItems
         public readonly ParameterDeclaration[] Parameters;
         public readonly Token ClosePerenthesesToken;
         public MethodParamsListDeclaration(LinkedList<Token> tokens)
-            : this(tokens, tokens.GetToken(TokenType.SyntaxChar, "("))
         {
-
-        }
-        public MethodParamsListDeclaration(LinkedList<Token> tokens, Token openPerenToken)
-        {
-            OpenPerenthesesToken = openPerenToken;
+            OpenPerenthesesToken = tokens.GetToken(TokenType.SyntaxChar, "(");
             LinkedList<ParameterDeclaration> parameters = new LinkedList<ParameterDeclaration>();
             bool lastMissingComma = false;
             while(!tokens.PopIfMatches(out ClosePerenthesesToken, TokenType.SyntaxChar, ")"))
