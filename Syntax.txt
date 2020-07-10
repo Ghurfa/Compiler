@@ -2,11 +2,23 @@ out parameter
 semicolons ?
 tuples
 why not type inference for local vars?
+Linq 
+Python * (repeat for every item in array)
+SQL select?
+Constructor syntax 
+Multiple inheritances (ruby modules?)
+Short if/else stack
+Built in lists
+Built in ordered lists (sequences)
+Unions
+Control blocks as expressions
+Code block statement as anonymous function
+?: cast operator
 
 problem w/ how symbols are tokenized
-genericThing<thing<int>>
-cannot have }} operator or anything similar
-something like ::> couldn't be parsed if :: is not defined
+    genericThing<thing<int>>
+    }} operator breaks two curly braces
+    something like ::> couldn't be parsed if :: is not defined
 
 todo: convert LinkedList<token> to tokenCollection
     make tokentypes more specific
@@ -59,25 +71,14 @@ expr  "?"  expr  ":"  expr
 unaryExpr assignmentOperator expr
 
 Unary Expression
+    +unaryExpr
     -unaryExpr
     ++unaryExpr
     --unaryExpr
     !unaryExpr
     ~unaryExpr
+    *unaryExpr
     Cast Expression
-	    "("  type  ")"  unaryExpr
-	    unaryExpr  ":"  type
-            myFloat:float
-            myDouble = myFloat:double
-	    "("  unaryExpr  ")"  ":"  type
-            myDouble = (myFloat):double :double
-            myDouble:double = (myFloat):double
-	    "("  unaryExpr  ":"  type  ")"
-            myDouble = (myFloat:double) : double
-                assignment or declaration
-	    "["  unaryExpr  ":"  type  "]"
-            myDouble = [myFloat:double] : double
-                assignment or declaration
         unaryExpr "as" type
             myDouble:double = myFloat as double 
     Primary Expression

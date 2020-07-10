@@ -8,14 +8,14 @@ namespace Compiler.SyntaxTreeItems
         public readonly Token Identifier;
         public readonly Token[] AccessModifiers;
         public readonly TypeToken ReturnType;
-        public readonly MethodParamsListDeclaration ParameterList;
+        public readonly ParameterListDeclaration ParameterList;
         public readonly MethodBodyDeclaration MethodBody;
-        public MethodDeclaration(LinkedList<Token> tokens, Token identifierToken)
+        public MethodDeclaration(TokenCollection tokens, Token identifierToken)
         {
             Identifier = identifierToken;
-            AccessModifiers = tokens.GetModifiers();
+            AccessModifiers = tokens.ReadModifiers();
             ReturnType = new TypeToken(tokens);
-            ParameterList = new MethodParamsListDeclaration(tokens);
+            ParameterList = new ParameterListDeclaration(tokens);
             MethodBody = new MethodBodyDeclaration(tokens);
         }
     }

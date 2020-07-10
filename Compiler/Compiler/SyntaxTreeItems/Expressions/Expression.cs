@@ -7,7 +7,7 @@ namespace Compiler.SyntaxTreeItems
 {
     public abstract class Expression
     {
-        public static Expression ReadExpression(LinkedList<Token> tokens)
+        public static Expression ReadExpression(TokenCollection tokens)
         {
             throw new NotImplementedException();
         }

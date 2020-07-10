@@ -10,16 +10,16 @@ namespace Compiler.SyntaxTreeItems
         public readonly Token BaseType;
         public readonly Token? OpenArrayBracket;
         public readonly Token? CloseArrayBracket;
-        public TypeToken(LinkedList<Token> tokens)
+        public TypeToken(TokenCollection tokens)
         {
-            BaseType = tokens.GetToken();
+            BaseType = tokens.PopToken();
             if (BaseType.Type != TokenType.PrimitiveType && 
                 BaseType.Type != TokenType.Identifier) throw new SyntaxTreeBuildingException(BaseType);
 
             if(tokens.PopIfMatches(out Token openArr, TokenType.SyntaxChar, "["))
             {
                 OpenArrayBracket = openArr;
-                CloseArrayBracket = tokens.GetToken(TokenType.SyntaxChar, "]");
+                CloseArrayBracket = tokens.PopToken(TokenType.SyntaxChar, "]");
             }
         }
     }

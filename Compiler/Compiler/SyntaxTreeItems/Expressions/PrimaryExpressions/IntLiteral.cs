@@ -9,7 +9,7 @@ namespace Compiler.SyntaxTreeItems
     {
         public readonly Token Token;
 
-        public IntLiteral(LinkedList<Token> tokens, Token token)
+        public IntLiteral(TokenCollection tokens, Token token)
         {
             Token = token;
         }

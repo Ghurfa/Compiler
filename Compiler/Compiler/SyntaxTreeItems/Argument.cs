@@ -9,7 +9,7 @@ namespace Compiler.SyntaxTreeItems
         public readonly Expression Expression;
         public readonly Token? CommaToken;
 
-        public Argument(LinkedList<Token> tokens)
+        public Argument(TokenCollection tokens)
         {
             Expression = Expression.ReadExpression(tokens);
             if (tokens.PopIfMatches(out Token comma, TokenType.SyntaxChar, ","))

@@ -10,10 +10,10 @@ namespace Compiler.SyntaxTreeItems
         public readonly Token ColonToken;
         public readonly TypeToken TypeParameter;
         public readonly Token? CommaToken;
-        public ParameterDeclaration(LinkedList<Token> tokens)
+        public ParameterDeclaration(TokenCollection tokens)
         {
-            Identifier = tokens.GetToken(TokenType.Identifier);
-            ColonToken = tokens.GetToken(TokenType.SyntaxChar, ":");
+            Identifier = tokens.PopToken(TokenType.Identifier);
+            ColonToken = tokens.PopToken(TokenType.SyntaxChar, ":");
             TypeParameter = new TypeToken(tokens);
             if(tokens.PopIfMatches(out Token comma, TokenType.SyntaxChar, ","))
             {

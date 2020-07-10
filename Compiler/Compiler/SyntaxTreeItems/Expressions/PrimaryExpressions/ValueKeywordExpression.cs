@@ -7,7 +7,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
     public class ValueKeywordExpression : PrimaryExpression
     {
         public readonly Token ValueKeyword;
-        public ValueKeywordExpression(LinkedList<Token> tokens, Token keyword)
+        public ValueKeywordExpression(TokenCollection tokens, Token keyword)
         {
             ValueKeyword = keyword;
         }

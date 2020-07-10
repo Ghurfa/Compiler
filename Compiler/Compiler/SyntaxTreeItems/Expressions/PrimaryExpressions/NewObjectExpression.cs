@@ -6,7 +6,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
 {
     public class NewObjectExpression : PrimaryExpression
     {
-        public NewObjectExpression(LinkedList<Token> tokens, Token newKeywordToken)
+        public NewObjectExpression(TokenCollection tokens, Token newKeywordToken)
         {
             throw new NotImplementedException();
         }

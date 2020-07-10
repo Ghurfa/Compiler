@@ -1,0 +1,190 @@
+Namespace:
+    StartSyntax
+    ReadingClasses
+        >Class
+    EndSyntax
+
+Class:
+    StartSyntax
+    ReadingItems
+        >Field
+        >Constructor
+        >Method
+    EndSyntax
+
+Field:
+    StartSyntax
+    ReadingDefaultValue
+        >Expression
+    EndSyntax
+
+Constructor:
+Method:
+    StartSyntax
+    ReadingParameterList
+        >ParameterList
+    ReadingMethodBody
+        >MethodBody
+    EndSyntax
+
+ParameterList:
+    StartSyntax
+    ReadingParameters
+        >Parameter
+    EndSyntax
+
+Parameter:
+    StartSyntax
+    ReadingType
+        >Type
+
+MethodBody:
+    StartSyntax
+    ReadingStatements
+        >Statement
+    EndSyntax
+
+Statement:
+    ReadingStatement
+        >EmptyStatement
+        >CodeBlock
+        >LocalDeclarationStatement
+        >StatementExpression
+
+EmptyStatement:
+    Syntax
+
+CodeBlock:
+    StartSyntax
+    ReadingStatements
+        >Statement
+    EndSyntax
+
+LocalDeclarationStatement:
+    StartSyntax
+    ReadingInitialValue?
+        >Expression
+
+StatementExpression:
+    ReadingStartExpression
+        >PrimaryExpression
+    ????
+
+PrimaryExpression:
+    ReadingBaseExpression
+        ReadingPerenthesesExpression
+            StartSyntax
+            ReadingInnerExpression
+                >Expression
+            >PerenthesizedExpression
+            >TupleExpression
+        >NewObjectExpression
+        >IdentifierExpression
+        >IntLiteral
+        >StringLiteral
+        >CharLiteral
+        >ValueKeywordExpression
+        >PrimitiveTypeExpression
+    BuildingFullExpression
+        >MemberAccessExpression
+        >MethodCallExpression
+        >ArrayAccessExpression
+        >PostIncrementExpression
+        >PostDecrementExpression
+
+PerenthesizedExpression:
+    EndSyntax
+
+TupleExpression:
+    ReadingTupleValueList
+        >TupleValueList
+    EndSyntax
+
+TupleValueList:
+    ReadingTupleValues
+        >TupleValue
+
+TupleValue:
+    ReadingValue
+        >Expression
+    EndSyntax
+
+NewObjectExpression:
+    StartSyntax
+    ReadingArgumentsList
+        >ArgumentList
+
+ArgumentList:
+    StartSyntax
+    ReadingArguments
+        >Arguments
+    EndSyntax
+
+Arguments:
+    ReadingValue
+        >Expression
+    EndSyntax
+
+IdentifierExpression:
+IntLiteral:
+StringLiteral:
+CharLiteral:
+ValueKeywordExpression:
+PrimitiveTypeExpression:
+MemberAccessExpression:
+    Syntax
+
+MethodCallExpression:
+    StartSyntax
+    ReadingArgumentsList
+        >ArgumentList
+
+ArrayAccessExpression:
+    StartSyntax
+    ReadingIndex
+        >Expression
+    EndSyntax
+
+PostIncrementExpression:
+PostDecrementExpression:
+    Syntax
+
+UnaryExpression:
+    ReadingBaseExpression
+        >UnaryPlusExpression
+        >UnaryMinusExpression
+        >PreIncrementExpression
+        >PreDecrementExpression
+        >LogicalNotExpression
+        >BitwiseNotExpression
+        >DefererenceExpression
+        >PrimaryExpression
+    ReadingCast?
+        >Type
+
+UnaryPlusExpression:
+UnaryMinusExpression:
+PreIncrementExpression:
+PreDecrementExpression:
+LogicalNotExpression:
+BitwiseNotExpression:
+DefererenceExpression:
+    ReadingInnerExpression
+        >UnaryExpression
+
+Expression:
+    ReadingBaseExpression
+        >UnaryExpression
+    ReadingBinaryExpression?
+        Syntax
+        ReadingRightSide
+            >Expression
+    ReadingInlineIfExpression?
+        ReadingIfTrue
+            >Expression
+        ReadingIfFalse
+            >Expression
+    ReadingAssignmentExpression?
+        Syntax
+        ReadingRightSide
+            >Expression

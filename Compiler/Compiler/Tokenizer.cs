@@ -248,7 +248,7 @@ namespace Compiler
             else
                 tokens.AddLast(new Token(word, TokenType.Identifier));
         }
-        public static LinkedList<Token> Tokenize(string text)
+        public static TokenCollection Tokenize(string text)
         {
             LinkedList<Token> tokens = new LinkedList<Token>();
             int i = 0;
@@ -281,21 +281,7 @@ namespace Compiler
                     parseText(text, ref i, tokens);
                 }
             }
-            return tokens;
-        }
-        public static void RemoveWhitespaceTokens(LinkedList<Token> tokens)
-        {
-            if (tokens.Count == 0) return;
-            LinkedListNode<Token> node = tokens.First;
-            while (node != null)
-            {
-                LinkedListNode<Token> nextNode = node.Next;
-                if (node.Value.Type == TokenType.Whitespace)
-                {
-                    tokens.Remove(node);
-                }
-                node = nextNode;
-            }
+            return new TokenCollection(tokens);
         }
     }
 }

@@ -12,11 +12,11 @@ namespace Compiler
         public readonly Token OpenBrace;
         public readonly ClassDeclaration[] ClassDeclarations;
         public readonly Token CloseBrace;
-        public NamespaceDeclaration(LinkedList<Token> tokens)
+        public NamespaceDeclaration(TokenCollection tokens)
         {
-            Identifier = tokens.GetToken(TokenType.Identifier);
-            NamespaceKeyword = tokens.GetToken(TokenType.BlockMarker, "namespace");
-            OpenBrace = tokens.GetToken(TokenType.SyntaxChar, "{");
+            Identifier = tokens.PopToken(TokenType.Identifier);
+            NamespaceKeyword = tokens.PopToken(TokenType.BlockMarker, "namespace");
+            OpenBrace = tokens.PopToken(TokenType.SyntaxChar, "{");
 
             LinkedList<ClassDeclaration> classes = new LinkedList<ClassDeclaration>();
             while(!tokens.PopIfMatches(out CloseBrace, TokenType.SyntaxChar, "}"))

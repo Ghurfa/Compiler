@@ -13,7 +13,7 @@ namespace Compiler
         public readonly Token? ColonToken;
         public readonly Token[] AccessModifiers;
         public readonly TypeToken Type;
-        public FieldDeclaration(LinkedList<Token> tokens, Token identifierToken, Token syntaxCharToken)
+        public FieldDeclaration(TokenCollection tokens, Token identifierToken, Token syntaxCharToken)
         {
             Identifier = identifierToken;
             
@@ -24,7 +24,7 @@ namespace Compiler
                 if(tokens.PopIfMatches(out Token colon, TokenType.SyntaxChar, ":"))
                 {
                     ColonToken = colon;
-                    AccessModifiers = tokens.GetModifiers();
+                    AccessModifiers = tokens.ReadModifiers();
                 }
             }
             else
@@ -33,7 +33,7 @@ namespace Compiler
                 {
                     AssignmentToken = syntaxCharToken;
                     DefaultValue = Expression.ReadExpression(tokens);
-                    ColonToken = tokens.GetToken(TokenType.SyntaxChar, ":");
+                    ColonToken = tokens.PopToken(TokenType.SyntaxChar, ":");
                 }
                 else
                 {
@@ -41,7 +41,7 @@ namespace Compiler
                     DefaultValue = null;
                     ColonToken = syntaxCharToken;
                 }
-                AccessModifiers = tokens.GetModifiers();
+                AccessModifiers = tokens.ReadModifiers();
                 Type = new TypeToken(tokens);
             }
             

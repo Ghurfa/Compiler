@@ -15,12 +15,12 @@ namespace Compiler
         public readonly Token OpenBrace;
         public readonly ClassItemDeclaration[] ClassItemDeclarations;
         public readonly Token CloseBrace;
-        public ClassDeclaration(LinkedList<Token> tokens)
+        public ClassDeclaration(TokenCollection tokens)
         {
-            Identifier = tokens.GetToken(TokenType.Identifier);
-            AccessModifiers = tokens.GetModifiers();
-            ClassKeyword = tokens.GetToken(TokenType.BlockMarker, "class");
-            OpenBrace = tokens.GetToken(TokenType.SyntaxChar, "{");
+            Identifier = tokens.PopToken(TokenType.Identifier);
+            AccessModifiers = tokens.ReadModifiers();
+            ClassKeyword = tokens.PopToken(TokenType.BlockMarker, "class");
+            OpenBrace = tokens.PopToken(TokenType.SyntaxChar, "{");
 
             LinkedList<ClassItemDeclaration> items = new LinkedList<ClassItemDeclaration>();
             while (!tokens.PopIfMatches(out CloseBrace, TokenType.SyntaxChar, "}"))

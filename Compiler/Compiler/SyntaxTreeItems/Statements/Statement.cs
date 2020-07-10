@@ -7,7 +7,7 @@ namespace Compiler.SyntaxTreeItems
 {
     public abstract class Statement
     {
-        public static Statement ReadStatement(LinkedList<Token> tokens)
+        public static Statement ReadStatement(TokenCollection tokens)
         {
             if (tokens.PopIfMatches(out Token controlKeyword, TokenType.ControlKeyword))
             {

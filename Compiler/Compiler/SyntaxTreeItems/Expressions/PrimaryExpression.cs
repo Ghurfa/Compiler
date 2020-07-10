@@ -7,7 +7,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
 {
     public abstract class PrimaryExpression : UnaryExpression
     {
-        public static PrimaryExpression ReadPrimaryExpression(LinkedList<Token> tokens)
+        public static PrimaryExpression ReadPrimaryExpression(TokenCollection tokens)
         {
             PrimaryExpression baseExpr;
 

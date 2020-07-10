@@ -10,11 +10,11 @@ namespace Compiler.SyntaxTreeItems
         public readonly Token OpenQuote;
         public readonly Token Text;
         public readonly Token CloseQuote;
-        public StringLiteral(LinkedList<Token> tokens, Token openQuoteToken)
+        public StringLiteral(TokenCollection tokens, Token openQuoteToken)
         {
             OpenQuote = openQuoteToken;
-            Text = tokens.GetToken(TokenType.StringLiteral);
-            CloseQuote = tokens.GetToken(TokenType.SyntaxChar, "\"");
+            Text = tokens.PopToken(TokenType.StringLiteral);
+            CloseQuote = tokens.PopToken(TokenType.SyntaxChar, "\"");
         }
     }
 }

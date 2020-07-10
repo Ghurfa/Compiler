@@ -9,11 +9,11 @@ namespace Compiler.SyntaxTreeItems.Expressions
         public readonly Token OpenQuote;
         public readonly Token Text;
         public readonly Token CloseQuote;
-        public CharLiteral(LinkedList<Token> tokens, Token openQuoteToken)
+        public CharLiteral(TokenCollection tokens, Token openQuoteToken)
         {
             OpenQuote = openQuoteToken;
-            Text = tokens.GetToken(TokenType.CharLiteral);
-            CloseQuote = tokens.GetToken(TokenType.SyntaxChar, "\'");
+            Text = tokens.PopToken(TokenType.CharLiteral);
+            CloseQuote = tokens.PopToken(TokenType.SyntaxChar, "\'");
         }
     }
 }

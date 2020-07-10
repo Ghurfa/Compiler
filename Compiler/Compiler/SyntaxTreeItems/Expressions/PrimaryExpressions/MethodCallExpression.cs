@@ -11,12 +11,12 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
         public readonly ArgumentList Arguments;
         public readonly Token ClosePerenthesesToken;
 
-        public MethodCallExpression(LinkedList<Token> tokens, PrimaryExpression baseExpr, Token openPeren)
+        public MethodCallExpression(TokenCollection tokens, PrimaryExpression baseExpr, Token openPeren)
         {
             MethodExpression = baseExpr;
             OpenPerenthesesToken = openPeren;
             Arguments = new ArgumentList(tokens);
-            ClosePerenthesesToken = tokens.GetToken(TokenType.SyntaxChar, ")");
+            ClosePerenthesesToken = tokens.PopToken(TokenType.SyntaxChar, ")");
         }
     }
 }

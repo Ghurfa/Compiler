@@ -7,9 +7,9 @@ namespace TestProgram
 {
     class Program
     {
-        static void printTokenList(LinkedList<Token> tokens, bool showWhitespace)
+        static void printTokenList(TokenCollection tokens, bool showWhitespace)
         {
-            foreach (Token token in tokens)
+            foreach (Token token in (showWhitespace ? tokens: tokens.NonWhitespaceTokens()))
             {
                 if (token.Type == TokenType.Whitespace)
                 {
@@ -28,7 +28,6 @@ namespace TestProgram
         {
             var text = File.ReadAllText(@"..\..\..\..\..\guessingGame.txt");
             var tokens = Tokenizer.Tokenize(text);
-            Tokenizer.RemoveWhitespaceTokens(tokens);
             printTokenList(tokens, false);
             Console.ReadLine();
             NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);

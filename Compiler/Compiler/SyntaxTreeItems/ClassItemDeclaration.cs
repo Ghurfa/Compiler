@@ -7,9 +7,9 @@ namespace Compiler
 {
     public abstract class ClassItemDeclaration
     {
-        public static ClassItemDeclaration ReadClassItem(LinkedList<Token> tokens)
+        public static ClassItemDeclaration ReadClassItem(TokenCollection tokens)
         {
-            Token firstToken = tokens.GetToken();
+            Token firstToken = tokens.PopToken();
             if (firstToken.Type == TokenType.BlockMarker)
             {
                 if (firstToken.Text != "ctor") throw new SyntaxTreeBuildingException(firstToken);

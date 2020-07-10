@@ -6,7 +6,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
 {
     public abstract class StatementExpression : Expression
     {
-        public static StatementExpression ReadStatementExpression(LinkedList<Token> tokens)
+        public static StatementExpression ReadStatementExpression(TokenCollection tokens)
         {
             PrimaryExpression startExpr = PrimaryExpression.ReadPrimaryExpression(tokens);
             if(tokens.PopIfMatches(out Token identifierToken, TokenType.Identifier))

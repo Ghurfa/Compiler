@@ -7,19 +7,19 @@ using System.Xml;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public class MethodParamsListDeclaration
+    public class ParameterListDeclaration
     {
         public readonly Token OpenPerenthesesToken;
         public readonly ParameterDeclaration[] Parameters;
         public readonly Token ClosePerenthesesToken;
-        public MethodParamsListDeclaration(LinkedList<Token> tokens)
+        public ParameterListDeclaration(TokenCollection tokens)
         {
-            OpenPerenthesesToken = tokens.GetToken(TokenType.SyntaxChar, "(");
+            OpenPerenthesesToken = tokens.PopToken(TokenType.SyntaxChar, "(");
             LinkedList<ParameterDeclaration> parameters = new LinkedList<ParameterDeclaration>();
             bool lastMissingComma = false;
             while(!tokens.PopIfMatches(out ClosePerenthesesToken, TokenType.SyntaxChar, ")"))
             {
-                if (lastMissingComma) throw new SyntaxTreeBuildingException(tokens.First.Value);
+                if (lastMissingComma) throw new SyntaxTreeBuildingException(tokens.PeekToken());
                 var parameter = new ParameterDeclaration(tokens);
                 lastMissingComma = parameter.CommaToken == null;
                 parameters.AddLast(parameter);

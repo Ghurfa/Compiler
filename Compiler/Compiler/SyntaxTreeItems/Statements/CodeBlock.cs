@@ -11,9 +11,9 @@ namespace Compiler.SyntaxTreeItems.Statements
         public readonly Statement[] Statements;
         public readonly Token CloseBrace;
 
-        public CodeBlock(LinkedList<Token> tokens)
-        : this(tokens, tokens.GetToken(TokenType.SyntaxChar, "{")) { }
-        public CodeBlock(LinkedList<Token> tokens, Token openBrace)
+        public CodeBlock(TokenCollection tokens)
+        : this(tokens, tokens.PopToken(TokenType.SyntaxChar, "{")) { }
+        public CodeBlock(TokenCollection tokens, Token openBrace)
         {
             OpenBrace = openBrace;
 

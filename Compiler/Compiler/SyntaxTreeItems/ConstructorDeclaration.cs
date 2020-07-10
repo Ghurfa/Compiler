@@ -8,13 +8,13 @@ namespace Compiler.SyntaxTreeItems
     {
         public readonly Token CtorKeyword;
         public readonly Token[] AccessModifiers;
-        public readonly MethodParamsListDeclaration ParameterList;
+        public readonly ParameterListDeclaration ParameterList;
         public readonly MethodBodyDeclaration ConstructorBody;
-        public ConstructorDeclaration(LinkedList<Token> tokens, Token ctorKeywordToken)
+        public ConstructorDeclaration(TokenCollection tokens, Token ctorKeywordToken)
         {
             CtorKeyword = ctorKeywordToken;
-            AccessModifiers = tokens.GetModifiers();
-            ParameterList = new MethodParamsListDeclaration(tokens);
+            AccessModifiers = tokens.ReadModifiers();
+            ParameterList = new ParameterListDeclaration(tokens);
             ConstructorBody = new MethodBodyDeclaration(tokens);
         }
     }

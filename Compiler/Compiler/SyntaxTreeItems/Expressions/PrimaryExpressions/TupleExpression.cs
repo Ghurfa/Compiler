@@ -10,11 +10,11 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
         public readonly TupleValueList Values;
         public readonly Token ClosePerentheses;
 
-        public TupleExpression(LinkedList<Token> tokens, Token openPerens, Expression firstValue, Token firstComma)
+        public TupleExpression(TokenCollection tokens, Token openPerens, Expression firstValue, Token firstComma)
         {
             OpenPerentheses = openPerens;
             Values = new TupleValueList(tokens, new TupleValue(firstValue, firstComma));
-            ClosePerentheses = tokens.GetToken(TokenType.SyntaxChar, ")");
+            ClosePerentheses = tokens.PopToken(TokenType.SyntaxChar, ")");
         }
     }
 }
