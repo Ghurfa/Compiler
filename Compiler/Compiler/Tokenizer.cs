@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Compiler
@@ -210,26 +211,18 @@ namespace Compiler
         {
             tokens.AddLast(new Token("\'", TokenType.SyntaxChar));
             i++;
-            int start = i;
-            bool foundCloseQuote = false;
-            string literal = "";
-            for (; i < text.Length; i++)
-            {
-                if (text[i] == '\\')
-                {
-                    i++;
-                }
-                else if (text[i] == '\'')
-                {
-                    foundCloseQuote = true;
-                    literal = text.Substring(start, i - start);
-                    break;
-                }
-            }
-            if (!foundCloseQuote) throw new TokenizingException(i);
-            tokens.AddLast(new Token(literal, TokenType.CharLiteral));
-            tokens.AddLast(new Token("\'", TokenType.SyntaxChar));
+            char literal;
+
+            if (text[i] == '\\') literal = parseEscapedChar(text, ref i);
+            else if (text[i] == '\'') throw new TokenizingException(i);
+            else literal = text[i];
+
             i++;
+            if (text[i] != '\'') throw new TokenizingException(i);
+            i++;
+
+            tokens.AddLast(new Token(literal.ToString(), TokenType.CharLiteral));
+            tokens.AddLast(new Token("\'", TokenType.SyntaxChar));
         }
         static void parseText(string text, ref int i, LinkedList<Token> tokens)
         {

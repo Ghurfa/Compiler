@@ -2,11 +2,6 @@ myNamespace namespace
 {
     Program class
     {
-        "\a"
-        "\u2abc"
-        "\x2"
-        "\n"
-        "\tabc"
         myInt := 2: public static 
         myDouble:double
 

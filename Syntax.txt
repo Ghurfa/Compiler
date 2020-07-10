@@ -54,27 +54,26 @@ myMethod public static int(param1:type1, param2:type2, param3:out type3) {statem
 	}
 
 ===Expressions===
-Literal
-    int literal
-        hexadecimal
-    string literal
-    char literal
 expr operator expr
 expr  "?"  expr  ":"  expr
-Tuple Expression
-    "(" {expr + ","}+ ")"
-Cast Expression
-	"("  type  ")"  unaryExpr
-	unaryExpr  ":"  type
-	
+
 Unary Expression
     -unaryExpr
     ++unaryExpr
     --unaryExpr
     !unaryExpr
     ~unaryExpr
-    "("  type  ")"  unaryExpr
+    Cast Expression
+	    "("  type  ")"  unaryExpr
+	    unaryExpr  ":"  type
     Primary Expression
+        Tuple Expression
+            "(" {expr + ","}+ ")"
+        Literal
+            int literal
+                hexadecimal
+            string literal
+            char literal
         "new"  type  "("  arguments  ")"
             public class B {
                 static int staticVal;
@@ -110,6 +109,9 @@ Unary Expression
 ===Statement Expressions===
     completeExpression
     ++primaryExpression         should allow?
+        conflict:
+            a++
+            ++b (possible, but hard to parse)
     --primaryExpression
     unaryExpr assignment expression (spec)
         ???
@@ -147,6 +149,12 @@ Jump Statement
     "break"
     "continue"
     "return"
+        needs semicolon?
+            return 
+            a.func()
+            would need to check return type
+    "exit"
+        void return?
     "throw"
 Statement Expression
     statementExpression  ";"

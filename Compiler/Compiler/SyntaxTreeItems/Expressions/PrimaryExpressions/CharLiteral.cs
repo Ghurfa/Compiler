@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems.Expressions
 {
-    public class CharLiteral : Expression
+    public class CharLiteral : PrimaryExpression
     {
         public readonly Token OpenQuote;
         public readonly Token Text;

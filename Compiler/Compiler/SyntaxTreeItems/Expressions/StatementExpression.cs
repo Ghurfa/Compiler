@@ -8,6 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
     {
         public static StatementExpression ReadStatementExpression(LinkedList<Token> tokens)
         {
+            PrimaryExpression startExpr = PrimaryExpression.ReadPrimaryExpression(tokens);
             if(tokens.PopIfMatches(out Token identifierToken, TokenType.Identifier))
             {
                 throw new NotImplementedException();

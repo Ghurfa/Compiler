@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Compiler.SyntaxTreeItems.Expressions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public class StringLiteral : Expression
+    public class StringLiteral : PrimaryExpression
     {
         public readonly Token OpenQuote;
         public readonly Token Text;
