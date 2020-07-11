@@ -8,16 +8,18 @@ namespace Compiler
     public class FieldDeclaration : ClassItemDeclaration
     {
         public readonly Token Identifier;
-        public readonly Token? AssignmentToken;
-        public readonly Expression DefaultValue;
+        
         public readonly Token? ColonToken;
         public readonly Token[] AccessModifiers;
         public readonly SyntaxTreeItems.Type Type;
+
+        public readonly Token? AssignmentToken;
+        public readonly Expression DefaultValue;
         public FieldDeclaration(TokenCollection tokens, Token identifierToken, Token syntaxCharToken)
         {
             Identifier = identifierToken;
             
-            if(syntaxCharToken.Text == ":=")
+            if(syntaxCharToken.Type == TokenType.DeclAssign)
             {
                 AssignmentToken = syntaxCharToken;
                 DefaultValue = Expression.ReadExpression(tokens);
@@ -29,20 +31,15 @@ namespace Compiler
             }
             else
             {
-                if (syntaxCharToken.Text == "=")
-                {
-                    AssignmentToken = syntaxCharToken;
-                    DefaultValue = Expression.ReadExpression(tokens);
-                    ColonToken = tokens.PopToken(TokenType.Colon);
-                }
-                else
-                {
-                    AssignmentToken = null;
-                    DefaultValue = null;
-                    ColonToken = syntaxCharToken;
-                }
+                ColonToken = syntaxCharToken;
                 AccessModifiers = tokens.ReadModifiers();
                 Type = SyntaxTreeItems.Type.ReadType(tokens);
+
+                if(tokens.PopIfMatches(out Token equals, TokenType.Assign))
+                {
+                    AssignmentToken = equals;
+                    DefaultValue = Expression.ReadExpression(tokens);
+                }
             }
             
         }

@@ -9,7 +9,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
         public readonly Expression Condition;
         public readonly Token QuestionMark;
         public readonly Expression IfTrue;
-        public readonly Token Colon;
+        public readonly Token Backslash;
         public readonly Expression IfFalse;
 
         public InlineIfExpression(TokenCollection tokens, Expression condition)
@@ -17,7 +17,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
             Condition = condition;
             QuestionMark = tokens.PopToken(TokenType.QuestionMark);
             IfTrue = Expression.ReadExpression(tokens);
-            Colon = tokens.PopToken(TokenType.Colon);
+            Backslash = tokens.PopToken(TokenType.Backslash);
             IfFalse = Expression.ReadExpression(tokens);
         }
     }

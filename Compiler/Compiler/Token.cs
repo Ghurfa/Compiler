@@ -52,6 +52,7 @@ namespace Compiler
         Semicolon,
         SingleQuote,
         DoubleQuote,
+        Backslash,
 
         //Unary operators
         Not,

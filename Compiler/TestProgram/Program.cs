@@ -43,7 +43,7 @@ namespace TestProgram
             {
                 if (skipTrivia) return;
                 Console.ForegroundColor = forceColor ?? ConsoleColor.White;
-                Console.WriteLine(token.Type);
+                Console.WriteLine(token.Text);
             }
             else if (token.Type == TokenType.Identifier || token.Type == TokenType.StringLiteral || token.Type == TokenType.CharLiteral || token.Type == TokenType.IntLiteral)
             {
@@ -53,7 +53,7 @@ namespace TestProgram
             else
             {
                 Console.ForegroundColor = forceColor ?? ConsoleColor.Blue;
-                Console.WriteLine(token.Type);
+                Console.WriteLine(token.Text);
             }
         }
         static void PrintObject(object obj, string name, int x = 0)

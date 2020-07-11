@@ -27,11 +27,11 @@ namespace Compiler.SyntaxTreeItems.Expressions
     {
         public LogicalNotExpression(TokenCollection tokens, Token unaryOperator) : base(tokens, unaryOperator) { }
     }
-    public class PreIncrementExpression : UnaryOperatorExpression, ICompleteStatement
+    public class PreIncrementExpression : UnaryOperatorExpression
     {
         public PreIncrementExpression(TokenCollection tokens, Token unaryOperator) : base(tokens, unaryOperator) { }
     }
-    public class PreDecrementExpression : UnaryOperatorExpression, ICompleteStatement
+    public class PreDecrementExpression : UnaryOperatorExpression
     {
         public PreDecrementExpression(TokenCollection tokens, Token unaryOperator) : base(tokens, unaryOperator) { }
     }

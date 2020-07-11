@@ -152,6 +152,7 @@ namespace Compiler
                 case "~": type = TokenType.BitwiseNot; return true;
                 case "<<": type = TokenType.LeftShift; return true;
                 case ">>": type = TokenType.RightShift; return true;
+                case "\\": type = TokenType.Backslash; return true;
                 default: type = default; return false;
             }
         }

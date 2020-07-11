@@ -2,16 +2,21 @@ FizzBuzz namespace
 {
     FizzBuzz class
     {
+        b := 5
+        c:int = b
         FizzBuzz public static void(start:int, end:int)
         {
             c:(a:int, b:int) = (3, 4)
             for(i := start, i < end, i++)
             {
-                i = 1
+                i++
+                //--i is not valid
+                i--
                 fizz := i % 3 == 0
-                buzz := i % 5 == 0;
-                print:string = fizz && buzz ? "FizzBuzz" : fizz ? "Fizz" : buzz ? "Buzz" : i.ToString[];
-
+                buzz := i % 5 == 0
+                fizzStr := "fizz"
+                buzzStr := "buzz"
+                print:string = fizz && buzz ? "FizzBuzz" \ fizz ? fizzStr \ buzz ? buzzStr \ i.ToString()
             }
         }
     }
