@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -11,13 +12,15 @@ namespace Compiler.SyntaxTreeItems
         {
             var arguments = new LinkedList<Argument>();
             bool lastMissingComma = false;
-            while(!lastMissingComma)
+            Token peek;
+            while((peek = tokens.PeekToken()).Type != TokenType.ClosePeren)
             {
-                if (lastMissingComma) throw new SyntaxTreeBuildingException(tokens.PeekToken());
+                if (lastMissingComma) throw new SyntaxTreeBuildingException(peek);
                 var argument = new Argument(tokens);
                 arguments.AddLast(argument);
                 lastMissingComma = argument.CommaToken == null;
             }
+            Arguments = arguments.ToArray();
         }
     }
 }

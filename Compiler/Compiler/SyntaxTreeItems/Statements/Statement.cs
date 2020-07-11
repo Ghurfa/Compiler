@@ -12,19 +12,18 @@ namespace Compiler.SyntaxTreeItems
         {
             switch(tokens.PeekToken().Type)
             {
-                case TokenType.IfKeyword:
+                case TokenType.IfKeyword: return new IfBlock(tokens);
+                case TokenType.WhileKeyword: return new WhileBlock(tokens);
+                case TokenType.ReturnKeyword: return new ReturnStatement(tokens);
                 case TokenType.ForKeyword:
                 case TokenType.ForeachKeyword:
-                case TokenType.WhileKeyword:
-                case TokenType.ReturnKeyword:
                 case TokenType.BreakKeyword:
                 case TokenType.ContinueKeyword:
                     throw new NotImplementedException();
                 case TokenType.OpenCurly: return new CodeBlock(tokens);
                 case TokenType.Semicolon: return new EmptyStatement(tokens);
                 default:
-                    PrimaryExpression startingExpression = PrimaryExpression.ReadPrimaryExpression(tokens);
-                    throw new NotImplementedException();
+                    return new ExpressionStatement(tokens);
             }
         }
     }

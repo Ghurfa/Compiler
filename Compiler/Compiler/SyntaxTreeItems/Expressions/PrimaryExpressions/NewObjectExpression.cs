@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Compiler.SyntaxTreeItems.Statements;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems.Expressions
 {
-    public class NewObjectExpression : PrimaryExpression
+    //Apparently this is a valid statement in c#
+    public class NewObjectExpression : PrimaryExpression, ICompleteStatement
     {
         public NewObjectExpression(TokenCollection tokens, Token newKeywordToken)
         {

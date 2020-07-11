@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiler.SyntaxTreeItems.Statements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace Compiler.SyntaxTreeItems
         {
             OpenBrace = tokens.PopToken(TokenType.OpenCurly);
 
-            LinkedList<Statement> statements = new LinkedList<Statement>();
+            var statements = new LinkedList<Statement>();
             while (!tokens.PopIfMatches(out CloseBrace, TokenType.CloseCurly))
             {
                 statements.AddLast(Statement.ReadStatement(tokens));

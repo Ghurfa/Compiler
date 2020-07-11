@@ -11,16 +11,17 @@ myNamespace namespace
 
         ctor(myFloat:float)
         {
-            myDouble = myFloat:double;
+            myDouble:double = myFloat;
         }
 
         Average static int(a:int, b:int)
         {
-            return ((a + b++) / 2);
+            return((a + b++) / 2)
+            ++x;
         }
         Main static void(args:string[]) //b
         {
-            number:int = Random.RandInt[0, 64]
+            number:int = Random.RandInt(0, 64)
             guess:int = -1
             
             end := false
@@ -41,7 +42,6 @@ myNamespace namespace
                     else
                     {
                         Console.Println("Correct")
-                        if (guess != number) throw new NotImplementedException()
                     }
                 }
                 Console.Println("Continue? (y/n)")

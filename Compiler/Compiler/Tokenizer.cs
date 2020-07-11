@@ -26,16 +26,6 @@ namespace Compiler
             "void",
             "object",
         };
-        static string[] controlKeywords = new string[]
-        {
-            "if",
-            "for",
-            "foreach",
-            "while",
-            "return",
-            "break",
-            "continue"
-        };
         static string[] valueKeywords = new string[]
         {
             "this",
@@ -151,8 +141,8 @@ namespace Compiler
                 case "!=": type = TokenType.NotEquals; return true;
                 case "<": type = TokenType.LessThan; return true;
                 case ">": type = TokenType.GreaterThan; return true;
-                case "<=": type = TokenType.LessThanOrEqual; return true;
-                case ">=": type = TokenType.GreaterThanOrEqual; return true;
+                case "<=": type = TokenType.LessThanOrEqualTo; return true;
+                case ">=": type = TokenType.GreaterThanOrEqualTo; return true;
                 case "&&": type = TokenType.And; return true;
                 case "||": type = TokenType.Or; return true;
                 case "!": type = TokenType.Not; return true;
@@ -276,7 +266,6 @@ namespace Compiler
             if (!foundCloseQuote) throw new TokenizingException(i);
             tokens.AddLast(new Token(new string(literal.ToArray()), TokenType.StringLiteral));
             tokens.AddLast(new Token("\"", TokenType.DoubleQuote));
-            i++;
         }
         static void ParseCharLiteral(string text, ref int i, LinkedList<Token> tokens)
         {
@@ -304,6 +293,7 @@ namespace Compiler
                 case "class": tokenType = TokenType.ClassKeyword; return true;
                 case "ctor": tokenType = TokenType.ConstructorKeyword; return true;
                 case "if": tokenType = TokenType.IfKeyword; return true;
+                case "else": tokenType = TokenType.ElseKeyword; return true;
                 case "for": tokenType = TokenType.ForKeyword; return true;
                 case "foreach": tokenType = TokenType.ForeachKeyword; return true;
                 case "while": tokenType = TokenType.WhileKeyword; return true;

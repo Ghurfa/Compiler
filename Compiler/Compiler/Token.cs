@@ -7,13 +7,20 @@ namespace Compiler
 {
     public enum TokenType
     {
+        //Block marker keywords
         NamespaceKeyword,
         ClassKeyword,
         ConstructorKeyword,
 
+        //Todo: break down into more specific types
         Modifier,
+        PrimitiveType,
+        ValueKeyword,
+        Identifier,
 
+        //Control keywords
         IfKeyword,
+        ElseKeyword,
         ForKeyword,
         ForeachKeyword,
         WhileKeyword,
@@ -21,17 +28,16 @@ namespace Compiler
         BreakKeyword,
         ContinueKeyword,
 
+        //Miscellaneous keywords
         AsKeyword,
-
-        PrimitiveType,
         NewKeyword,
-        ValueKeyword,
-        Identifier,
 
+        //Trivia
         Whitespace,
         SingleLineComment,
         MultiLineComment,
 
+        //Syntax characters
         Dot,
         Comma,
         OpenPeren,
@@ -46,36 +52,49 @@ namespace Compiler
         SingleQuote,
         DoubleQuote,
 
-        Assign,
-        DeclAssign,
+        //Unary operators
+        Not,
+        BitwiseNot,
+        Increment,
+        Decrement,
+
+        //Binary operators
         Plus,
         Minus,
         Asterisk,
         Divide,
         Modulo,
+        BitwiseAnd,
+        BitwiseOr,
+        BitwiseXor,
+        LeftShift,
+        RightShift,
+
+        //Binary assign operators
+        Assign,
+        DeclAssign,
         PlusAssign,
         MinusAssign,
         TimesAssign,
         DivideAssign,
         ModuloAssign,
-        Increment,
-        Decrement,
+        BitwiseAndAssign,
+        BitwiseOrAssign,
+        BitwiseXorAssign,
+        LeftShiftAssign,
+        RightShiftAssign,
+
+        //Binary boolean operators
         Equals,
         NotEquals,
-        LessThan,
         GreaterThan,
-        LessThanOrEqual,
-        GreaterThanOrEqual,
+        LessThan,
+        GreaterThanOrEqualTo,
+        LessThanOrEqualTo,
         And,
         Or,
-        Not,
-        BitwiseAnd,
-        BitwiseOr,
-        BitwiseXor,
-        BitwiseNot,
-        LeftShift,
-        RightShift,
 
+        //Literals
         IntLiteral,
         StringLiteral,
         CharLiteral,

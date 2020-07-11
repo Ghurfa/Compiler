@@ -30,7 +30,14 @@ namespace Compiler.SyntaxTreeItems.Expressions
             }
             else if (tokens.PopIfMatches(out Token identifier, TokenType.Identifier))
             {
-                baseExpr = new IdentifierExpression(tokens, identifier);
+                if(tokens.PopIfMatches(out Token colonToken, TokenType.Colon))
+                {
+                    baseExpr = new DeclarationExpression(tokens, identifier, colonToken);
+                }
+                else
+                {
+                    baseExpr = new IdentifierExpression(tokens, identifier);
+                }
             }
             else if (tokens.PopIfMatches(out Token intToken, TokenType.IntLiteral))
             {
@@ -52,7 +59,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
             {
                 baseExpr = new PrimitiveTypeExpression(tokens, primitiveKeyword);
             }
-            else throw new SyntaxTreeBuildingException();
+            else throw new SyntaxTreeBuildingException(tokens.PeekToken());
 
             PrimaryExpression exprSoFar = baseExpr;
             bool finishedParsing = false;
@@ -72,7 +79,11 @@ namespace Compiler.SyntaxTreeItems.Expressions
                 }
                 else if (tokens.PopIfMatches(out Token incrOperator, TokenType.Increment))
                 {
-                    throw new NotImplementedException();
+                    exprSoFar = new PostIncrementExpression(tokens, exprSoFar, incrOperator);
+                }
+                else if (tokens.PopIfMatches(out Token decrOperator, TokenType.Decrement))
+                {
+                    exprSoFar = new PostDecrementExpression(tokens, exprSoFar, decrOperator);
                 }
                 else finishedParsing = true;
             }

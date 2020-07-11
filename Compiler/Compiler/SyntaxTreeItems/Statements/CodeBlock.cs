@@ -17,7 +17,7 @@ namespace Compiler.SyntaxTreeItems.Statements
         {
             OpenBrace = openBrace;
 
-            LinkedList<Statement> statements = new LinkedList<Statement>();
+            var statements = new LinkedList<Statement>();
             while (!tokens.PopIfMatches(out CloseBrace, TokenType.CloseCurly))
             {
                 statements.AddLast(ReadStatement(tokens));

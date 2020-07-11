@@ -12,10 +12,10 @@ namespace Compiler.SyntaxTreeItems.Expressions
         public readonly Token Colon;
         public readonly Expression IfFalse;
 
-        public InlineIfExpression(TokenCollection tokens, Expression condition, Token questionMark)
+        public InlineIfExpression(TokenCollection tokens, Expression condition)
         {
             Condition = condition;
-            QuestionMark = questionMark;
+            QuestionMark = tokens.PopToken(TokenType.QuestionMark);
             IfTrue = Expression.ReadExpression(tokens);
             Colon = tokens.PopToken(TokenType.Colon);
             IfFalse = Expression.ReadExpression(tokens);

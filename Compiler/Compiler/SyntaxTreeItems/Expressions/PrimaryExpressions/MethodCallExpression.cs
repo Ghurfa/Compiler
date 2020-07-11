@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Compiler.SyntaxTreeItems.Statements;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
 {
-    public class MethodCallExpression : PrimaryExpression
+    public class MethodCallExpression : PrimaryExpression, ICompleteStatement
     {
         public readonly PrimaryExpression MethodExpression;
         public readonly Token OpenPerenthesesToken;

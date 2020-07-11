@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Compiler.SyntaxTreeItems.Statements;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems.Expressions
 {
-    public abstract class AssignmentExpression : Expression
+    public abstract class AssignmentExpression : Expression, ICompleteStatement
     {
         public readonly UnaryExpression LeftExpression;
         public readonly Token Assignment;
