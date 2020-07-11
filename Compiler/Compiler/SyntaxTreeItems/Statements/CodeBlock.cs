@@ -12,13 +12,13 @@ namespace Compiler.SyntaxTreeItems.Statements
         public readonly Token CloseBrace;
 
         public CodeBlock(TokenCollection tokens)
-        : this(tokens, tokens.PopToken(TokenType.SyntaxChar, "{")) { }
+        : this(tokens, tokens.PopToken(TokenType.OpenCurly)) { }
         public CodeBlock(TokenCollection tokens, Token openBrace)
         {
             OpenBrace = openBrace;
 
             LinkedList<Statement> statements = new LinkedList<Statement>();
-            while (!tokens.PopIfMatches(out CloseBrace, TokenType.SyntaxChar, "}"))
+            while (!tokens.PopIfMatches(out CloseBrace, TokenType.CloseCurly))
             {
                 statements.AddLast(ReadStatement(tokens));
             }

@@ -16,7 +16,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             MethodExpression = baseExpr;
             OpenPerenthesesToken = openPeren;
             Arguments = new ArgumentList(tokens);
-            ClosePerenthesesToken = tokens.PopToken(TokenType.SyntaxChar, ")");
+            ClosePerenthesesToken = tokens.PopToken(TokenType.ClosePeren);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
         {
             OpenQuote = openQuoteToken;
             Text = tokens.PopToken(TokenType.CharLiteral);
-            CloseQuote = tokens.PopToken(TokenType.SyntaxChar, "\'");
+            CloseQuote = tokens.PopToken(TokenType.SingleQuote);
         }
     }
 }

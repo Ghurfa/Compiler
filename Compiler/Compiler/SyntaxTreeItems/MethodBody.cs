@@ -12,10 +12,10 @@ namespace Compiler.SyntaxTreeItems
         public readonly Token CloseBrace;
         public MethodBodyDeclaration(TokenCollection tokens)
         {
-            OpenBrace = tokens.PopToken(TokenType.SyntaxChar, "{");
+            OpenBrace = tokens.PopToken(TokenType.OpenCurly);
 
             LinkedList<Statement> statements = new LinkedList<Statement>();
-            while (!tokens.PopIfMatches(out CloseBrace, TokenType.SyntaxChar, "}"))
+            while (!tokens.PopIfMatches(out CloseBrace, TokenType.CloseCurly))
             {
                 statements.AddLast(Statement.ReadStatement(tokens));
             }

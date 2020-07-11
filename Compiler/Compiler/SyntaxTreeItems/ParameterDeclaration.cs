@@ -13,9 +13,9 @@ namespace Compiler.SyntaxTreeItems
         public ParameterDeclaration(TokenCollection tokens)
         {
             Identifier = tokens.PopToken(TokenType.Identifier);
-            ColonToken = tokens.PopToken(TokenType.SyntaxChar, ":");
+            ColonToken = tokens.PopToken(TokenType.Colon);
             TypeParameter = new TypeToken(tokens);
-            if(tokens.PopIfMatches(out Token comma, TokenType.SyntaxChar, ","))
+            if(tokens.PopIfMatches(out Token comma, TokenType.Comma))
             {
                 CommaToken = comma; 
             }

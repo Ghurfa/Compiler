@@ -16,10 +16,10 @@ namespace Compiler.SyntaxTreeItems
             if (BaseType.Type != TokenType.PrimitiveType && 
                 BaseType.Type != TokenType.Identifier) throw new SyntaxTreeBuildingException(BaseType);
 
-            if(tokens.PopIfMatches(out Token openArr, TokenType.SyntaxChar, "["))
+            if(tokens.PopIfMatches(out Token openArr, TokenType.OpenBracket))
             {
                 OpenArrayBracket = openArr;
-                CloseArrayBracket = tokens.PopToken(TokenType.SyntaxChar, "]");
+                CloseArrayBracket = tokens.PopToken(TokenType.CloseBracket);
             }
         }
     }

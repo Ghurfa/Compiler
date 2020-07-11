@@ -1,4 +1,5 @@
-﻿using Compiler.SyntaxTreeItems.Statements;
+﻿using Compiler.SyntaxTreeItems.Expressions;
+using Compiler.SyntaxTreeItems.Statements;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,26 +10,21 @@ namespace Compiler.SyntaxTreeItems
     {
         public static Statement ReadStatement(TokenCollection tokens)
         {
-            if (tokens.PopIfMatches(out Token controlKeyword, TokenType.ControlKeyword))
+            switch(tokens.PeekToken().Type)
             {
-                throw new NotImplementedException();
-            }
-            else if (tokens.PopIfMatches(out Token openCurly, TokenType.SyntaxChar, "{"))
-            {
-                return new CodeBlock(tokens, openCurly);
-            }
-            else if (tokens.PopIfMatches(out Token semicolon, TokenType.SyntaxChar, ";"))
-            {
-                return new EmptyStatement(tokens, semicolon);
-            }
-            else if(tokens.PopIfMatches(out Token operatorToken, TokenType.Operator))
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                Expression startingExpression = Expression.ReadExpression(tokens);
-                throw new NotImplementedException();
+                case TokenType.IfKeyword:
+                case TokenType.ForKeyword:
+                case TokenType.ForeachKeyword:
+                case TokenType.WhileKeyword:
+                case TokenType.ReturnKeyword:
+                case TokenType.BreakKeyword:
+                case TokenType.ContinueKeyword:
+                    throw new NotImplementedException();
+                case TokenType.OpenCurly: return new CodeBlock(tokens);
+                case TokenType.Semicolon: return new EmptyStatement(tokens);
+                default:
+                    PrimaryExpression startingExpression = PrimaryExpression.ReadPrimaryExpression(tokens);
+                    throw new NotImplementedException();
             }
         }
     }

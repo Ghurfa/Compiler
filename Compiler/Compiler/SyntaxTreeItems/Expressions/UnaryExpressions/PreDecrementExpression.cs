@@ -8,7 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.UnaryExpressions
     {
         public readonly Token DecrementOperator;
         public readonly UnaryExpression Expression;
-        public PreDecrementExpression(LinkedList<Token> tokens, Token decrOperator)
+        public PreDecrementExpression(TokenCollection tokens, Token decrOperator)
         {
             DecrementOperator = decrOperator;
             Expression = UnaryExpression.ReadUnaryExpression(tokens);

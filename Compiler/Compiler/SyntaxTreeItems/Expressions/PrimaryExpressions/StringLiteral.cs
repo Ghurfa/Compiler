@@ -14,7 +14,7 @@ namespace Compiler.SyntaxTreeItems
         {
             OpenQuote = openQuoteToken;
             Text = tokens.PopToken(TokenType.StringLiteral);
-            CloseQuote = tokens.PopToken(TokenType.SyntaxChar, "\"");
+            CloseQuote = tokens.PopToken(TokenType.DoubleQuote);
         }
     }
 }

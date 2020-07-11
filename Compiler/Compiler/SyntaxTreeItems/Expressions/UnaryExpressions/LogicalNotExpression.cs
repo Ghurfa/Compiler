@@ -8,7 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.UnaryExpressions
     {
         public readonly Token LogicalNotOperator;
         public readonly UnaryExpression Expression;
-        public LogicalNotExpression(LinkedList<Token> tokens, Token notOperator)
+        public LogicalNotExpression(TokenCollection tokens, Token notOperator)
         {
             LogicalNotOperator = notOperator;
             Expression = UnaryExpression.ReadUnaryExpression(tokens);

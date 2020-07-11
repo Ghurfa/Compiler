@@ -8,7 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.UnaryExpressions
     {
         public readonly Token PlusOperator;
         public readonly UnaryExpression Expression;
-        public UnaryPlusExpression(LinkedList<Token> tokens, Token plusOperator)
+        public UnaryPlusExpression(TokenCollection tokens, Token plusOperator)
         {
             PlusOperator = plusOperator;
             Expression = UnaryExpression.ReadUnaryExpression(tokens);

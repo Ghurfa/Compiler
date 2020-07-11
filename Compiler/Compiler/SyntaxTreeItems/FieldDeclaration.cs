@@ -21,7 +21,7 @@ namespace Compiler
             {
                 AssignmentToken = syntaxCharToken;
                 DefaultValue = Expression.ReadExpression(tokens);
-                if(tokens.PopIfMatches(out Token colon, TokenType.SyntaxChar, ":"))
+                if(tokens.PopIfMatches(out Token colon, TokenType.Colon))
                 {
                     ColonToken = colon;
                     AccessModifiers = tokens.ReadModifiers();
@@ -33,7 +33,7 @@ namespace Compiler
                 {
                     AssignmentToken = syntaxCharToken;
                     DefaultValue = Expression.ReadExpression(tokens);
-                    ColonToken = tokens.PopToken(TokenType.SyntaxChar, ":");
+                    ColonToken = tokens.PopToken(TokenType.Colon);
                 }
                 else
                 {

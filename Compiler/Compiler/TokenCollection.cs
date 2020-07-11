@@ -22,7 +22,9 @@ namespace Compiler
         public Token PeekToken()
         {
             if (pointer > tokens.Length) throw new SyntaxTreeBuildingException();
-            while(tokens[pointer].Type == TokenType.Whitespace)
+            while(  tokens[pointer].Type == TokenType.Whitespace ||
+                    tokens[pointer].Type == TokenType.SingleLineComment ||
+                    tokens[pointer].Type == TokenType.MultiLineComment)
             {
                 pointer++;
                 if (pointer > tokens.Length) throw new SyntaxTreeBuildingException();
@@ -33,19 +35,6 @@ namespace Compiler
         {
             Token peek = PeekToken();
             if (peek.Type == type)
-            {
-                pointer++;
-                tokenIfMatches = peek;
-                return true;
-            }
-            tokenIfMatches = default;
-            return false;
-        }
-
-        public bool PopIfMatches(out Token tokenIfMatches, TokenType type, string text)
-        {
-            Token peek = PeekToken();
-            if (peek.Type == type && peek.Text == text)
             {
                 pointer++;
                 tokenIfMatches = peek;
@@ -80,13 +69,7 @@ namespace Compiler
             pointer++;
             return ret;
         }
-        public Token PopToken(TokenType expectedType, string expectedText)
-        {
-            Token ret = PeekToken();
-            if (ret.Type != expectedType || ret.Text != expectedText) throw new SyntaxTreeBuildingException(ret);
-            pointer++;
-            return ret;
-        }
+
         private string[] modifiers = new string[] { "public", "private", "static" };
         public Token[] ReadModifiers()
         {

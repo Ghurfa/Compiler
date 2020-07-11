@@ -8,7 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.UnaryExpressions
     {
         public readonly Token MinusOperator;
         public readonly UnaryExpression Expression;
-        public UnaryMinusExpression(LinkedList<Token> tokens, Token minusOperator)
+        public UnaryMinusExpression(TokenCollection tokens, Token minusOperator)
         {
             MinusOperator = minusOperator;
             Expression = UnaryExpression.ReadUnaryExpression(tokens);

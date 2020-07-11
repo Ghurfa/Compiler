@@ -14,7 +14,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
         {
             OpenPerentheses = openPerens;
             Values = new TupleValueList(tokens, new TupleValue(firstValue, firstComma));
-            ClosePerentheses = tokens.PopToken(TokenType.SyntaxChar, ")");
+            ClosePerentheses = tokens.PopToken(TokenType.ClosePeren);
         }
     }
 }

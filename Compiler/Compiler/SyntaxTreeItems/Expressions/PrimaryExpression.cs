@@ -11,14 +11,14 @@ namespace Compiler.SyntaxTreeItems.Expressions
         {
             PrimaryExpression baseExpr;
 
-            if (tokens.PopIfMatches(out Token openPeren, TokenType.SyntaxChar, "("))
+            if (tokens.PopIfMatches(out Token openPeren, TokenType.OpenPeren))
             {
                 Expression innerExpr = Expression.ReadExpression(tokens);
-                if (tokens.PopIfMatches(out Token closePeren, TokenType.SyntaxChar, ")"))
+                if (tokens.PopIfMatches(out Token closePeren, TokenType.ClosePeren))
                 {
                     baseExpr = new PerenthesizedExpression(tokens, openPeren, innerExpr, closePeren);
                 }
-                else if (tokens.PopIfMatches(out Token comma, TokenType.SyntaxChar, ")"))
+                else if (tokens.PopIfMatches(out Token comma, TokenType.ClosePeren))
                 {
                     baseExpr = new TupleExpression(tokens, openPeren, innerExpr, comma);
                 }
@@ -36,11 +36,11 @@ namespace Compiler.SyntaxTreeItems.Expressions
             {
                 baseExpr = new IntLiteral(tokens, intToken);
             }
-            else if (tokens.PopIfMatches(out Token strOpenToken, TokenType.SyntaxChar, "\""))
+            else if (tokens.PopIfMatches(out Token strOpenToken, TokenType.DoubleQuote))
             {
                 baseExpr = new StringLiteral(tokens, strOpenToken);
             }
-            else if (tokens.PopIfMatches(out Token charOpenToken, TokenType.SyntaxChar, "'"))
+            else if (tokens.PopIfMatches(out Token charOpenToken, TokenType.SingleQuote))
             {
                 baseExpr = new CharLiteral(tokens, charOpenToken);
             }
@@ -58,19 +58,19 @@ namespace Compiler.SyntaxTreeItems.Expressions
             bool finishedParsing = false;
             while (!finishedParsing)
             {
-                if (tokens.PopIfMatches(out Token dot, TokenType.Operator, "."))
+                if (tokens.PopIfMatches(out Token dot, TokenType.Dot))
                 {
                     exprSoFar = new MemberAccessExpression(tokens, exprSoFar, dot);
                 }
-                else if (tokens.PopIfMatches(out Token openPerentheses, TokenType.Operator, "("))
+                else if (tokens.PopIfMatches(out Token openPerentheses, TokenType.OpenPeren))
                 {
                     exprSoFar = new MethodCallExpression(tokens, exprSoFar, openPerentheses);
                 }
-                else if (tokens.PopIfMatches(out Token openArrBracket, TokenType.Operator, "["))
+                else if (tokens.PopIfMatches(out Token openArrBracket, TokenType.OpenBracket))
                 {
                     throw new NotImplementedException();
                 }
-                else if (tokens.PopIfMatches(out Token incrOperator, TokenType.Operator, "++"))
+                else if (tokens.PopIfMatches(out Token incrOperator, TokenType.Increment))
                 {
                     throw new NotImplementedException();
                 }

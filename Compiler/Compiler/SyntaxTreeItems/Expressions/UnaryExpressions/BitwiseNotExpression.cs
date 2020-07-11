@@ -8,7 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.UnaryExpressions
     {
         public readonly Token BitwiseNotOperator;
         public readonly UnaryExpression Expression;
-        public BitwiseNotExpression(LinkedList<Token> tokens, Token notOperator)
+        public BitwiseNotExpression(TokenCollection tokens, Token notOperator)
         {
             BitwiseNotOperator = notOperator;
             Expression = UnaryExpression.ReadUnaryExpression(tokens);

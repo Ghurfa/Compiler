@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
         public Argument(TokenCollection tokens)
         {
             Expression = Expression.ReadExpression(tokens);
-            if (tokens.PopIfMatches(out Token comma, TokenType.SyntaxChar, ","))
+            if (tokens.PopIfMatches(out Token comma, TokenType.Comma))
             {
                 CommaToken = comma;
             }

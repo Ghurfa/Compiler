@@ -9,27 +9,24 @@ namespace Compiler
     {
         public static ClassItemDeclaration ReadClassItem(TokenCollection tokens)
         {
-            Token firstToken = tokens.PopToken();
-            if (firstToken.Type == TokenType.BlockMarker)
+            if (tokens.PopIfMatches(out Token constructorToken, TokenType.ConstructorKeyword))
             {
-                if (firstToken.Text != "ctor") throw new SyntaxTreeBuildingException(firstToken);
-                return new ConstructorDeclaration(tokens, firstToken);
+                return new ConstructorDeclaration(tokens, constructorToken);
             }
-            else if (firstToken.Type == TokenType.Identifier)
+            else if (tokens.PopIfMatches(out Token identifierToken, TokenType.Identifier))
             {
-                Token identifier = firstToken;
-                if (tokens.PopIfMatches(out Token syntaxChar, TokenType.SyntaxChar, ":") ||
-                    tokens.PopIfMatches(out syntaxChar, TokenType.Operator, "=") ||
-                    tokens.PopIfMatches(out syntaxChar, TokenType.Operator, ":="))
+                if (tokens.PopIfMatches(out Token syntaxChar, TokenType.Colon) ||
+                    tokens.PopIfMatches(out syntaxChar, TokenType.Assign) ||
+                    tokens.PopIfMatches(out syntaxChar, TokenType.DeclAssign))
                 {
-                    return new FieldDeclaration(tokens, identifier, syntaxChar);
+                    return new FieldDeclaration(tokens, identifierToken, syntaxChar);
                 }
                 else
                 {
-                    return new MethodDeclaration(tokens, identifier);
+                    return new MethodDeclaration(tokens, identifierToken);
                 }
             }
-            else throw new SyntaxTreeBuildingException(firstToken);
+            else throw new SyntaxTreeBuildingException(tokens.PeekToken());
         }
     }
 }

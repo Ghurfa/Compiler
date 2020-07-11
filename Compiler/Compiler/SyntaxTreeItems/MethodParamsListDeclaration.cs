@@ -14,10 +14,10 @@ namespace Compiler.SyntaxTreeItems
         public readonly Token ClosePerenthesesToken;
         public ParameterListDeclaration(TokenCollection tokens)
         {
-            OpenPerenthesesToken = tokens.PopToken(TokenType.SyntaxChar, "(");
+            OpenPerenthesesToken = tokens.PopToken(TokenType.OpenPeren);
             LinkedList<ParameterDeclaration> parameters = new LinkedList<ParameterDeclaration>();
             bool lastMissingComma = false;
-            while(!tokens.PopIfMatches(out ClosePerenthesesToken, TokenType.SyntaxChar, ")"))
+            while(!tokens.PopIfMatches(out ClosePerenthesesToken, TokenType.ClosePeren))
             {
                 if (lastMissingComma) throw new SyntaxTreeBuildingException(tokens.PeekToken());
                 var parameter = new ParameterDeclaration(tokens);

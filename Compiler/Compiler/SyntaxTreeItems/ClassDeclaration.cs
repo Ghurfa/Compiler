@@ -19,11 +19,11 @@ namespace Compiler
         {
             Identifier = tokens.PopToken(TokenType.Identifier);
             AccessModifiers = tokens.ReadModifiers();
-            ClassKeyword = tokens.PopToken(TokenType.BlockMarker, "class");
-            OpenBrace = tokens.PopToken(TokenType.SyntaxChar, "{");
+            ClassKeyword = tokens.PopToken(TokenType.ClassKeyword);
+            OpenBrace = tokens.PopToken(TokenType.OpenCurly);
 
             LinkedList<ClassItemDeclaration> items = new LinkedList<ClassItemDeclaration>();
-            while (!tokens.PopIfMatches(out CloseBrace, TokenType.SyntaxChar, "}"))
+            while (!tokens.PopIfMatches(out CloseBrace, TokenType.CloseCurly))
             {
                 items.AddLast(ClassItemDeclaration.ReadClassItem(tokens));
             }

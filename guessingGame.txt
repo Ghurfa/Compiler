@@ -2,6 +2,10 @@ myNamespace namespace
 {
     Program class
     {
+        //Single line comment//still the same comment
+        /*  Multi
+            Line
+            Comment */
         myInt := 2: public static 
         myDouble:double
 
@@ -14,8 +18,7 @@ myNamespace namespace
         {
             return ((a + b++) / 2);
         }
-
-        Main static void(args:string[])
+        Main static void(args:string[]) //b
         {
             number:int = Random.RandInt[0, 64]
             guess:int = -1

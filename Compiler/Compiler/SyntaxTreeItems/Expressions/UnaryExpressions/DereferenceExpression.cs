@@ -8,7 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.UnaryExpressions
     {
         public readonly Token DereferenceOperator;
         public readonly UnaryExpression Expression;
-        public DereferenceExpression(LinkedList<Token> tokens, Token derefOperator)
+        public DereferenceExpression(TokenCollection tokens, Token derefOperator)
         {
             DereferenceOperator = derefOperator;
             Expression = UnaryExpression.ReadUnaryExpression(tokens);
