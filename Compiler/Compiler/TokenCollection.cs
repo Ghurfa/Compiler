@@ -22,9 +22,7 @@ namespace Compiler
         public Token PeekToken()
         {
             if (pointer > tokens.Length) throw new SyntaxTreeBuildingException();
-            while(  tokens[pointer].Type == TokenType.Whitespace ||
-                    tokens[pointer].Type == TokenType.SingleLineComment ||
-                    tokens[pointer].Type == TokenType.MultiLineComment)
+            while (tokens[pointer].IsTrivia)
             {
                 pointer++;
                 if (pointer > tokens.Length) throw new SyntaxTreeBuildingException();
@@ -88,16 +86,49 @@ namespace Compiler
 
         public IEnumerator<Token> GetEnumerator()
         {
-            for(int i = 0; i < tokens.Length; i++)
+            for (int i = 0; i < tokens.Length; i++)
             {
                 yield return tokens[i];
             }
         }
-        public IEnumerable<Token> NonWhitespaceTokens()
+        public IEnumerator<Token> NonWhitespaceTokens()
         {
             for (int i = 0; i < tokens.Length; i++)
             {
-                if(tokens[i].Type != TokenType.Whitespace) yield return tokens[i];
+                if (!tokens[i].IsTrivia) yield return tokens[i];
+            }
+        }
+        public IEnumerable<Token> GetContext(Token token, int tokensBefore, int tokensAfter)
+        {
+            LinkedList<Token> beforeTokens = new LinkedList<Token>();
+
+            int ptr = token.Index - 1;
+            int beforeCount = 0;
+            while(beforeCount < tokensBefore && ptr > 0)
+            { 
+                if(!tokens[ptr].IsTrivia)
+                {
+                    beforeTokens.AddFirst(tokens[ptr]);
+                    beforeCount++;
+                }
+                ptr--;
+            }
+
+            foreach (Token beforeToken in beforeTokens)
+                yield return beforeToken;
+
+            yield return token;
+
+            ptr = token.Index + 1;
+            int afterCount = 0;
+            while(afterCount < tokensAfter && ptr < tokens.Length)
+            {
+                if(!tokens[ptr].IsTrivia)
+                {
+                    yield return tokens[ptr];
+                    afterCount++;
+                }
+                ptr++;
             }
         }
 

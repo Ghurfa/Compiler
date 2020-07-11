@@ -22,7 +22,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
                 {
                     baseExpr = new TupleExpression(tokens, openPeren, innerExpr, comma);
                 }
-                else throw new SyntaxTreeBuildingException();
+                else throw new SyntaxTreeBuildingException(tokens.PeekToken());
             }
             else if (tokens.PopIfMatches(out Token newKeyword, TokenType.NewKeyword))
             {

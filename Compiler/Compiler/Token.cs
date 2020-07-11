@@ -105,10 +105,13 @@ namespace Compiler
     {
         public string Text;
         public TokenType Type;
-        public Token(string text, TokenType type)
+        public int Index;
+        public Token(string text, TokenType type, int index)
         {
             Text = text;
             Type = type;
+            Index = index;
         }
+        public bool IsTrivia => Type == TokenType.Whitespace || Type == TokenType.SingleLineComment || Type == TokenType.MultiLineComment;
     }
 }

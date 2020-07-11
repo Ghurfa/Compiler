@@ -65,7 +65,7 @@ namespace Compiler
             if (i - start == 0) throw new TokenizingException(i);
             return text.Substring(start, i - start);
         }
-        static void ParseCommentOrDivOp(string text, ref int i, LinkedList<Token> tokens)
+        static void ParseCommentOrDivOp(string text, ref int i, TokenCollectionBuilder tokens)
         {
             int start = i;
             i++;
@@ -79,8 +79,8 @@ namespace Compiler
                     {
                         i++;
                     }
-                    tokens.AddLast(new Token(text.Substring(start, i - newLine.Length - start), TokenType.SingleLineComment));
-                    tokens.AddLast(new Token(newLine, TokenType.Whitespace));
+                    tokens.Add(text.Substring(start, i - newLine.Length - start), TokenType.SingleLineComment);
+                    tokens.Add(newLine, TokenType.Whitespace);
                     i++;
                 }
                 else if (nextChar == '*')
@@ -90,22 +90,22 @@ namespace Compiler
                     {
                         i++;
                     }
-                    tokens.AddLast(new Token(text.Substring(start, i - start), TokenType.MultiLineComment));
+                    tokens.Add(text.Substring(start, i - start), TokenType.MultiLineComment);
                     i++;
                 }
                 else if(nextChar == '=')
                 {
-                    tokens.AddLast(new Token("/=", TokenType.DivideAssign));
+                    tokens.Add("/=", TokenType.DivideAssign);
                     i++;
                 }
                 else
                 {
-                    tokens.AddLast(new Token("/", TokenType.Divide));
+                    tokens.Add("/", TokenType.Divide);
                 }
             }
             else
             {
-                tokens.AddLast(new Token("/", TokenType.Divide));
+                tokens.Add("/", TokenType.Divide);
             }
         }
         static bool IsValidSymbol(string symbols, out TokenType type)
@@ -155,7 +155,7 @@ namespace Compiler
                 default: type = default; return false;
             }
         }
-        static void ParseSymbols(string text, ref int i, LinkedList<Token> tokens)
+        static void ParseSymbols(string text, ref int i, TokenCollectionBuilder tokens)
         {
             string symbols = "";
             TokenType tokenType = TokenType.Identifier;
@@ -175,10 +175,10 @@ namespace Compiler
             }
             else
             {
-                tokens.AddLast(new Token(symbols, tokenType));
+                tokens.Add(symbols, tokenType);
             }
         }
-        static void ParseNumber(string text, ref int i, LinkedList<Token> tokens)
+        static void ParseNumber(string text, ref int i, TokenCollectionBuilder tokens)
         {
             int start = i;
             for (; i < text.Length; i++)
@@ -194,7 +194,7 @@ namespace Compiler
             }
             if (i - start == 0) throw new TokenizingException(i);
             string numString = text.Substring(start, i - start);
-            tokens.AddLast(new Token(numString, TokenType.IntLiteral));
+            tokens.Add(numString, TokenType.IntLiteral);
         }
         static bool IsHexadecimal(char character) => (character >= '0' && character <= '9') ||
                                                        (character >= 'a' && character <= 'f') ||
@@ -239,9 +239,9 @@ namespace Compiler
                 default: throw new TokenizingException(i);
             }
         }
-        static void ParseStringLiteral(string text, ref int i, LinkedList<Token> tokens)
+        static void ParseStringLiteral(string text, ref int i, TokenCollectionBuilder tokens)
         {
-            tokens.AddLast(new Token("\"", TokenType.DoubleQuote));
+            tokens.Add("\"", TokenType.DoubleQuote);
             i++;
             LinkedList<char> literal = new LinkedList<char>();
             bool foundCloseQuote = false;
@@ -264,12 +264,12 @@ namespace Compiler
                 }
             }
             if (!foundCloseQuote) throw new TokenizingException(i);
-            tokens.AddLast(new Token(new string(literal.ToArray()), TokenType.StringLiteral));
-            tokens.AddLast(new Token("\"", TokenType.DoubleQuote));
+            tokens.Add(new string(literal.ToArray()), TokenType.StringLiteral);
+            tokens.Add("\"", TokenType.DoubleQuote);
         }
-        static void ParseCharLiteral(string text, ref int i, LinkedList<Token> tokens)
+        static void ParseCharLiteral(string text, ref int i, TokenCollectionBuilder tokens)
         {
-            tokens.AddLast(new Token("\'", TokenType.SingleQuote));
+            tokens.Add("\'", TokenType.SingleQuote);
             i++;
             char literal;
 
@@ -281,8 +281,8 @@ namespace Compiler
             if (text[i] != '\'') throw new TokenizingException(i);
             i++;
 
-            tokens.AddLast(new Token(literal.ToString(), TokenType.CharLiteral));
-            tokens.AddLast(new Token("\'", TokenType.SingleQuote));
+            tokens.Add(literal.ToString(), TokenType.CharLiteral);
+            tokens.Add("\'", TokenType.SingleQuote);
         }
         static bool IsKeyword(string word, out TokenType tokenType)
         {
@@ -324,28 +324,28 @@ namespace Compiler
                     }
             }
         }
-        static void ParseText(string text, ref int i, LinkedList<Token> tokens)
+        static void ParseText(string text, ref int i, TokenCollectionBuilder tokens)
         {
             string word = ReadWord(text, ref i);
             if (IsKeyword(word, out TokenType keywordType))
             {
-                tokens.AddLast(new Token(word, keywordType));
+                tokens.Add(word, keywordType);
             }
             else
             {
-                tokens.AddLast(new Token(word, TokenType.Identifier));
+                tokens.Add(word, TokenType.Identifier);
             }
         }
         public static TokenCollection Tokenize(string text)
         {
-            LinkedList<Token> tokens = new LinkedList<Token>();
+            var tokens = new TokenCollectionBuilder();
             int i = 0;
             while (i < text.Length)
             {
                 char nextChar = text[i];
                 if (char.IsWhiteSpace(nextChar))
                 {
-                    tokens.AddLast(new Token(nextChar.ToString(), TokenType.Whitespace));
+                    tokens.Add(nextChar.ToString(), TokenType.Whitespace);
                     i++;
                 }
                 else if (char.IsNumber(nextChar))
@@ -373,7 +373,7 @@ namespace Compiler
                     ParseText(text, ref i, tokens);
                 }
             }
-            return new TokenCollection(tokens);
+            return tokens.GetCollection();
         }
     }
 }

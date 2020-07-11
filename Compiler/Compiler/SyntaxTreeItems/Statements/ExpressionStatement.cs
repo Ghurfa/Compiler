@@ -14,7 +14,7 @@ namespace Compiler.SyntaxTreeItems.Statements
             {
                 Expression = expression;
             }
-            else throw new SyntaxTreeBuildingException();
+            else throw new SyntaxTreeBuildingException(tokens.PeekToken());
         }
     }
 }

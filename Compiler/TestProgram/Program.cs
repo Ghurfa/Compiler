@@ -12,19 +12,48 @@ namespace TestProgram
     {
         static void PrintTokenList(TokenCollection tokens, bool showWhitespace)
         {
-            foreach (Token token in (showWhitespace ? tokens : tokens.NonWhitespaceTokens()))
+            foreach (Token token in tokens)
             {
-                if (token.Type == TokenType.Whitespace)
+                PrintToken(token, true, !showWhitespace);
+            }
+        }
+        static void PrintContext(TokenCollection tokens, Token token, int tokensBefore, int tokensAfter)
+        {
+            foreach (Token contextToken in tokens.GetContext(token, tokensBefore, tokensAfter))
+            {
+                if(token.Index == contextToken.Index)
                 {
-                    if (showWhitespace)
-                    {
-                        Console.WriteLine($"Whitespace");
-                    }
+                    PrintToken(contextToken, true, true, ConsoleColor.Magenta);
                 }
                 else
                 {
-                    Console.WriteLine($"{token.Type} \t {token.Text}");
-                }
+                    PrintToken(contextToken, true);
+                }    
+            }
+        }
+        static void PrintToken(Token token, bool withIndex = false, bool skipTrivia = true, ConsoleColor? forceColor = null)
+        {
+            if (withIndex)
+            {
+                if (token.IsTrivia && skipTrivia) return;
+                Console.ForegroundColor = forceColor ?? ConsoleColor.White;
+                Console.Write($"{token.Index}:\t");
+            }
+            if (token.IsTrivia)
+            {
+                if (skipTrivia) return;
+                Console.ForegroundColor = forceColor ?? ConsoleColor.White;
+                Console.WriteLine(token.Type);
+            }
+            else if (token.Type == TokenType.Identifier || token.Type == TokenType.StringLiteral || token.Type == TokenType.CharLiteral || token.Type == TokenType.IntLiteral)
+            {
+                Console.ForegroundColor = forceColor ?? ConsoleColor.Red;
+                Console.WriteLine(token.Text);
+            }
+            else
+            {
+                Console.ForegroundColor = forceColor ?? ConsoleColor.Blue;
+                Console.WriteLine(token.Type);
             }
         }
         static void PrintObject(object obj, string name, int x = 0)
@@ -38,16 +67,7 @@ namespace TestProgram
 
             if (obj is Token token)
             {
-                if(token.Type == TokenType.Identifier || token.Type == TokenType.StringLiteral || token.Type == TokenType.CharLiteral || token.Type == TokenType.IntLiteral)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(token.Text);
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine(((Token)obj).Type);
-                }
+                PrintToken(token);
             }
             else
             {
@@ -119,8 +139,17 @@ namespace TestProgram
             var tokens = Tokenizer.Tokenize(text);
             PrintTokenList(tokens, false);
             Console.WriteLine();
-            NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);
-            PrintObject(namespaceDecl, "Namespace");
+            try
+            {
+                NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);
+                PrintObject(namespaceDecl, "Namespace");
+            }
+            catch (SyntaxTreeBuildingException ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Syntax tree building exception");
+                PrintContext(tokens, ex.Token, 10, 10);
+            }
             Console.ReadLine();
         }
     }
