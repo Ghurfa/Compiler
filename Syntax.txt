@@ -2,25 +2,116 @@ out parameter
 semicolons ?
 tuples
 why not type inference for local vars?
-Linq 
-Python * (repeat for every item in array)
-SQL select?
-Constructor syntax 
-Multiple inheritances (ruby modules?)
-Short if/else stack
+
+Code block statement as anonymous function
+combining binary expressions
+    bool x = y$(>2 && <5)
+    bool x = $(y || z) < 12
+    bool x = 
+    === Switch expression ===
+a:bool = y switch {
+    12, _ -> true,
+    14 -> false
+    }
+
+=== Fix if expression ===
+Current: Type a = true ? Paddle:Ball
+		Would be parsed as condition ? Declaration [missing : token}
+a = if(true) Paddle else Ball
+	verbose
+a =  true ? Paddle \ true ? Ball \ null
+	Visually splits apart the statements
+    Should backslash be reserved?
+	a = true ? Paddle
+		\ true ? Ball
+
+=== Reconsider colon marking variable declaration ===
+    Named parameters
+    If expressions
+    if(a is b:B)
+    
+=== Is Expression ===
+    c#: if(a is B b)
+    current: if(?(b:B as a))
+    if(a is b:B)
+        [a is] (identifier) (token)
+            >declarator
+            >type
+    
+=== Null Check Operators ===
+    a?.b = a == null ? null \ a.b
+    a?[b] = a == null ? null \ a[b]
+    a ?? b = a != null ? a \ b
+    a ??= b = a != null ? a \ a = b
+    
+    ?a = a != null
+    
+=== Throw Expression ===
+    a ?? throw new InvalidOperationException()
+
+=== Short if/else stack ===
+    Something like
+        ? a == 2 -> return true
+        \ b -> {t++; return false}
+    isn't a huge improvement over normal if/else
+
+=== Enforce semicolon if same line ===
+
+=== Lambdas ===
+    Statement and expressions
+    
+=== Multiple key switch ===
+switch(val1, val2)
+{
+case 18, 19:
+break;
+}
+Should just be switch on tuple?
+
+=== Built in Types ===
 Built in lists
+    [1, 2, 3, 4]
 Built in ordered lists (sequences)
-Unions
-Control blocks as expressions
+    Should just be lists?
+Built in dictionaries
+    [1 -> true, 
+     2 -> false]
+Built in enumerables
+
+=== Tuples ===
+=== Tiered Namespaces ===
+=== Null & Default Keywords ===
+=== Default operator ===
+
+=== Linq ===
+    intArr where num:int
+    
+=== Actions and Funcs ===
+
+=== Local Functions ===
+
+=== Combining expressions ===
+bool x = y$(>=0 && <100)
+
+=== Cleaner Constructor Syntax ===
+    Calling syntax isn't that bad; not a priority
+    Declaration
+        
+    Calling
+        a := new Xyz()
+
+=== Harder/Less useful stuff ===
+Python * (repeat for every item in array)
+Multiple inheritances (ruby modules?)
 Code block statement as anonymous function
 ?: cast operator
+Unions
 
 problem w/ how symbols are tokenized
     genericThing<thing<int>>
     }} operator breaks two curly braces
     something like ::> couldn't be parsed if :: is not defined
 
-todo: convert LinkedList<token> to tokenCollection
     make tokentypes more specific
     convert tokens text to spans (better space)
 

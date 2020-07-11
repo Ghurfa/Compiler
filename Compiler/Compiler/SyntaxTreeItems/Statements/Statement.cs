@@ -14,8 +14,8 @@ namespace Compiler.SyntaxTreeItems
             {
                 case TokenType.IfKeyword: return new IfBlock(tokens);
                 case TokenType.WhileKeyword: return new WhileBlock(tokens);
+                case TokenType.ForKeyword: return new ForBlock(tokens);
                 case TokenType.ReturnKeyword: return new ReturnStatement(tokens);
-                case TokenType.ForKeyword:
                 case TokenType.ForeachKeyword:
                 case TokenType.BreakKeyword:
                 case TokenType.ContinueKeyword:

@@ -9,13 +9,13 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
     {
         public readonly Token Identifier;
         public readonly Token Colon;
-        public readonly TypeToken TypeToken;
+        public readonly Type Type;
 
         public DeclarationExpression(TokenCollection tokens, Token identifier, Token colon)
         {
             Identifier = identifier;
             Colon = colon;
-            TypeToken = new TypeToken(tokens);
+            Type = Type.ReadType(tokens);
         }
     }
 }

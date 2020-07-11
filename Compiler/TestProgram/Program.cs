@@ -29,7 +29,7 @@ namespace TestProgram
         }
         static void PrintObject(object obj, string name, int x = 0)
         {
-            int depthWidth = 4;
+            int depthWidth = 3;
             Type objType = obj.GetType();
 
             Console.CursorLeft = x;
@@ -115,12 +115,11 @@ namespace TestProgram
         }
         static void Main(string[] args)
         {
-            var text = File.ReadAllText(@"..\..\..\..\..\guessingGame.txt");
+            var text = File.ReadAllText(@"..\..\..\..\..\FizzBuzz.txt");
             var tokens = Tokenizer.Tokenize(text);
             PrintTokenList(tokens, false);
             Console.WriteLine();
             NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);
-            Console.WriteLine(namespaceDecl.ToString());
             PrintObject(namespaceDecl, "Namespace");
             Console.ReadLine();
         }

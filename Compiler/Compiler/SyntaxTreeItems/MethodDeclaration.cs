@@ -7,14 +7,14 @@ namespace Compiler.SyntaxTreeItems
     {
         public readonly Token Identifier;
         public readonly Token[] AccessModifiers;
-        public readonly TypeToken ReturnType;
+        public readonly Type ReturnType;
         public readonly ParameterListDeclaration ParameterList;
         public readonly MethodBodyDeclaration MethodBody;
         public MethodDeclaration(TokenCollection tokens, Token identifierToken)
         {
             Identifier = identifierToken;
             AccessModifiers = tokens.ReadModifiers();
-            ReturnType = new TypeToken(tokens);
+            ReturnType = Type.ReadType(tokens);
             ParameterList = new ParameterListDeclaration(tokens);
             MethodBody = new MethodBodyDeclaration(tokens);
         }

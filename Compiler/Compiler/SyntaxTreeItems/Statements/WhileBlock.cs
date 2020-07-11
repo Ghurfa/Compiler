@@ -8,13 +8,13 @@ namespace Compiler.SyntaxTreeItems.Statements
     {
         public readonly Token WhileKeyword;
         public readonly Expression Condition;
-        public readonly Statement Statement;
+        public readonly Statement Body;
 
         public WhileBlock(TokenCollection tokens)
         {
             WhileKeyword = tokens.PopToken(TokenType.WhileKeyword);
             Condition = Expression.ReadExpression(tokens);
-            Statement = Statement.ReadStatement(tokens);
+            Body = Statement.ReadStatement(tokens);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Compiler
         public readonly Expression DefaultValue;
         public readonly Token? ColonToken;
         public readonly Token[] AccessModifiers;
-        public readonly TypeToken Type;
+        public readonly SyntaxTreeItems.Type Type;
         public FieldDeclaration(TokenCollection tokens, Token identifierToken, Token syntaxCharToken)
         {
             Identifier = identifierToken;
@@ -42,7 +42,7 @@ namespace Compiler
                     ColonToken = syntaxCharToken;
                 }
                 AccessModifiers = tokens.ReadModifiers();
-                Type = new TypeToken(tokens);
+                Type = SyntaxTreeItems.Type.ReadType(tokens);
             }
             
         }

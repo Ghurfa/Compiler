@@ -11,13 +11,13 @@ myNamespace namespace
 
         ctor(myFloat:float)
         {
-            myDouble:double = myFloat;
+            myDouble:double = myFloat
         }
 
         Average static int(a:int, b:int)
         {
             return((a + b++) / 2)
-            ++x;
+            ++x
         }
         Main static void(args:string[]) //b
         {

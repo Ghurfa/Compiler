@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
                 {
                     baseExpr = new PerenthesizedExpression(tokens, openPeren, innerExpr, closePeren);
                 }
-                else if (tokens.PopIfMatches(out Token comma, TokenType.ClosePeren))
+                else if (tokens.PopIfMatches(out Token comma, TokenType.Comma))
                 {
                     baseExpr = new TupleExpression(tokens, openPeren, innerExpr, comma);
                 }
@@ -65,27 +65,15 @@ namespace Compiler.SyntaxTreeItems.Expressions
             bool finishedParsing = false;
             while (!finishedParsing)
             {
-                if (tokens.PopIfMatches(out Token dot, TokenType.Dot))
+                switch (tokens.PeekToken().Type)
                 {
-                    exprSoFar = new MemberAccessExpression(tokens, exprSoFar, dot);
+                    case TokenType.Dot:         exprSoFar = new MemberAccessExpression(tokens, exprSoFar);  break;
+                    case TokenType.OpenPeren:   exprSoFar = new MethodCallExpression(tokens, exprSoFar);    break;
+                    case TokenType.OpenBracket: exprSoFar = new ArrayAccessExpression(tokens, exprSoFar);   break;
+                    case TokenType.Increment:   exprSoFar = new PostIncrementExpression(tokens, exprSoFar); break;
+                    case TokenType.Decrement:   exprSoFar = new PostDecrementExpression(tokens, exprSoFar); break;
+                    default: finishedParsing = true; break;
                 }
-                else if (tokens.PopIfMatches(out Token openPerentheses, TokenType.OpenPeren))
-                {
-                    exprSoFar = new MethodCallExpression(tokens, exprSoFar, openPerentheses);
-                }
-                else if (tokens.PopIfMatches(out Token openArrBracket, TokenType.OpenBracket))
-                {
-                    throw new NotImplementedException();
-                }
-                else if (tokens.PopIfMatches(out Token incrOperator, TokenType.Increment))
-                {
-                    exprSoFar = new PostIncrementExpression(tokens, exprSoFar, incrOperator);
-                }
-                else if (tokens.PopIfMatches(out Token decrOperator, TokenType.Decrement))
-                {
-                    exprSoFar = new PostDecrementExpression(tokens, exprSoFar, decrOperator);
-                }
-                else finishedParsing = true;
             }
             return exprSoFar;
         }

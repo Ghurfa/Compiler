@@ -6,13 +6,13 @@ namespace Compiler.SyntaxTreeItems.Statements
 {
     public class ExpressionStatement : Statement
     {
-        public readonly ICompleteStatement Expression;
+        public readonly Expression Expression;
         public ExpressionStatement(TokenCollection tokens)
         {
             var expression = SyntaxTreeItems.Expression.ReadExpression(tokens);
-            if (expression is ICompleteStatement statement)
+            if (expression is ICompleteStatement)
             {
-                Expression = statement;
+                Expression = expression;
             }
             else throw new SyntaxTreeBuildingException();
         }

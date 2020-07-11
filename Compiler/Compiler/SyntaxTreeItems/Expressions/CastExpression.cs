@@ -8,13 +8,13 @@ namespace Compiler.SyntaxTreeItems.Expressions
     {
         public readonly UnaryExpression Expression;
         public readonly Token AsToken;
-        public readonly TypeToken CastTo;
+        public readonly Type CastTo;
 
         public CastExpression(TokenCollection tokens, UnaryExpression expression, Token asToken)
         {
             Expression = expression;
             AsToken = asToken;
-            CastTo = new TypeToken(tokens);
+            CastTo = Type.ReadType(tokens);
         }
     }
 }

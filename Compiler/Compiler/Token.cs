@@ -7,6 +7,8 @@ namespace Compiler
 {
     public enum TokenType
     {
+        Identifier,
+
         //Block marker keywords
         NamespaceKeyword,
         ClassKeyword,
@@ -16,7 +18,6 @@ namespace Compiler
         Modifier,
         PrimitiveType,
         ValueKeyword,
-        Identifier,
 
         //Control keywords
         IfKeyword,

@@ -1,26 +1,30 @@
-﻿using System;
+﻿using Compiler.SyntaxTreeItems.Statements;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
 {
-    public abstract class PostIncrementDecrementExpressions : PrimaryExpression
+    public class PostIncrementExpression : PrimaryExpression, ICompleteStatement
     {
         public readonly PrimaryExpression BaseExpression;
-        public readonly Token IncrementDecrement;
+        public readonly Token Increment;
 
-        public PostIncrementDecrementExpressions(TokenCollection tokens, PrimaryExpression baseExpr, Token incrDecr)
+        public PostIncrementExpression(TokenCollection tokens, PrimaryExpression baseExpr)
         {
             BaseExpression = baseExpr;
-            IncrementDecrement = incrDecr;
+            Increment = tokens.PopToken(TokenType.Increment);
         }
     }
-    public class PostIncrementExpression : PostIncrementDecrementExpressions
+    public class PostDecrementExpression : PrimaryExpression, ICompleteStatement
     {
-        public PostIncrementExpression(TokenCollection tokens, PrimaryExpression baseExpr, Token incrDecr) : base(tokens, baseExpr, incrDecr) { }
-    }
-    public class PostDecrementExpression : PostIncrementDecrementExpressions
-    {
-        public PostDecrementExpression(TokenCollection tokens, PrimaryExpression baseExpr, Token incrDecr) : base(tokens, baseExpr, incrDecr) { }
+        public readonly PrimaryExpression BaseExpression;
+        public readonly Token Decrement;
+
+        public PostDecrementExpression(TokenCollection tokens, PrimaryExpression baseExpr)
+        {
+            BaseExpression = baseExpr;
+            Decrement = tokens.PopToken(TokenType.Decrement);
+        }
     }
 }

@@ -23,4 +23,18 @@ namespace Compiler.SyntaxTreeItems
             Arguments = arguments.ToArray();
         }
     }
+    public class Argument
+    {
+        public readonly Expression Expression;
+        public readonly Token? CommaToken;
+
+        public Argument(TokenCollection tokens)
+        {
+            Expression = Expression.ReadExpression(tokens);
+            if (tokens.PopIfMatches(out Token comma, TokenType.Comma))
+            {
+                CommaToken = comma;
+            }
+        }
+    }
 }

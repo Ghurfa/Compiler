@@ -10,10 +10,10 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
         public readonly Token DotToken;
         public readonly Token ItemToken;
 
-        public MemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression, Token dotToken)
+        public MemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {
             BaseExpression = baseExpression;
-            DotToken = dotToken;
+            DotToken = tokens.PopToken(TokenType.Dot);
             ItemToken = tokens.PopToken(TokenType.Identifier);
         }
     }

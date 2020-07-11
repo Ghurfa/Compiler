@@ -4,13 +4,13 @@ FizzBuzz namespace
     {
         FizzBuzz public static void(start:int, end:int)
         {
-            (a int, b int) c;
-            (i := start; i < end; i++)
+            c:(a:int, b:int) = (3, 4)
+            for(i := start, i < end, i++)
             {
                 i = 1
                 fizz := i % 3 == 0
                 buzz := i % 5 == 0;
-                string print = fizz && buzz ? "FizzBuzz" : fizz ? "Fizz" : buzz ? "Buzz" : i.ToString[];
+                print:string = fizz && buzz ? "FizzBuzz" : fizz ? "Fizz" : buzz ? "Buzz" : i.ToString[];
 
             }
         }

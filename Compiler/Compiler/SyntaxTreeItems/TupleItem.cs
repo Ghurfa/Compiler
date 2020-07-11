@@ -4,12 +4,12 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public class TupleValue
+    public class TupleItem
     {
         public readonly Expression Expression;
         public readonly Token? CommaToken;
 
-        public TupleValue(TokenCollection tokens)
+        public TupleItem(TokenCollection tokens)
         {
             Expression = Expression.ReadExpression(tokens);
             if (tokens.PopIfMatches(out Token comma, TokenType.Comma))
@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
             }
         }
 
-        public TupleValue(Expression expression, Token commaToken)
+        public TupleItem(Expression expression, Token commaToken)
         {
             Expression = expression;
             CommaToken = commaToken;

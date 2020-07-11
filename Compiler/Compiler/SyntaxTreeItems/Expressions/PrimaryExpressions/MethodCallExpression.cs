@@ -8,16 +8,16 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
     public class MethodCallExpression : PrimaryExpression, ICompleteStatement
     {
         public readonly PrimaryExpression MethodExpression;
-        public readonly Token OpenPerenthesesToken;
+        public readonly Token OpenPeren;
         public readonly ArgumentList Arguments;
-        public readonly Token ClosePerenthesesToken;
+        public readonly Token ClosePeren;
 
-        public MethodCallExpression(TokenCollection tokens, PrimaryExpression baseExpr, Token openPeren)
+        public MethodCallExpression(TokenCollection tokens, PrimaryExpression baseExpr)
         {
             MethodExpression = baseExpr;
-            OpenPerenthesesToken = openPeren;
+            OpenPeren = tokens.PopToken(TokenType.OpenPeren);
             Arguments = new ArgumentList(tokens);
-            ClosePerenthesesToken = tokens.PopToken(TokenType.ClosePeren);
+            ClosePeren = tokens.PopToken(TokenType.ClosePeren);
         }
     }
 }
