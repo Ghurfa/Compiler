@@ -1,4 +1,5 @@
-﻿using Compiler.SyntaxTreeItems.Types;
+﻿using Compiler.SyntaxTreeItems;
+using Compiler.SyntaxTreeItems.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;

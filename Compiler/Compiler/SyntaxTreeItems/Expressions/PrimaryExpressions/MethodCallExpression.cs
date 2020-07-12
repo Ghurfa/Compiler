@@ -19,5 +19,9 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             Arguments = new ArgumentList(tokens);
             ClosePeren = tokens.PopToken(TokenType.ClosePeren);
         }
+        public override string ToString()
+        {
+            return MethodExpression.ToString() + OpenPeren.ToString() + Arguments.ToString() + ClosePeren.ToString();
+        }
     }
 }

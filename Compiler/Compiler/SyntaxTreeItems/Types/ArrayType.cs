@@ -15,5 +15,9 @@ namespace Compiler.SyntaxTreeItems.Types
             OpenArrayBracket = tokens.PopToken(TokenType.OpenBracket);
             CloseArrayBracket = tokens.PopToken(TokenType.CloseBracket);
         }
+        public override string ToString()
+        {
+            return BaseType.ToString() + OpenArrayBracket.ToString() + CloseArrayBracket.ToString();
+        }
     }
 }

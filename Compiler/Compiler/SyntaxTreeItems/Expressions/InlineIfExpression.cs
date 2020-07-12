@@ -20,5 +20,9 @@ namespace Compiler.SyntaxTreeItems.Expressions
             Backslash = tokens.PopToken(TokenType.Backslash);
             IfFalse = Expression.ReadExpression(tokens);
         }
+        public override string ToString()
+        {
+            return Condition.ToString() + " " + QuestionMark.Text + " " + IfTrue.ToString() + " " + Backslash.Text + " " + IfFalse.ToString();
+        }
     }
 }

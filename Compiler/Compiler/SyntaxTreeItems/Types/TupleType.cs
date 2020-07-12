@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems.Types
             bool lastMissingComma = false;
             while (tokens.PeekToken().Type != TokenType.ClosePeren)
             {
-                if (lastMissingComma) throw new UnexpectedToken(tokens.PeekToken());
+                if (lastMissingComma) throw new InvalidTokenException(tokens.PeekToken());
                 var newItem = new TupleTypeItem(tokens);
                 items.AddLast(newItem);
                 lastMissingComma = newItem.Comma == null;
@@ -27,37 +27,15 @@ namespace Compiler.SyntaxTreeItems.Types
 
             ClosePeren = tokens.PopToken(TokenType.ClosePeren);
         }
-    }
-    public class TupleTypeItem
-    {
-        public readonly Token? Name;
-        public readonly Token? Colon;
-        public readonly Type Type;
-        public readonly Token? Comma;
-
-        public TupleTypeItem(TokenCollection tokens)
+        public override string ToString()
         {
-            if (tokens.PopIfMatches(out Token identifier, TokenType.Identifier))
+            string ret = OpenPeren.ToString();
+            for(int i = 0; i < Items.Length; i++)
             {
-                if (tokens.PopIfMatches(out Token colon, TokenType.Colon))
-                {
-                    Name = identifier;
-                    Colon = colon;
-                    Type = Type.ReadType(tokens);
-                }
-                else
-                {
-                    Type = new QualifiedIdentifier(tokens, identifier);
-                }
+                ret += Items[i].ToString();
+                if (i < Items.Length - 1) ret += " ";
             }
-            else
-            {
-                Type = Type.ReadType(tokens);
-            }
-            if (tokens.PopIfMatches(out Token comma, TokenType.Comma))
-            {
-                Comma = comma;
-            }
+            return ret + ClosePeren.ToString();
         }
     }
 }

@@ -15,5 +15,9 @@ namespace Compiler.SyntaxTreeItems.Expressions
             Text = tokens.PopToken(TokenType.CharLiteral);
             CloseQuote = tokens.PopToken(TokenType.SingleQuote);
         }
+        public override string ToString()
+        {
+            return OpenQuote.ToString() + Text.ToString() + CloseQuote.ToString();
+        }
     }
 }

@@ -16,5 +16,9 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             Dot = tokens.PopToken(TokenType.Dot);
             Item = tokens.PopToken(TokenType.Identifier);
         }
+        public override string ToString()
+        {
+            return BaseExpression.ToString() + Dot.ToString() + Item.ToString();
+        }
     }
 }

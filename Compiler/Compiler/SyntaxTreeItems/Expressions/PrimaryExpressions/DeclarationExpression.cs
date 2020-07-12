@@ -17,5 +17,9 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             Colon = colon;
             Type = Type.ReadType(tokens);
         }
+        public override string ToString()
+        {
+            return Identifier.ToString() + Colon.ToString() + Type.ToString();
+        }
     }
 }

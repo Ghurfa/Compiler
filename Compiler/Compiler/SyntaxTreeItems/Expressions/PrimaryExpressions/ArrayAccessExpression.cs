@@ -18,5 +18,9 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             Index = Expression.ReadExpression(tokens);
             CloseBracket = tokens.PopToken(TokenType.CloseBracket);
         }
+        public override string ToString()
+        {
+            return Array.ToString() + OpenBracket.ToString() + Index.ToString() + CloseBracket.ToString();
+        }
     }
 }

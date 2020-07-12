@@ -14,6 +14,10 @@ namespace Compiler.SyntaxTreeItems.Expressions
             UnaryOperator = unaryOperator;
             Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
+        public override string ToString()
+        {
+            return UnaryOperator.ToString() + Expression.ToString();
+        }
     }
     public class BitwiseNotExpression : UnaryOperatorExpression
     {

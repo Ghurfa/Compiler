@@ -313,6 +313,9 @@ namespace Compiler
         {
             switch (word)
             {
+                case "true": tokenType = TokenType.TrueKeyword; return true;
+                case "false": tokenType = TokenType.FalseKeyword; return true;
+                case "as": tokenType = TokenType.AsKeyword; return true;
                 case "new": tokenType = TokenType.NewKeyword; return true;
                 case "namespace": tokenType = TokenType.NamespaceKeyword; return true;
                 case "class": tokenType = TokenType.ClassKeyword; return true;
@@ -325,7 +328,7 @@ namespace Compiler
                 case "return": tokenType = TokenType.ReturnKeyword; return true;
                 case "break": tokenType = TokenType.BreakKeyword; return true;
                 case "continue": tokenType = TokenType.ContinueKeyword; return true;
-                case "as": tokenType = TokenType.AsKeyword; return true;
+                case "throw": tokenType = TokenType.ThrowKeyword; return true;
                 default:
                     if (modifierKeywords.Contains(word))
                     {

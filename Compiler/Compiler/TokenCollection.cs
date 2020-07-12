@@ -55,7 +55,7 @@ namespace Compiler
         public Token PopToken(TokenType expectedType)
         {
             Token ret = PeekToken();
-            if (ret.Type != expectedType) throw new UnexpectedToken(ret);
+            if (ret.Type != expectedType) throw new InvalidTokenException(ret);
             lastUsedToken = pointer;
             pointer++;
             return ret;
@@ -85,7 +85,7 @@ namespace Compiler
                 case TokenType.ClosePeren:
                     return null;
                 default:
-                    throw new InvalidEndOfStatement(endingToken);
+                    throw new InvalidEndOfStatementException(endingToken);
             }
         }
 

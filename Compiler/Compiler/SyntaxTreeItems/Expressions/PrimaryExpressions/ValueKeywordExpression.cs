@@ -11,5 +11,9 @@ namespace Compiler.SyntaxTreeItems.Expressions
         {
             ValueKeyword = keyword;
         }
+        public override string ToString()
+        {
+            return ValueKeyword.ToString();
+        }
     }
 }

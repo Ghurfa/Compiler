@@ -13,5 +13,9 @@ namespace Compiler.SyntaxTreeItems
         {
             Token = token;
         }
+        public override string ToString()
+        {
+            return Token.ToString();
+        }
     }
 }

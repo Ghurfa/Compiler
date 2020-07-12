@@ -11,5 +11,9 @@ namespace Compiler.SyntaxTreeItems.Expressions
         {
             PrimitiveType = primitiveToken;
         }
+        public override string ToString()
+        {
+            return PrimitiveType.ToString();
+        }
     }
 }

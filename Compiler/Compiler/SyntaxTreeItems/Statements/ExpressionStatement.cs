@@ -16,7 +16,7 @@ namespace Compiler.SyntaxTreeItems.Statements
                 Expression = expression;
                 Semicolon = tokens.EnsureValidStatementEnding();
             }
-            else throw new InvalidStatement(tokens.PeekToken());
+            else throw new InvalidStatementException(expression);
         }
     }
 }

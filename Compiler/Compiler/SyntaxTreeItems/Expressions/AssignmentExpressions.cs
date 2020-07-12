@@ -7,14 +7,18 @@ namespace Compiler.SyntaxTreeItems.Expressions
 {
     public abstract class AssignmentExpression : Expression, ICompleteStatement
     {
-        public readonly UnaryExpression LeftExpression;
+        public readonly UnaryExpression Left;
         public readonly Token Assignment;
-        public readonly Expression RightExpression;
+        public readonly Expression Right;
         public AssignmentExpression(TokenCollection tokens, UnaryExpression left)
         {
-            LeftExpression = left;
+            Left = left;
             Assignment = tokens.PopToken();
-            RightExpression = Expression.ReadExpression(tokens);
+            Right = Expression.ReadExpression(tokens);
+        }
+        public override string ToString()
+        {
+            return Left.ToString() + " " + Assignment.ToString() + " " + Right.ToString();
         }
     }
     public class AssignExpression : AssignmentExpression

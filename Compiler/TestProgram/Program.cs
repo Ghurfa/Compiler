@@ -135,7 +135,7 @@ namespace TestProgram
         }
         static void Main(string[] args)
         {
-            var text = File.ReadAllText(@"..\..\..\..\..\FizzBuzz.txt");
+            var text = File.ReadAllText(@"..\..\..\..\..\guessingGame.txt");
             var tokens = Tokenizer.Tokenize(text);
             PrintTokenList(tokens, false);
             Console.WriteLine();
@@ -144,13 +144,20 @@ namespace TestProgram
                 NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);
                 PrintObject(namespaceDecl, "Namespace");
             }
-            catch (SyntaxException ex)
+            catch (InvalidTokenException ex)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write(ex.GetType().Name + ": ");
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.WriteLine(ex.Message);
                 PrintContext(tokens, ex.Token, 10, 10);
+            }
+            catch (InvalidStatementException ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(ex.GetType().Name + ": ");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(ex.Message);
             }
             Console.ReadLine();
         }

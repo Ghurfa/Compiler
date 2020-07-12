@@ -16,5 +16,9 @@ namespace Compiler.SyntaxTreeItems.Expressions
             AsToken = tokens.PopToken(TokenType.AsKeyword);
             CastTo = Type.ReadType(tokens);
         }
+        public override string ToString()
+        {
+            return Expression.ToString() + " " + AsToken.Text + " " + CastTo.ToString();
+        }
     }
 }

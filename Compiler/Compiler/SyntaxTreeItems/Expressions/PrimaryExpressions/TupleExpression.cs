@@ -21,7 +21,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             bool lastMissingComma = false;
             while (!lastMissingComma)
             {
-                if (lastMissingComma) throw new UnexpectedToken(tokens.PeekToken());
+                if (lastMissingComma) throw new InvalidTokenException(tokens.PeekToken());
                 var tupleVal = new TupleItem(tokens);
                 tupleVals.AddLast(tupleVal);
                 lastMissingComma = tupleVal.CommaToken == null;
@@ -29,6 +29,16 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             Values = tupleVals.ToArray();
 
             ClosePeren = tokens.PopToken(TokenType.ClosePeren);
+        }
+        public override string ToString()
+        {
+            string ret = OpenPeren.ToString();
+            for(int i = 0; i < Values.Length; i++)
+            {
+                ret += Values[i].ToString();
+                if (i < Values.Length - 1) ret += " ";
+            }
+            return ret = ClosePeren.ToString();
         }
     }
 }

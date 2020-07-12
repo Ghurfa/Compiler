@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems.Types
 {
-    public class QualifiedIdentifier : Type
+    public class QualifiedIdentifier
     {
         public readonly QualifiedIdentifierPart[] Parts;
         public QualifiedIdentifier(TokenCollection tokens)
@@ -42,23 +42,15 @@ namespace Compiler.SyntaxTreeItems.Types
                 Parts = new QualifiedIdentifierPart[] { new QualifiedIdentifierPart(tokens, firstIdentifier, null) };
             }
         }
-    }
-    public class QualifiedIdentifierPart
-    {
-        public readonly Token Identifier;
-        public readonly Token? Dot;
-        public QualifiedIdentifierPart(TokenCollection tokens)
+        public override string ToString()
         {
-            Identifier = tokens.PopToken(TokenType.Identifier);
-            if (tokens.PopIfMatches(out Token dotToken, TokenType.Dot))
+            string ret = "";
+            for(int i = 0; i < Parts.Length; i++)
             {
-                Dot = dotToken;
+                ret += Parts[i];
+                if (i < Parts.Length - 1) ret += " ";
             }
-        }
-        public QualifiedIdentifierPart(TokenCollection tokens, Token identifier, Token? dot)
-        {
-            Identifier = identifier;
-            Dot = dot;
+            return ret;
         }
     }
 }

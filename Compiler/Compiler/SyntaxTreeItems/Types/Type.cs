@@ -25,7 +25,7 @@ namespace Compiler.SyntaxTreeItems
             }
             else
             {
-                baseType = new QualifiedIdentifier(tokens);
+                baseType = new QualifiedIdentifierType(tokens);
             }
 
             Type typeSoFar = baseType;
@@ -40,5 +40,6 @@ namespace Compiler.SyntaxTreeItems
             }
             return typeSoFar;
         }
+        public abstract override string ToString();
     }
 }

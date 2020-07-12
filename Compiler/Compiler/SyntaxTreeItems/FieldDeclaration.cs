@@ -15,6 +15,8 @@ namespace Compiler
 
         public readonly Token? AssignmentToken;
         public readonly Expression DefaultValue;
+
+        public readonly Token? Semicolon;
         public FieldDeclaration(TokenCollection tokens, Token identifierToken, Token syntaxCharToken)
         {
             Name = identifierToken;
@@ -41,7 +43,8 @@ namespace Compiler
                     DefaultValue = Expression.ReadExpression(tokens);
                 }
             }
-            
+
+            Semicolon = tokens.EnsureValidStatementEnding();
         }
     }
 }

@@ -28,14 +28,9 @@ a:bool = y switch {
             >declarator
             >type
     
-=== Null Check Operators ===
-    a?.b = a == null ? null \ a.b
-    a?[b] = a == null ? null \ a[b]
-    a ?? b = a != null ? a \ b
-    a ??= b = a != null ? a \ a = b
-    
+=== Null Check Operator ===
     ?a = a != null
-    
+=== trailing comma in argument parses without error ===
 === Throw Expression ===
     a ?? throw new InvalidOperationException()
 

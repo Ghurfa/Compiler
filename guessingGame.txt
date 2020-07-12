@@ -8,7 +8,8 @@ myNamespace namespace
             Comment */
         myInt := 2: public static 
         myDouble:double
-
+        myInt2: public int = 12
+        
         ctor(myFloat:float)
         {
             myDouble:double = myFloat
@@ -17,7 +18,6 @@ myNamespace namespace
         Average static int(a:int, b:int)
         {
             return((a + b++) / 2)
-            ++x
         }
         Main static void(args:string[]) //b
         {
@@ -25,9 +25,9 @@ myNamespace namespace
             guess:int = -1
             
             end := false
-            while(!end)
+            while!end
             {
-                while (guess != number)
+                while guess != number
                 {
                     guess = Console.ReadLine()
                     if (guess < number)

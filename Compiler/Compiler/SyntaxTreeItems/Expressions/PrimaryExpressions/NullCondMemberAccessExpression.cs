@@ -16,5 +16,9 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             NullCondDot = tokens.PopToken(TokenType.NullCondDot);
             Item = tokens.PopToken(TokenType.Identifier);
         }
+        public override string ToString()
+        {
+            return BaseExpression.ToString() + NullCondDot.ToString() + Item.ToString();
+        }
     }
 }

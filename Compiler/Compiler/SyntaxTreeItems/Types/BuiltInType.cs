@@ -12,5 +12,9 @@ namespace Compiler.SyntaxTreeItems.Types
         {
             TypeToken = tokens.PopToken(TokenType.PrimitiveType);
         }
+        public override string ToString()
+        {
+            return TypeToken.ToString();
+        }
     }
 }

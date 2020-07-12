@@ -15,6 +15,10 @@ namespace Compiler.SyntaxTreeItems.Expressions
             BinaryOperator = tokens.PopToken();
             Right = Expression.ReadExpression(tokens);
         }
+        public override string ToString()
+        {
+            return Left.ToString() + " " + BinaryOperator.Text + " " + Right.ToString();
+        }
     }
     public class PlusExpression : BinaryOperatorExpression
     {

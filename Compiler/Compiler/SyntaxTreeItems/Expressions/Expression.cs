@@ -61,5 +61,6 @@ namespace Compiler.SyntaxTreeItems
             }
             return exprSoFar;
         }
+        public abstract override string ToString();
     }
 }

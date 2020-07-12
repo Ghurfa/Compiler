@@ -11,5 +11,9 @@ namespace Compiler.SyntaxTreeItems.Expressions
         {
             Identifier = identifier;
         }
+        public override string ToString()
+        {
+            return Identifier.ToString();
+        }
     }
 }

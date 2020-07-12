@@ -23,5 +23,9 @@ namespace Compiler.SyntaxTreeItems
             Expression = expression;
             CommaToken = commaToken;
         }
+        public override string ToString()
+        {
+            return Expression.ToString() + CommaToken?.ToString();
+        }
     }
 }

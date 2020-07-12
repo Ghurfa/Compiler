@@ -26,7 +26,7 @@ namespace Compiler
                     return new MethodDeclaration(tokens, identifierToken);
                 }
             }
-            else throw new UnexpectedToken(tokens.PeekToken());
+            else throw new InvalidTokenException(tokens.PeekToken());
         }
     }
 }

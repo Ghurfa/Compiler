@@ -28,6 +28,7 @@ namespace Compiler
         ReturnKeyword,
         BreakKeyword,
         ContinueKeyword,
+        ThrowKeyword,
 
         //Miscellaneous keywords
         AsKeyword,
@@ -105,6 +106,8 @@ namespace Compiler
         IntLiteral,
         StringLiteral,
         CharLiteral,
+        TrueKeyword,
+        FalseKeyword,
     }
     [DebuggerDisplay("{Type} \t {Text}")]
     public struct Token
@@ -122,5 +125,9 @@ namespace Compiler
                                 Type == TokenType.WhitespaceWithLineBreak ||
                                 Type == TokenType.SingleLineComment ||
                                 Type == TokenType.MultiLineComment;
+        public override string ToString()
+        {
+            return Text;
+        }
     }
 }

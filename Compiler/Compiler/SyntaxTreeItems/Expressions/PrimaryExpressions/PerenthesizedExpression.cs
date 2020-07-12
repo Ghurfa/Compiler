@@ -16,5 +16,9 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             Expression = expression;
             ClosePeren = closePeren;
         }
+        public override string ToString()
+        {
+            return OpenPeren.ToString() + Expression.ToString() + ClosePeren.ToString();
+        }
     }
 }

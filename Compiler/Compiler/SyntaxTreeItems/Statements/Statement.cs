@@ -19,6 +19,7 @@ namespace Compiler.SyntaxTreeItems
                 case TokenType.ForeachKeyword:
                 case TokenType.BreakKeyword:
                 case TokenType.ContinueKeyword:
+                case TokenType.ThrowKeyword:
                     throw new NotImplementedException();
                 case TokenType.OpenCurly: return new CodeBlock(tokens);
                 case TokenType.Semicolon: return new EmptyStatement(tokens);

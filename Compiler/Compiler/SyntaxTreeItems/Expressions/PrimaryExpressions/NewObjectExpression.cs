@@ -12,5 +12,9 @@ namespace Compiler.SyntaxTreeItems.Expressions
         {
             throw new NotImplementedException();
         }
+        public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -17,5 +17,9 @@ namespace Compiler.SyntaxTreeItems
                 CommaToken = comma;
             }
         }
+        public override string ToString()
+        {
+            return Expression.ToString() + CommaToken?.ToString();
+        }
     }
 }
