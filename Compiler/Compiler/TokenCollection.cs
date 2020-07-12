@@ -44,19 +44,6 @@ namespace Compiler
             tokenIfMatches = default;
             return false;
         }
-        public bool PopIfMatches(out Token tokenIfMatches, TokenType type, string[] possibleText)
-        {
-            Token peek = PeekToken();
-            if (peek.Type == type && possibleText.Contains(peek.Text))
-            {
-                lastUsedToken = pointer;
-                pointer++;
-                tokenIfMatches = peek;
-                return true;
-            }
-            tokenIfMatches = default;
-            return false;
-        }
 
         public Token PopToken()
         {
@@ -100,22 +87,6 @@ namespace Compiler
                 default:
                     throw new InvalidEndOfStatement(endingToken);
             }
-        }
-
-        private string[] modifiers = new string[] { "public", "private", "static" };
-        public Token[] ReadModifiers()
-        {
-            return ReadModifiers(modifiers);
-        }
-        public Token[] ReadModifiers(string[] validModifiers)
-        {
-            LinkedList<Token> modifiers = new LinkedList<Token>();
-            Token token;
-            while (PopIfMatches(out token, TokenType.Modifier, validModifiers))
-            {
-                modifiers.AddLast(token);
-            }
-            return modifiers.ToArray();
         }
 
         public IEnumerator<Token> GetEnumerator()

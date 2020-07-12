@@ -12,37 +12,22 @@ namespace Compiler.SyntaxTreeItems
             UnaryExpression baseExpr = UnaryExpression.ReadUnaryExpression(tokens);
 
             Expression exprSoFar = baseExpr;
-            if (tokens.PopIfMatches(out Token asKeyword, TokenType.AsKeyword))
+            switch(tokens.PeekToken().Type)
             {
-                exprSoFar = new CastExpression(tokens, baseExpr, asKeyword);
-            }
-            else if (tokens.PopIfMatches(out Token assign, TokenType.Assign))
-            {
-                exprSoFar = new AssignExpression(tokens, baseExpr, assign);
-            }
-            else if (tokens.PopIfMatches(out Token declAssign, TokenType.DeclAssign))
-            {
-                exprSoFar = new DeclAssignExpression(tokens, baseExpr, declAssign);
-            }
-            else if (tokens.PopIfMatches(out Token plusAssign, TokenType.PlusAssign))
-            {
-                exprSoFar = new PlusAssignExpression(tokens, baseExpr, plusAssign);
-            }
-            else if (tokens.PopIfMatches(out Token minusAssign, TokenType.MinusAssign))
-            {
-                exprSoFar = new MinusAssignExpression(tokens, baseExpr, minusAssign);
-            }
-            else if (tokens.PopIfMatches(out Token timesAssign, TokenType.TimesAssign))
-            {
-                exprSoFar = new TimesAssignExpression(tokens, baseExpr, timesAssign);
-            }
-            else if (tokens.PopIfMatches(out Token divideAssign, TokenType.DivideAssign))
-            {
-                exprSoFar = new DivideAssignExpression(tokens, baseExpr, divideAssign);
-            }
-            else if (tokens.PopIfMatches(out Token moduloAssign, TokenType.ModuloAssign))
-            {
-                exprSoFar = new ModuloAssignExpression(tokens, baseExpr, moduloAssign);
+                case TokenType.AsKeyword: exprSoFar = new CastExpression(tokens, baseExpr); break;
+                case TokenType.Assign: exprSoFar = new AssignExpression(tokens, baseExpr); break;
+                case TokenType.DeclAssign: exprSoFar = new DeclAssignExpression(tokens, baseExpr); break;
+                case TokenType.PlusAssign: exprSoFar = new PlusAssignExpression(tokens, baseExpr); break;
+                case TokenType.MinusAssign: exprSoFar = new MinusAssignExpression(tokens, baseExpr); break;
+                case TokenType.TimesAssign: exprSoFar = new TimesAssignExpression(tokens, baseExpr); break;
+                case TokenType.DivideAssign: exprSoFar = new DivideAssignExpression(tokens, baseExpr); break;
+                case TokenType.ModuloAssign: exprSoFar = new ModuloAssignExpression(tokens, baseExpr); break;
+                case TokenType.BitwiseAndAssign: exprSoFar = new BitwiseAndAssignExpression(tokens, baseExpr); break;
+                case TokenType.BitwiseOrAssign: exprSoFar = new BitwiseOrAssignExpression(tokens, baseExpr); break;
+                case TokenType.BitwiseXorAssign: exprSoFar = new BitwiseXorAssignExpression(tokens, baseExpr); break;
+                case TokenType.LeftShiftAssign: exprSoFar = new LeftShiftAssignExpression(tokens, baseExpr); break;
+                case TokenType.RightShiftAssign: exprSoFar = new RightShiftAssignExpression(tokens, baseExpr); break;
+                case TokenType.NullCoalescingAssign: exprSoFar = new NullCoalescingAssignExpression(tokens, baseExpr); break;
             }
 
             bool finishedParsing = false;
@@ -62,6 +47,7 @@ namespace Compiler.SyntaxTreeItems
                     case TokenType.BitwiseXor: exprSoFar = new BitwiseXorExpression(tokens, exprSoFar); break;
                     case TokenType.LeftShift: exprSoFar = new LeftShiftExpression(tokens, exprSoFar); break;
                     case TokenType.RightShift: exprSoFar = new RightShiftExpression(tokens, exprSoFar); break;
+                    case TokenType.NullCoalescing: exprSoFar = new NullCoalescingExpression(tokens, exprSoFar); break;
                     case TokenType.Equals: exprSoFar = new EqualsExpression(tokens, exprSoFar); break;
                     case TokenType.NotEquals: exprSoFar = new NotEqualsExpression(tokens, exprSoFar); break;
                     case TokenType.GreaterThan: exprSoFar = new GreaterThanExpression(tokens, exprSoFar); break;

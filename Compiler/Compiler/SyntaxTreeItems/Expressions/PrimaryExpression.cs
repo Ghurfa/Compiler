@@ -67,11 +67,13 @@ namespace Compiler.SyntaxTreeItems.Expressions
             {
                 switch (tokens.PeekToken().Type)
                 {
-                    case TokenType.Dot:         exprSoFar = new MemberAccessExpression(tokens, exprSoFar);  break;
-                    case TokenType.OpenPeren:   exprSoFar = new MethodCallExpression(tokens, exprSoFar);    break;
-                    case TokenType.OpenBracket: exprSoFar = new ArrayAccessExpression(tokens, exprSoFar);   break;
-                    case TokenType.Increment:   exprSoFar = new PostIncrementExpression(tokens, exprSoFar); break;
-                    case TokenType.Decrement:   exprSoFar = new PostDecrementExpression(tokens, exprSoFar); break;
+                    case TokenType.Dot:                 exprSoFar = new MemberAccessExpression(tokens, exprSoFar);  break;
+                    case TokenType.OpenPeren:           exprSoFar = new MethodCallExpression(tokens, exprSoFar);    break;
+                    case TokenType.OpenBracket:         exprSoFar = new ArrayAccessExpression(tokens, exprSoFar);   break;
+                    case TokenType.Increment:           exprSoFar = new PostIncrementExpression(tokens, exprSoFar); break;
+                    case TokenType.Decrement:           exprSoFar = new PostDecrementExpression(tokens, exprSoFar); break;
+                    case TokenType.NullCondDot:         exprSoFar = new MemberAccessExpression(tokens, exprSoFar);  break;
+                    case TokenType.NullCondOpenBracket: exprSoFar = new MethodCallExpression(tokens, exprSoFar);    break;
                     default: finishedParsing = true; break;
                 }
             }

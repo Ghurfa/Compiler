@@ -10,10 +10,10 @@ namespace Compiler.SyntaxTreeItems.Expressions
         public readonly Token AsToken;
         public readonly Type CastTo;
 
-        public CastExpression(TokenCollection tokens, UnaryExpression expression, Token asToken)
+        public CastExpression(TokenCollection tokens, UnaryExpression expression)
         {
             Expression = expression;
-            AsToken = asToken;
+            AsToken = tokens.PopToken(TokenType.AsKeyword);
             CastTo = Type.ReadType(tokens);
         }
     }

@@ -54,6 +54,8 @@ namespace Compiler
         SingleQuote,
         DoubleQuote,
         Backslash,
+        NullCondDot,
+        NullCondOpenBracket,
 
         //Unary operators
         Not,
@@ -72,6 +74,7 @@ namespace Compiler
         BitwiseXor,
         LeftShift,
         RightShift,
+        NullCoalescing,
 
         //Binary assign operators
         Assign,
@@ -86,6 +89,7 @@ namespace Compiler
         BitwiseXorAssign,
         LeftShiftAssign,
         RightShiftAssign,
+        NullCoalescingAssign,
 
         //Binary boolean operators
         Equals,

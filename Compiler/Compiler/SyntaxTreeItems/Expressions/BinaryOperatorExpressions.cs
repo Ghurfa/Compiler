@@ -56,6 +56,10 @@ namespace Compiler.SyntaxTreeItems.Expressions
     {
         public RightShiftExpression(TokenCollection tokens, Expression left) : base(tokens, left) { }
     }
+    public class NullCoalescingExpression : BinaryOperatorExpression
+    {
+        public NullCoalescingExpression(TokenCollection tokens, Expression left) : base(tokens, left) { }
+    }
     public class EqualsExpression : BinaryOperatorExpression
     {
         public EqualsExpression(TokenCollection tokens, Expression left) : base(tokens, left) { }

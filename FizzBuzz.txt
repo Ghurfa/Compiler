@@ -9,6 +9,7 @@ FizzBuzz namespace
             c:(a:int, b:int) = (3, 4)
             for(i := start; i < end; i++)
             {
+                boolean:bool = c ?? false
                 i++
                 //--i is not valid
                 i--

@@ -9,16 +9,16 @@ namespace Compiler
 {
     public class ClassDeclaration
     {
-        public readonly Token Identifier;
-        public readonly Token[] AccessModifiers;
+        public readonly Token Name;
+        public readonly ModifierList Modifiers;
         public readonly Token ClassKeyword;
         public readonly Token OpenBrace;
         public readonly ClassItemDeclaration[] ClassItemDeclarations;
         public readonly Token CloseBrace;
         public ClassDeclaration(TokenCollection tokens)
         {
-            Identifier = tokens.PopToken(TokenType.Identifier);
-            AccessModifiers = tokens.ReadModifiers();
+            Name = tokens.PopToken(TokenType.Identifier);
+            Modifiers = new ModifierList(tokens);
             ClassKeyword = tokens.PopToken(TokenType.ClassKeyword);
             OpenBrace = tokens.PopToken(TokenType.OpenCurly);
 

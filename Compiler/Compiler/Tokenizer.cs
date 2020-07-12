@@ -141,18 +141,27 @@ namespace Compiler
                 case "?": type = TokenType.QuestionMark; return true;
                 case ":": type = TokenType.Colon; return true;
                 case ";": type = TokenType.Semicolon; return true;
-                case "=": type = TokenType.Assign; return true;
-                case ":=": type = TokenType.DeclAssign; return true;
+                case "\\": type = TokenType.Backslash; return true;
+                case "?.": type = TokenType.NullCondDot; return true;
+                case "?[": type = TokenType.NullCondOpenBracket; return true;
                 case "+": type = TokenType.Plus; return true;
                 case "-": type = TokenType.Minus; return true;
                 case "*": type = TokenType.Asterisk; return true;
                 case "/": type = TokenType.Divide; return true;
                 case "%": type = TokenType.Modulo; return true;
+                case "<<": type = TokenType.LeftShift; return true;
+                case ">>": type = TokenType.RightShift; return true;
+                case "??": type = TokenType.NullCoalescing; return true;
+                case "=": type = TokenType.Assign; return true;
+                case ":=": type = TokenType.DeclAssign; return true;
                 case "+=": type = TokenType.PlusAssign; return true;
                 case "-=": type = TokenType.MinusAssign; return true;
                 case "*-": type = TokenType.TimesAssign; return true;
                 case "/=": type = TokenType.DivideAssign; return true;
                 case "%=": type = TokenType.ModuloAssign; return true;
+                case "<<=": type = TokenType.LeftShiftAssign; return true;
+                case ">>=": type = TokenType.RightShiftAssign; return true;
+                case "??=": type = TokenType.NullCoalescingAssign; return true;
                 case "++": type = TokenType.Increment; return true;
                 case "--": type = TokenType.Decrement; return true;
                 case "==": type = TokenType.Equals; return true;
@@ -168,9 +177,6 @@ namespace Compiler
                 case "|": type = TokenType.BitwiseOr; return true;
                 case "^": type = TokenType.BitwiseXor; return true;
                 case "~": type = TokenType.BitwiseNot; return true;
-                case "<<": type = TokenType.LeftShift; return true;
-                case ">>": type = TokenType.RightShift; return true;
-                case "\\": type = TokenType.Backslash; return true;
                 default: type = default; return false;
             }
         }

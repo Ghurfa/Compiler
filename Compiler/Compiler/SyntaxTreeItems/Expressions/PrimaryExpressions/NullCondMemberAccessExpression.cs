@@ -4,16 +4,16 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
 {
-    public class MemberAccessExpression : PrimaryExpression
+    public class NullCondMemberAccessExpression : PrimaryExpression
     {
         public readonly PrimaryExpression BaseExpression;
-        public readonly Token Dot;
+        public readonly Token NullCondDot;
         public readonly Token Item;
 
-        public MemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression)
+        public NullCondMemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {
             BaseExpression = baseExpression;
-            Dot = tokens.PopToken(TokenType.Dot);
+            NullCondDot = tokens.PopToken(TokenType.NullCondDot);
             Item = tokens.PopToken(TokenType.Identifier);
         }
     }

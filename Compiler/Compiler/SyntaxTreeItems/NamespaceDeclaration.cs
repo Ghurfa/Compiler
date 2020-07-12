@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiler.SyntaxTreeItems.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,14 +8,14 @@ namespace Compiler
 {
     public class NamespaceDeclaration
     {
-        public Token Identifier;
+        public QualifiedIdentifier Name;
         public Token NamespaceKeyword;
         public Token OpenBrace;
         public ClassDeclaration[] ClassDeclarations;
         public Token CloseBrace;
         public NamespaceDeclaration(TokenCollection tokens)
         {
-            Identifier = tokens.PopToken(TokenType.Identifier);
+            Name = new QualifiedIdentifier(tokens);
             NamespaceKeyword = tokens.PopToken(TokenType.NamespaceKeyword);
             OpenBrace = tokens.PopToken(TokenType.OpenCurly);
 

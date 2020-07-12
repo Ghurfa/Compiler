@@ -7,17 +7,17 @@ namespace Compiler
 {
     public class FieldDeclaration : ClassItemDeclaration
     {
-        public readonly Token Identifier;
+        public readonly Token Name;
         
         public readonly Token? ColonToken;
-        public readonly Token[] AccessModifiers;
+        public readonly ModifierList Modifiers;
         public readonly SyntaxTreeItems.Type Type;
 
         public readonly Token? AssignmentToken;
         public readonly Expression DefaultValue;
         public FieldDeclaration(TokenCollection tokens, Token identifierToken, Token syntaxCharToken)
         {
-            Identifier = identifierToken;
+            Name = identifierToken;
             
             if(syntaxCharToken.Type == TokenType.DeclAssign)
             {
@@ -26,13 +26,13 @@ namespace Compiler
                 if(tokens.PopIfMatches(out Token colon, TokenType.Colon))
                 {
                     ColonToken = colon;
-                    AccessModifiers = tokens.ReadModifiers();
+                    Modifiers = new ModifierList(tokens);
                 }
             }
             else
             {
                 ColonToken = syntaxCharToken;
-                AccessModifiers = tokens.ReadModifiers();
+                Modifiers = new ModifierList(tokens);
                 Type = SyntaxTreeItems.Type.ReadType(tokens);
 
                 if(tokens.PopIfMatches(out Token equals, TokenType.Assign))

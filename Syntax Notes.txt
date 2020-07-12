@@ -13,18 +13,8 @@ a:bool = y switch {
     12, _ -> true,
     14 -> false
     }
-
-=== Fix if expression ===
-Current: Type a = true ? Paddle:Ball
-		Would be parsed as condition ? Declaration [missing : token}
-a = if(true) Paddle else Ball
-	verbose
-a =  true ? Paddle \ true ? Ball \ null
-	Visually splits apart the statements
-    Should backslash be reserved?
-	a = true ? Paddle
-		\ true ? Ball
-
+=== Make tokens separate types ===
+=== Make assignmentExpressions and binaryOperatorExpressions check type of token ==
 === Reconsider colon marking variable declaration ===
     Named parameters
     If expressions
