@@ -21,7 +21,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
             bool lastMissingComma = false;
             while (!lastMissingComma)
             {
-                if (lastMissingComma) throw new SyntaxTreeBuildingException(tokens.PeekToken());
+                if (lastMissingComma) throw new UnexpectedToken(tokens.PeekToken());
                 var tupleVal = new TupleItem(tokens);
                 tupleVals.AddLast(tupleVal);
                 lastMissingComma = tupleVal.CommaToken == null;

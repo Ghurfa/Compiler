@@ -15,7 +15,7 @@ namespace Compiler.SyntaxTreeItems
             Token peek;
             while((peek = tokens.PeekToken()).Type != TokenType.ClosePeren)
             {
-                if (lastMissingComma) throw new SyntaxTreeBuildingException(peek);
+                if (lastMissingComma) throw new UnexpectedToken(peek);
                 var argument = new Argument(tokens);
                 arguments.AddLast(argument);
                 lastMissingComma = argument.CommaToken == null;

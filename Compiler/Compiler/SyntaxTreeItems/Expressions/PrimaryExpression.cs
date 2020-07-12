@@ -22,7 +22,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
                 {
                     baseExpr = new TupleExpression(tokens, openPeren, innerExpr, comma);
                 }
-                else throw new SyntaxTreeBuildingException(tokens.PeekToken());
+                else throw new UnexpectedToken(tokens.PeekToken());
             }
             else if (tokens.PopIfMatches(out Token newKeyword, TokenType.NewKeyword))
             {
@@ -59,7 +59,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
             {
                 baseExpr = new PrimitiveTypeExpression(tokens, primitiveKeyword);
             }
-            else throw new SyntaxTreeBuildingException(tokens.PeekToken());
+            else throw new UnexpectedToken(tokens.PeekToken());
 
             PrimaryExpression exprSoFar = baseExpr;
             bool finishedParsing = false;

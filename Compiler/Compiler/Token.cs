@@ -35,6 +35,7 @@ namespace Compiler
 
         //Trivia
         Whitespace,
+        WhitespaceWithLineBreak,
         SingleLineComment,
         MultiLineComment,
 
@@ -113,6 +114,9 @@ namespace Compiler
             Type = type;
             Index = index;
         }
-        public bool IsTrivia => Type == TokenType.Whitespace || Type == TokenType.SingleLineComment || Type == TokenType.MultiLineComment;
+        public bool IsTrivia => Type == TokenType.Whitespace ||
+                                Type == TokenType.WhitespaceWithLineBreak ||
+                                Type == TokenType.SingleLineComment ||
+                                Type == TokenType.MultiLineComment;
     }
 }

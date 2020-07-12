@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems.Types
             bool lastMissingComma = false;
             while (tokens.PeekToken().Type != TokenType.ClosePeren)
             {
-                if (lastMissingComma) throw new SyntaxTreeBuildingException(tokens.PeekToken());
+                if (lastMissingComma) throw new UnexpectedToken(tokens.PeekToken());
                 var newItem = new TupleTypeItem(tokens);
                 items.AddLast(newItem);
                 lastMissingComma = newItem.Comma == null;

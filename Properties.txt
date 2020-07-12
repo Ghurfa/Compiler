@@ -1,13 +1,17 @@
-FizzBuzz namespace
+Properties namespace
 {
-    FizzBuzz class
+    Properties class
     {
+        field1:int = 2
+        field2 := 2
+        myProperty1 => int {get set}
+        myProperty2 :> {get set}
         b := 5
-        c :int = b
+        c:int = b
         FizzBuzz public static void(start:int, end:int)
         {
             c:(a:int, b:int) = (3, 4)
-            for(i := start; i < end; i++)
+            for(i := start, i < end, i++)
             {
                 i++
                 //--i is not valid

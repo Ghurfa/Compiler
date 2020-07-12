@@ -71,7 +71,7 @@ namespace TestProgram
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine(objType.Name);
 
                 if (objType.IsArray)
@@ -83,7 +83,7 @@ namespace TestProgram
                         if (item == null)
                         {
                             Console.CursorLeft = x + depthWidth;
-                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
                             Console.WriteLine("Null");
                         }
                         else
@@ -122,7 +122,7 @@ namespace TestProgram
                             Console.CursorLeft = x + depthWidth;
                             Console.ForegroundColor = ConsoleColor.White;
                             Console.Write($"{fieldName}: ");
-                            Console.ForegroundColor = ConsoleColor.DarkBlue;
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
                             Console.WriteLine("Null");
                         }
                         else
@@ -144,10 +144,12 @@ namespace TestProgram
                 NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);
                 PrintObject(namespaceDecl, "Namespace");
             }
-            catch (SyntaxTreeBuildingException ex)
+            catch (SyntaxException ex)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Syntax tree building exception");
+                Console.Write(ex.GetType().Name + ": ");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(ex.Message);
                 PrintContext(tokens, ex.Token, 10, 10);
             }
             Console.ReadLine();

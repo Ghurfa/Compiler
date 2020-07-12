@@ -7,14 +7,16 @@ namespace Compiler.SyntaxTreeItems.Statements
     public class ExpressionStatement : Statement
     {
         public readonly Expression Expression;
+        public readonly Token? Semicolon;
         public ExpressionStatement(TokenCollection tokens)
         {
             var expression = SyntaxTreeItems.Expression.ReadExpression(tokens);
             if (expression is ICompleteStatement)
             {
                 Expression = expression;
+                Semicolon = tokens.EnsureValidStatementEnding();
             }
-            else throw new SyntaxTreeBuildingException(tokens.PeekToken());
+            else throw new InvalidStatement(tokens.PeekToken());
         }
     }
 }

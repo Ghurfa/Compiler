@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -10,6 +11,7 @@ namespace Compiler
     {
         private Token[] tokens;
         int pointer = 0;
+        int lastUsedToken = 0;
 
         public TokenCollection(Token[] tokens)
         {
@@ -21,11 +23,11 @@ namespace Compiler
         }
         public Token PeekToken()
         {
-            if (pointer > tokens.Length) throw new SyntaxTreeBuildingException();
+            if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
             while (tokens[pointer].IsTrivia)
             {
                 pointer++;
-                if (pointer > tokens.Length) throw new SyntaxTreeBuildingException();
+                if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
             }
             return tokens[pointer];
         }
@@ -34,6 +36,7 @@ namespace Compiler
             Token peek = PeekToken();
             if (peek.Type == type)
             {
+                lastUsedToken = pointer;
                 pointer++;
                 tokenIfMatches = peek;
                 return true;
@@ -46,6 +49,7 @@ namespace Compiler
             Token peek = PeekToken();
             if (peek.Type == type && possibleText.Contains(peek.Text))
             {
+                lastUsedToken = pointer;
                 pointer++;
                 tokenIfMatches = peek;
                 return true;
@@ -57,15 +61,45 @@ namespace Compiler
         public Token PopToken()
         {
             Token ret = PeekToken();
+            lastUsedToken = pointer;
             pointer++;
             return ret;
         }
         public Token PopToken(TokenType expectedType)
         {
             Token ret = PeekToken();
-            if (ret.Type != expectedType) throw new SyntaxTreeBuildingException(ret);
+            if (ret.Type != expectedType) throw new UnexpectedToken(ret);
+            lastUsedToken = pointer;
             pointer++;
             return ret;
+        }
+
+        public Token? EnsureValidStatementEnding()
+        {
+            pointer = lastUsedToken + 1;
+            if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
+            while (tokens[pointer].IsTrivia && tokens[pointer].Type != TokenType.WhitespaceWithLineBreak)
+            {
+                pointer++;
+                if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
+            }
+
+            Token endingToken = tokens[pointer];
+            switch (endingToken.Type)
+            {
+                case TokenType.Semicolon:
+                    pointer++;
+                    return endingToken;
+                case TokenType.WhitespaceWithLineBreak:
+                    pointer++;
+                    return null;
+                case TokenType.CloseBracket:
+                case TokenType.CloseCurly:
+                case TokenType.ClosePeren:
+                    return null;
+                default:
+                    throw new InvalidEndOfStatement(endingToken);
+            }
         }
 
         private string[] modifiers = new string[] { "public", "private", "static" };

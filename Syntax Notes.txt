@@ -3,11 +3,6 @@ semicolons ?
 tuples
 why not type inference for local vars?
 
-
-i++
-++i
-    Could disallow pre-increments
-
 Code block statement as anonymous function
 combining binary expressions
     bool x = y$(>2 && <5)

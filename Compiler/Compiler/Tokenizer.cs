@@ -65,6 +65,24 @@ namespace Compiler
             if (i - start == 0) throw new TokenizingException(i);
             return text.Substring(start, i - start);
         }
+        static void ParseWhitespace(string text, ref int i, TokenCollectionBuilder tokens)
+        {
+            string newLine = Environment.NewLine;
+            int start = i;
+            bool hasLineBreak = false;
+
+            while (char.IsWhiteSpace(text[i]))
+            {
+                if (!hasLineBreak)
+                {
+                    hasLineBreak = text.Substring(i - newLine.Length, newLine.Length) == newLine;
+                }
+                i++;
+            }
+            if (i - start == 0) throw new TokenizingException(i);
+
+            tokens.Add(text.Substring(start, i - start), hasLineBreak ? TokenType.WhitespaceWithLineBreak : TokenType.Whitespace);
+        }
         static void ParseCommentOrDivOp(string text, ref int i, TokenCollectionBuilder tokens)
         {
             int start = i;
@@ -80,7 +98,7 @@ namespace Compiler
                         i++;
                     }
                     tokens.Add(text.Substring(start, i - newLine.Length - start), TokenType.SingleLineComment);
-                    tokens.Add(newLine, TokenType.Whitespace);
+                    tokens.Add(newLine, TokenType.WhitespaceWithLineBreak);
                     i++;
                 }
                 else if (nextChar == '*')
@@ -93,7 +111,7 @@ namespace Compiler
                     tokens.Add(text.Substring(start, i - start), TokenType.MultiLineComment);
                     i++;
                 }
-                else if(nextChar == '=')
+                else if (nextChar == '=')
                 {
                     tokens.Add("/=", TokenType.DivideAssign);
                     i++;
@@ -346,8 +364,7 @@ namespace Compiler
                 char nextChar = text[i];
                 if (char.IsWhiteSpace(nextChar))
                 {
-                    tokens.Add(nextChar.ToString(), TokenType.Whitespace);
-                    i++;
+                    ParseWhitespace(text, ref i, tokens);
                 }
                 else if (char.IsNumber(nextChar))
                 {
