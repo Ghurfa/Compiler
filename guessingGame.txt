@@ -27,7 +27,7 @@ myNamespace namespace
             end := false
             while !end
             {
-                while guess != number++
+                while guess != number
                 {
                     guess = Console.ReadLine()
                     if (guess < number)

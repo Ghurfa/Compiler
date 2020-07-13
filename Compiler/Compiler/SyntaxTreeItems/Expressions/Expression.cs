@@ -33,8 +33,7 @@ namespace Compiler.SyntaxTreeItems
             bool finishedParsing = false;
             while (!finishedParsing)
             {
-                Token nextToken = tokens.PeekToken();
-                switch (nextToken.Type)
+                switch (tokens.PeekToken().Type)
                 {
                     case TokenType.QuestionMark: exprSoFar = new InlineIfExpression(tokens, exprSoFar); break;
                     case TokenType.Plus: exprSoFar = new PlusExpression(tokens, exprSoFar); break;

@@ -32,6 +32,11 @@ namespace Compiler
         public MissingWhitespaceException(Token token)
             : base(token, $"Expected whitespace") { }
     }
+    public class MissingLineBreakException : InvalidTokenException
+    {
+        public MissingLineBreakException(Token token)
+            : base(token, $"Expected a line break between non-perenthesized condition and embedded statement") { }
+    }
     public class InvalidStatementException : SyntaxTreeBuildingException
     {
         public readonly Expression Expression;

@@ -89,15 +89,33 @@ namespace Compiler
             }
         }
 
-        public void EnsureWhitespace()
+        public void EnsureWhitespaceAfter(Token token)
         {
-            pointer = lastUsedToken + 1;
+            int save = pointer;
+            pointer = token.Index + 1;
             if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
             TokenType type = tokens[pointer].Type;
+            pointer = save;
             if (type != TokenType.Whitespace && type != TokenType.WhitespaceWithLineBreak)
             {
                 throw new MissingWhitespaceException(tokens[pointer]);
             }
+        }
+
+        public void EnsureLineBreakAfter(Token token)
+        {
+            int save = pointer;
+            pointer = token.Index + 1;
+            if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
+            while (tokens[pointer].IsTrivia && tokens[pointer].Type != TokenType.WhitespaceWithLineBreak)
+            {
+                pointer++;
+                if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
+            }
+
+            Token endingToken = tokens[pointer];
+            pointer = save;
+            if (endingToken.Type != TokenType.WhitespaceWithLineBreak) throw new MissingLineBreakException(endingToken);
         }
 
         public IEnumerator<Token> GetEnumerator()
