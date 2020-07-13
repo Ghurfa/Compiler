@@ -25,7 +25,12 @@ namespace Compiler
     public class InvalidEndOfStatementException : InvalidTokenException
     {
         public InvalidEndOfStatementException(Token token)
-            : base(token, $"Invalid end of statement or field declarator. Expected ';' or line break") {}
+            : base(token, $"Invalid end of statement or field declarator. Expected ';' or line break") { }
+    }
+    public class MissingWhitespaceException : InvalidTokenException
+    {
+        public MissingWhitespaceException(Token token)
+            : base(token, $"Expected whitespace") { }
     }
     public class InvalidStatementException : SyntaxTreeBuildingException
     {

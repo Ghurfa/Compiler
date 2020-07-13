@@ -89,6 +89,17 @@ namespace Compiler
             }
         }
 
+        public void EnsureWhitespace()
+        {
+            pointer = lastUsedToken + 1;
+            if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
+            TokenType type = tokens[pointer].Type;
+            if (type != TokenType.Whitespace && type != TokenType.WhitespaceWithLineBreak)
+            {
+                throw new MissingWhitespaceException(tokens[pointer]);
+            }
+        }
+
         public IEnumerator<Token> GetEnumerator()
         {
             for (int i = 0; i < tokens.Length; i++)
