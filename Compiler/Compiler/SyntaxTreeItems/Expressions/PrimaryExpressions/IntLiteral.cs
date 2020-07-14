@@ -7,9 +7,9 @@ namespace Compiler.SyntaxTreeItems
 {
     public class IntLiteral : PrimaryExpression
     {
-        public readonly Token Token;
+        public readonly IToken Token;
 
-        public IntLiteral(TokenCollection tokens, Token token)
+        public IntLiteral(TokenCollection tokens, IToken token)
         {
             Token = token;
         }

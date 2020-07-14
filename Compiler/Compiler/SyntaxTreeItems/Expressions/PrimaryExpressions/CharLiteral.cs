@@ -6,10 +6,10 @@ namespace Compiler.SyntaxTreeItems.Expressions
 {
     public class CharLiteral : PrimaryExpression
     {
-        public readonly Token OpenQuote;
-        public readonly Token Text;
-        public readonly Token CloseQuote;
-        public CharLiteral(TokenCollection tokens, Token openQuoteToken)
+        public readonly IToken OpenQuote;
+        public readonly IToken Text;
+        public readonly IToken CloseQuote;
+        public CharLiteral(TokenCollection tokens, IToken openQuoteToken)
         {
             OpenQuote = openQuoteToken;
             Text = tokens.PopToken(TokenType.CharLiteral);

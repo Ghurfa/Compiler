@@ -6,11 +6,11 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
 {
     public class PerenthesizedExpression : PrimaryExpression
     {
-        public readonly Token OpenPeren;
+        public readonly IToken OpenPeren;
         public readonly Expression Expression;
-        public readonly Token ClosePeren;
+        public readonly IToken ClosePeren;
 
-        public PerenthesizedExpression(TokenCollection tokens, Token openPeren, Expression expression, Token closePeren)
+        public PerenthesizedExpression(TokenCollection tokens, IToken openPeren, Expression expression, IToken closePeren)
         {
             OpenPeren = openPeren;
             Expression = expression;

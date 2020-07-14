@@ -7,7 +7,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
     public class CastExpression : Expression
     {
         public readonly UnaryExpression Expression;
-        public readonly Token AsToken;
+        public readonly IToken AsToken;
         public readonly Type CastTo;
 
         public CastExpression(TokenCollection tokens, UnaryExpression expression)

@@ -9,13 +9,13 @@ namespace Compiler
     {
         public static ClassItemDeclaration ReadClassItem(TokenCollection tokens)
         {
-            if (tokens.PopIfMatches(out Token constructorToken, TokenType.ConstructorKeyword))
+            if (tokens.PopIfMatches(out IToken constructorToken, TokenType.ConstructorKeyword))
             {
                 return new ConstructorDeclaration(tokens, constructorToken);
             }
-            else if (tokens.PopIfMatches(out Token identifierToken, TokenType.Identifier))
+            else if (tokens.PopIfMatches(out IToken identifierToken, TokenType.Identifier))
             {
-                if (tokens.PopIfMatches(out Token syntaxChar, TokenType.Colon) ||
+                if (tokens.PopIfMatches(out IToken syntaxChar, TokenType.Colon) ||
                     tokens.PopIfMatches(out syntaxChar, TokenType.Assign) ||
                     tokens.PopIfMatches(out syntaxChar, TokenType.DeclAssign))
                 {

@@ -6,7 +6,7 @@ namespace Compiler.SyntaxTreeItems
 {
     public class EmptyStatement : Statement
     {
-        public readonly Token Semicolon;
+        public readonly IToken Semicolon;
         public EmptyStatement(TokenCollection tokens)
         {
             Semicolon = tokens.PopToken(TokenType.Semicolon);

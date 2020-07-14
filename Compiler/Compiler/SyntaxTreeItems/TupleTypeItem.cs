@@ -7,16 +7,16 @@ namespace Compiler.SyntaxTreeItems
 {
     public class TupleTypeItem
     {
-        public readonly Token? Name;
-        public readonly Token? Colon;
+        public readonly IToken? Name;
+        public readonly IToken? Colon;
         public readonly Type Type;
-        public readonly Token? Comma;
+        public readonly IToken? Comma;
 
         public TupleTypeItem(TokenCollection tokens)
         {
-            if (tokens.PopIfMatches(out Token identifier, TokenType.Identifier))
+            if (tokens.PopIfMatches(out IToken identifier, TokenType.Identifier))
             {
-                if (tokens.PopIfMatches(out Token colon, TokenType.Colon))
+                if (tokens.PopIfMatches(out IToken colon, TokenType.Colon))
                 {
                     Name = identifier;
                     Colon = colon;
@@ -31,7 +31,7 @@ namespace Compiler.SyntaxTreeItems
             {
                 Type = Type.ReadType(tokens);
             }
-            if (tokens.PopIfMatches(out Token comma, TokenType.Comma))
+            if (tokens.PopIfMatches(out IToken comma, TokenType.Comma))
             {
                 Comma = comma;
             }

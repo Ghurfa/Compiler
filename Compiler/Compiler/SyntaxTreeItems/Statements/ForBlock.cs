@@ -6,13 +6,13 @@ namespace Compiler.SyntaxTreeItems.Statements
 {
     public class ForBlock : Statement
     {
-        public readonly Token ForKeyword;
-        public readonly Token OpenPeren;
+        public readonly IToken ForKeyword;
+        public readonly IToken OpenPeren;
         public readonly Statement StartStatement;
         public readonly Expression ContinueExpr;
-        public readonly Token? SecondSemicolon;
+        public readonly IToken? SecondSemicolon;
         public readonly Statement RepeatStatement;
-        public readonly Token ClosePeren;
+        public readonly IToken ClosePeren;
         public readonly Statement Body;
 
         public ForBlock(TokenCollection tokens)

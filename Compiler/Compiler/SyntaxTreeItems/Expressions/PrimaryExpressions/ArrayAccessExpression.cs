@@ -7,9 +7,9 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
     public class ArrayAccessExpression : PrimaryExpression
     {
         public readonly PrimaryExpression Array;
-        public readonly Token OpenBracket;
+        public readonly IToken OpenBracket;
         public readonly Expression Index;
-        public readonly Token CloseBracket;
+        public readonly IToken CloseBracket;
 
         public ArrayAccessExpression(TokenCollection tokens, PrimaryExpression baseExpr)
         {

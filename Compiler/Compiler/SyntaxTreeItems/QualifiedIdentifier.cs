@@ -20,9 +20,9 @@ namespace Compiler.SyntaxTreeItems.Types
             }
             Parts = parts.ToArray();
         }
-        public QualifiedIdentifier(TokenCollection tokens, Token firstIdentifier)
+        public QualifiedIdentifier(TokenCollection tokens, IToken firstIdentifier)
         {
-            if (tokens.PopIfMatches(out Token firstDot, TokenType.Dot))
+            if (tokens.PopIfMatches(out IToken firstDot, TokenType.Dot))
             {
                 var parts = new LinkedList<QualifiedIdentifierPart>();
                 var newPart = new QualifiedIdentifierPart(tokens, firstIdentifier, firstDot);

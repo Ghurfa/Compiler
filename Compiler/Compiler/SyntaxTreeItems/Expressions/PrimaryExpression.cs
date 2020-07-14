@@ -11,26 +11,26 @@ namespace Compiler.SyntaxTreeItems.Expressions
         {
             PrimaryExpression baseExpr;
 
-            if (tokens.PopIfMatches(out Token openPeren, TokenType.OpenPeren))
+            if (tokens.PopIfMatches(out IToken openPeren, TokenType.OpenPeren))
             {
                 Expression innerExpr = Expression.ReadExpression(tokens);
-                if (tokens.PopIfMatches(out Token closePeren, TokenType.ClosePeren))
+                if (tokens.PopIfMatches(out IToken closePeren, TokenType.ClosePeren))
                 {
                     baseExpr = new PerenthesizedExpression(tokens, openPeren, innerExpr, closePeren);
                 }
-                else if (tokens.PopIfMatches(out Token comma, TokenType.Comma))
+                else if (tokens.PopIfMatches(out IToken comma, TokenType.Comma))
                 {
                     baseExpr = new TupleExpression(tokens, openPeren, innerExpr, comma);
                 }
                 else throw new InvalidTokenException(tokens.PeekToken());
             }
-            else if (tokens.PopIfMatches(out Token newKeyword, TokenType.NewKeyword))
+            else if (tokens.PopIfMatches(out IToken newKeyword, TokenType.NewKeyword))
             {
                 baseExpr = new NewObjectExpression(tokens, newKeyword);
             }
-            else if (tokens.PopIfMatches(out Token identifier, TokenType.Identifier))
+            else if (tokens.PopIfMatches(out IToken identifier, TokenType.Identifier))
             {
-                if(tokens.PopIfMatches(out Token colonToken, TokenType.Colon))
+                if(tokens.PopIfMatches(out IToken colonToken, TokenType.Colon))
                 {
                     baseExpr = new DeclarationExpression(tokens, identifier, colonToken);
                 }
@@ -39,31 +39,31 @@ namespace Compiler.SyntaxTreeItems.Expressions
                     baseExpr = new IdentifierExpression(tokens, identifier);
                 }
             }
-            else if (tokens.PopIfMatches(out Token intToken, TokenType.IntLiteral))
+            else if (tokens.PopIfMatches(out IToken intToken, TokenType.IntLiteral))
             {
                 baseExpr = new IntLiteral(tokens, intToken);
             }
-            else if (tokens.PopIfMatches(out Token trueKeyword, TokenType.TrueKeyword))
+            else if (tokens.PopIfMatches(out IToken trueKeyword, TokenType.TrueKeyword))
             {
                 baseExpr = new TrueLiteral(tokens, trueKeyword);
             }
-            else if (tokens.PopIfMatches(out Token falseKeyword, TokenType.FalseKeyword))
+            else if (tokens.PopIfMatches(out IToken falseKeyword, TokenType.FalseKeyword))
             {
                 baseExpr = new FalseLiteral(tokens, falseKeyword);
             }
-            else if (tokens.PopIfMatches(out Token strOpenToken, TokenType.DoubleQuote))
+            else if (tokens.PopIfMatches(out IToken strOpenToken, TokenType.DoubleQuote))
             {
                 baseExpr = new StringLiteral(tokens, strOpenToken);
             }
-            else if (tokens.PopIfMatches(out Token charOpenToken, TokenType.SingleQuote))
+            else if (tokens.PopIfMatches(out IToken charOpenToken, TokenType.SingleQuote))
             {
                 baseExpr = new CharLiteral(tokens, charOpenToken);
             }
-            else if (tokens.PopIfMatches(out Token valueKeyword, TokenType.ValueKeyword))
+            else if (tokens.PopIfMatches(out IToken valueKeyword, TokenType.ValueKeyword))
             {
                 baseExpr = new ValueKeywordExpression(tokens, valueKeyword);
             }
-            else if (tokens.PopIfMatches(out Token primitiveKeyword, TokenType.PrimitiveType))
+            else if (tokens.PopIfMatches(out IToken primitiveKeyword, TokenType.PrimitiveType))
             {
                 baseExpr = new PrimitiveTypeExpression(tokens, primitiveKeyword);
             }

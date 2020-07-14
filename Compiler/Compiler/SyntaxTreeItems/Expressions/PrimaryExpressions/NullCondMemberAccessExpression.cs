@@ -7,8 +7,8 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
     public class NullCondMemberAccessExpression : PrimaryExpression
     {
         public readonly PrimaryExpression BaseExpression;
-        public readonly Token NullCondDot;
-        public readonly Token Item;
+        public readonly IToken NullCondDot;
+        public readonly IToken Item;
 
         public NullCondMemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {

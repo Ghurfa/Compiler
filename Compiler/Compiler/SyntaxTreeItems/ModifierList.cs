@@ -7,12 +7,12 @@ namespace Compiler.SyntaxTreeItems
 {
     public class ModifierList
     {
-        public readonly Token[] Modifiers;
+        public readonly IToken[] Modifiers;
 
         public ModifierList(TokenCollection tokens)
         {
-            LinkedList<Token> modifiers = new LinkedList<Token>();
-            while (tokens.PopIfMatches(out Token token, TokenType.Modifier))
+            LinkedList<IToken> modifiers = new LinkedList<IToken>();
+            while (tokens.PopIfMatches(out IToken token, TokenType.Modifier))
             {
                 modifiers.AddLast(token);
             }

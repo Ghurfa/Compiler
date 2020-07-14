@@ -7,9 +7,9 @@ namespace Compiler.SyntaxTreeItems.Types
 {
     public class TupleType : Type
     {
-        public readonly Token OpenPeren;
+        public readonly IToken OpenPeren;
         public readonly TupleTypeItem[] Items;
-        public readonly Token ClosePeren;
+        public readonly IToken ClosePeren;
         public TupleType(TokenCollection tokens)
         {
             OpenPeren = tokens.PopToken(TokenType.OpenPeren);

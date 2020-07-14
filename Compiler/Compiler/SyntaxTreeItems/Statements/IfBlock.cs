@@ -7,10 +7,10 @@ namespace Compiler.SyntaxTreeItems.Statements
 {
     public class IfBlock : Statement
     {
-        public readonly Token IfKeyword;
+        public readonly IToken IfKeyword;
         public readonly Expression Condition;
         public readonly Statement IfTrue;
-        public readonly Token? ElseToken;
+        public readonly IToken? ElseToken;
         public readonly Statement IfFalse;
 
         public IfBlock(TokenCollection tokens)
@@ -22,7 +22,7 @@ namespace Compiler.SyntaxTreeItems.Statements
                 tokens.EnsureWhitespaceAfter(IfKeyword);
             }
 
-            Token tokenAfterCondition = tokens.PeekToken();
+            IToken tokenAfterCondition = tokens.PeekToken();
             IfTrue = Statement.ReadStatement(tokens);
             if (!(Condition is PerenthesizedExpression) && !(IfTrue is CodeBlock) &&
                 tokenAfterCondition.Type != TokenType.WhitespaceWithLineBreak)
@@ -30,7 +30,7 @@ namespace Compiler.SyntaxTreeItems.Statements
                 tokens.EnsureLineBreakAfter(tokenAfterCondition);
             }
 
-            if(tokens.PopIfMatches(out Token elseToken, TokenType.ElseKeyword))
+            if(tokens.PopIfMatches(out IToken elseToken, TokenType.ElseKeyword))
             {
                 ElseToken = elseToken;
                 IfFalse = Statement.ReadStatement(tokens);

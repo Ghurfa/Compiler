@@ -7,10 +7,10 @@ namespace Compiler.SyntaxTreeItems
 {
     public class StringLiteral : PrimaryExpression
     {
-        public readonly Token OpenQuote;
-        public readonly Token Text;
-        public readonly Token CloseQuote;
-        public StringLiteral(TokenCollection tokens, Token openQuoteToken)
+        public readonly IToken OpenQuote;
+        public readonly IToken Text;
+        public readonly IToken CloseQuote;
+        public StringLiteral(TokenCollection tokens, IToken openQuoteToken)
         {
             OpenQuote = openQuoteToken;
             Text = tokens.PopToken(TokenType.StringLiteral);

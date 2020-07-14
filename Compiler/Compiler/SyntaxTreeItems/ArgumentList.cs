@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
         {
             var arguments = new LinkedList<Argument>();
             bool lastMissingComma = false;
-            Token peek;
+            IToken peek;
             while((peek = tokens.PeekToken()).Type != TokenType.ClosePeren)
             {
                 if (lastMissingComma) throw new InvalidTokenException(peek);

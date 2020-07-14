@@ -8,7 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
     public class PostIncrementExpression : PrimaryExpression, ICompleteStatement
     {
         public readonly PrimaryExpression BaseExpression;
-        public readonly Token Increment;
+        public readonly IToken Increment;
 
         public PostIncrementExpression(TokenCollection tokens, PrimaryExpression baseExpr)
         {

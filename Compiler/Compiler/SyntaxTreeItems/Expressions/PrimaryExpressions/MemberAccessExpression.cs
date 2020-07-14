@@ -7,8 +7,8 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
     public class MemberAccessExpression : PrimaryExpression
     {
         public readonly PrimaryExpression BaseExpression;
-        public readonly Token Dot;
-        public readonly Token Item;
+        public readonly IToken Dot;
+        public readonly IToken Item;
 
         public MemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {

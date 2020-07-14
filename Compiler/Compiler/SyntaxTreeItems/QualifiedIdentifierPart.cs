@@ -6,17 +6,17 @@ namespace Compiler.SyntaxTreeItems
 {
     public class QualifiedIdentifierPart
     {
-        public readonly Token Identifier;
-        public readonly Token? Dot;
+        public readonly IToken Identifier;
+        public readonly IToken? Dot;
         public QualifiedIdentifierPart(TokenCollection tokens)
         {
             Identifier = tokens.PopToken(TokenType.Identifier);
-            if (tokens.PopIfMatches(out Token dotToken, TokenType.Dot))
+            if (tokens.PopIfMatches(out IToken dotToken, TokenType.Dot))
             {
                 Dot = dotToken;
             }
         }
-        public QualifiedIdentifierPart(TokenCollection tokens, Token identifier, Token? dot)
+        public QualifiedIdentifierPart(TokenCollection tokens, IToken identifier, IToken? dot)
         {
             Identifier = identifier;
             Dot = dot;

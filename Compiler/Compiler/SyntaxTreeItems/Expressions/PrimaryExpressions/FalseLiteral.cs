@@ -6,8 +6,8 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
 {
     public class FalseLiteral : PrimaryExpression
     {
-        public readonly Token FalseKeyword;
-        public FalseLiteral(TokenCollection tokens, Token falseKeyword)
+        public readonly IToken FalseKeyword;
+        public FalseLiteral(TokenCollection tokens, IToken falseKeyword)
         {
             FalseKeyword = falseKeyword;
         }

@@ -8,7 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
     //Apparently this is a valid statement in c#
     public class NewObjectExpression : PrimaryExpression, ICompleteStatement
     {
-        public NewObjectExpression(TokenCollection tokens, Token newKeywordToken)
+        public NewObjectExpression(TokenCollection tokens, IToken newKeywordToken)
         {
             throw new NotImplementedException();
         }

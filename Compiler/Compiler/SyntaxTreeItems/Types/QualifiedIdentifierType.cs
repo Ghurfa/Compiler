@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems.Types
         {
             Identifier = new QualifiedIdentifier(tokens);
         }
-        public QualifiedIdentifierType(TokenCollection tokens, Token firstIdentifier)
+        public QualifiedIdentifierType(TokenCollection tokens, IToken firstIdentifier)
         {
             Identifier = new QualifiedIdentifier(tokens, firstIdentifier);
         }

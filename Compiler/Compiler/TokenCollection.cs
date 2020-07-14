@@ -7,140 +7,143 @@ using System.Text;
 
 namespace Compiler
 {
-    public class TokenCollection : IEnumerable<Token>
+    public class TokenCollection : IEnumerable<IToken>
     {
-        private Token[] tokens;
+        private IToken[] tokens;
         int pointer = 0;
         int lastUsedToken = 0;
 
-        public TokenCollection(Token[] tokens)
+        public TokenCollection(IToken[] tokens)
         {
             this.tokens = tokens;
         }
-        public TokenCollection(LinkedList<Token> tokens)
+        public TokenCollection(LinkedList<IToken> tokens)
         {
             this.tokens = tokens.ToArray();
         }
-        public Token PeekToken()
+        public IToken PeekToken()
         {
             if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
-            while (tokens[pointer].IsTrivia)
+            while (tokens[pointer] is ITriviaToken)
             {
                 pointer++;
                 if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
             }
             return tokens[pointer];
         }
-        public bool PopIfMatches(out Token tokenIfMatches, TokenType type)
+        public bool PopIfMatches<T>(out T tokenIfMatches)
         {
-            Token peek = PeekToken();
-            if (peek.Type == type)
+            IToken peek = PeekToken();
+            if (peek is T matched)
             {
                 lastUsedToken = pointer;
                 pointer++;
-                tokenIfMatches = peek;
+                tokenIfMatches = matched;
                 return true;
             }
             tokenIfMatches = default;
             return false;
         }
 
-        public Token PopToken()
+        /*public IToken PopToken()
         {
-            Token ret = PeekToken();
+            IToken ret = PeekToken();
             lastUsedToken = pointer;
             pointer++;
             return ret;
-        }
-        public Token PopToken(TokenType expectedType)
+        }*/
+        public T PopToken<T>()
         {
-            Token ret = PeekToken();
-            if (ret.Type != expectedType) throw new InvalidTokenException(ret);
-            lastUsedToken = pointer;
-            pointer++;
-            return ret;
+            IToken peek = PeekToken();
+            if(peek is T ret)
+            {
+                lastUsedToken = pointer;
+                pointer++;
+                return ret;
+            }
+            else throw new InvalidTokenException(peek);
         }
 
-        public Token? EnsureValidStatementEnding()
+        public IToken EnsureValidStatementEnding()
         {
             pointer = lastUsedToken + 1;
             if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
-            while (tokens[pointer].IsTrivia && tokens[pointer].Type != TokenType.WhitespaceWithLineBreak)
+            while (tokens[pointer] is ITriviaToken && !(tokens[pointer] is WhitespaceWithLineBreakToken))
             {
                 pointer++;
                 if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
             }
 
-            Token endingToken = tokens[pointer];
-            switch (endingToken.Type)
+            IToken endingToken = tokens[pointer];
+            switch (endingToken)
             {
-                case TokenType.Semicolon:
+                case SemicolonToken semicolon:
                     pointer++;
-                    return endingToken;
-                case TokenType.WhitespaceWithLineBreak:
+                    return semicolon;
+                case WhitespaceWithLineBreakToken _:
                     pointer++;
                     return null;
-                case TokenType.CloseBracket:
-                case TokenType.CloseCurly:
-                case TokenType.ClosePeren:
+                case CloseBracketToken _:
+                case CloseCurlyToken _:
+                case ClosePerenToken _:
                     return null;
                 default:
                     throw new InvalidEndOfStatementException(endingToken);
             }
         }
 
-        public void EnsureWhitespaceAfter(Token token)
+        public void EnsureWhitespaceAfter(IToken token)
         {
             int save = pointer;
             pointer = token.Index + 1;
             if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
-            TokenType type = tokens[pointer].Type;
+            var tokenAfter = tokens[pointer];
             pointer = save;
-            if (type != TokenType.Whitespace && type != TokenType.WhitespaceWithLineBreak)
+            if (!(tokenAfter is IWhitespaceToken))
             {
                 throw new MissingWhitespaceException(tokens[pointer]);
             }
         }
 
-        public void EnsureLineBreakAfter(Token token)
+        public void EnsureLineBreakAfter(IToken token)
         {
             int save = pointer;
             pointer = token.Index + 1;
             if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
-            while (tokens[pointer].IsTrivia && tokens[pointer].Type != TokenType.WhitespaceWithLineBreak)
+            while (tokens[pointer] is ITriviaToken && !(tokens[pointer] is WhitespaceWithLineBreakToken))
             {
                 pointer++;
                 if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
             }
 
-            Token endingToken = tokens[pointer];
+            IToken endingToken = tokens[pointer];
             pointer = save;
-            if (endingToken.Type != TokenType.WhitespaceWithLineBreak) throw new MissingLineBreakException(endingToken);
+            if (!(endingToken is WhitespaceWithLineBreakToken)) throw new MissingLineBreakException(endingToken);
         }
 
-        public IEnumerator<Token> GetEnumerator()
+        public IEnumerator<IToken> GetEnumerator()
         {
             for (int i = 0; i < tokens.Length; i++)
             {
                 yield return tokens[i];
             }
         }
-        public IEnumerator<Token> NonWhitespaceTokens()
+        public IEnumerator<IToken> NonWhitespaceTokens()
         {
             for (int i = 0; i < tokens.Length; i++)
             {
-                if (!tokens[i].IsTrivia) yield return tokens[i];
+                if (!(tokens[i] is ITriviaToken)) yield return tokens[i];
             }
         }
-        public IEnumerable<Token> GetContext(Token token, int tokensBefore, int tokensAfter)
+        public IEnumerable<IToken> GetContext(IToken token, int tokensBefore, int tokensAfter)
         {
-            LinkedList<Token> beforeTokens = new LinkedList<Token>();
+            LinkedList<IToken> beforeTokens = new LinkedList<IToken>();
 
             int ptr = token.Index - 1;
             int beforeCount = 0;
             while(beforeCount < tokensBefore && ptr > 0)
             { 
-                if(!tokens[ptr].IsTrivia)
+                if(!(tokens[ptr] is ITriviaToken))
                 {
                     beforeTokens.AddFirst(tokens[ptr]);
                     beforeCount++;
@@ -148,7 +151,7 @@ namespace Compiler
                 ptr--;
             }
 
-            foreach (Token beforeToken in beforeTokens)
+            foreach (IToken beforeToken in beforeTokens)
                 yield return beforeToken;
 
             yield return token;
@@ -157,7 +160,7 @@ namespace Compiler
             int afterCount = 0;
             while(afterCount < tokensAfter && ptr < tokens.Length)
             {
-                if(!tokens[ptr].IsTrivia)
+                if(!(tokens[ptr] is ITriviaToken))
                 {
                     yield return tokens[ptr];
                     afterCount++;

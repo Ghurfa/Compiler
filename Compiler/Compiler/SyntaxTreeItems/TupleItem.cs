@@ -7,18 +7,18 @@ namespace Compiler.SyntaxTreeItems
     public class TupleItem
     {
         public readonly Expression Expression;
-        public readonly Token? CommaToken;
+        public readonly IToken? CommaToken;
 
         public TupleItem(TokenCollection tokens)
         {
             Expression = Expression.ReadExpression(tokens);
-            if (tokens.PopIfMatches(out Token comma, TokenType.Comma))
+            if (tokens.PopIfMatches(out IToken comma, TokenType.Comma))
             {
                 CommaToken = comma;
             }
         }
 
-        public TupleItem(Expression expression, Token commaToken)
+        public TupleItem(Expression expression, IToken commaToken)
         {
             Expression = expression;
             CommaToken = commaToken;

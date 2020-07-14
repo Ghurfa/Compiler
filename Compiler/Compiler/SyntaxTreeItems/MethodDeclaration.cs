@@ -5,12 +5,12 @@ namespace Compiler.SyntaxTreeItems
 {
     public class MethodDeclaration : ClassItemDeclaration
     {
-        public readonly Token Name;
+        public readonly IToken Name;
         public readonly ModifierList Modifiers;
         public readonly Type ReturnType;
         public readonly ParameterListDeclaration ParameterList;
         public readonly MethodBodyDeclaration MethodBody;
-        public MethodDeclaration(TokenCollection tokens, Token identifierToken)
+        public MethodDeclaration(TokenCollection tokens, IToken identifierToken)
         {
             Name = identifierToken;
             Modifiers = new ModifierList(tokens);

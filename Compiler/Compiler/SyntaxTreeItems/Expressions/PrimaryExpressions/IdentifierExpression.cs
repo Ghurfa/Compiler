@@ -6,8 +6,8 @@ namespace Compiler.SyntaxTreeItems.Expressions
 {
     public class IdentifierExpression : PrimaryExpression
     {
-        public readonly Token Identifier;
-        public IdentifierExpression(TokenCollection tokens, Token identifier)
+        public readonly IToken Identifier;
+        public IdentifierExpression(TokenCollection tokens, IToken identifier)
         {
             Identifier = identifier;
         }

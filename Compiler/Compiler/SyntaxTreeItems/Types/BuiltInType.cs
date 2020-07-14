@@ -6,7 +6,7 @@ namespace Compiler.SyntaxTreeItems.Types
 {
     public class BuiltInType : Type
     {
-        public readonly Token TypeToken;
+        public readonly IToken TypeToken;
 
         public BuiltInType(TokenCollection tokens)
         {

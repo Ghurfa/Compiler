@@ -7,7 +7,7 @@ namespace Compiler.SyntaxTreeItems.Statements
 {
     public class WhileBlock : Statement
     {
-        public readonly Token WhileKeyword;
+        public readonly IToken WhileKeyword;
         public readonly Expression Condition;
         public readonly Statement Body;
 
@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems.Statements
             {
                 tokens.EnsureWhitespaceAfter(WhileKeyword);
             }
-            Token tokenAfterCondition = tokens.PeekToken();
+            IToken tokenAfterCondition = tokens.PeekToken();
             Body = Statement.ReadStatement(tokens);
             if (!(Condition is PerenthesizedExpression) && !(Body is CodeBlock) &&
                 tokenAfterCondition.Type != TokenType.WhitespaceWithLineBreak)

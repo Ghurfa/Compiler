@@ -10,7 +10,7 @@ namespace Compiler.SyntaxTreeItems
     {
         public static Type ReadType(TokenCollection tokens)
         {
-            Token peek = tokens.PeekToken();
+            IToken peek = tokens.PeekToken();
             if(peek.Type == TokenType.OpenPeren)
             {
                 return new TupleType(tokens);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 
 namespace Compiler
@@ -109,26 +108,5 @@ namespace Compiler
         CharLiteral,
         TrueKeyword,
         FalseKeyword,
-    }
-    [DebuggerDisplay("{Type} \t {Text}")]
-    public struct Token
-    {
-        public string Text;
-        public TokenType Type;
-        public int Index;
-        public Token(string text, TokenType type, int index)
-        {
-            Text = text;
-            Type = type;
-            Index = index;
-        }
-        public bool IsTrivia => Type == TokenType.Whitespace ||
-                                Type == TokenType.WhitespaceWithLineBreak ||
-                                Type == TokenType.SingleLineComment ||
-                                Type == TokenType.MultiLineComment;
-        public override string ToString()
-        {
-            return Text;
-        }
     }
 }

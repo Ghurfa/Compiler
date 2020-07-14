@@ -7,13 +7,13 @@ namespace Compiler.SyntaxTreeItems.Statements
 {
     public class CodeBlock : Statement
     {
-        public readonly Token OpenBrace;
+        public readonly IToken OpenBrace;
         public readonly Statement[] Statements;
-        public readonly Token CloseBrace;
+        public readonly IToken CloseBrace;
 
         public CodeBlock(TokenCollection tokens)
         : this(tokens, tokens.PopToken(TokenType.OpenCurly)) { }
-        public CodeBlock(TokenCollection tokens, Token openBrace)
+        public CodeBlock(TokenCollection tokens, IToken openBrace)
         {
             OpenBrace = openBrace;
 

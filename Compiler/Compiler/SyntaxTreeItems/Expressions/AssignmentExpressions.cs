@@ -8,7 +8,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
     public abstract class AssignmentExpression : Expression, ICompleteStatement
     {
         public readonly UnaryExpression Left;
-        public readonly Token Assignment;
+        public readonly IToken Assignment;
         public readonly Expression Right;
         public AssignmentExpression(TokenCollection tokens, UnaryExpression left)
         {

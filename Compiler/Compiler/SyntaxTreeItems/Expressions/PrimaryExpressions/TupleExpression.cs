@@ -7,11 +7,11 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
 {
     public class TupleExpression : PrimaryExpression
     {
-        public readonly Token OpenPeren;
+        public readonly IToken OpenPeren;
         public readonly TupleItem[] Values;
-        public readonly Token ClosePeren;
+        public readonly IToken ClosePeren;
 
-        public TupleExpression(TokenCollection tokens, Token openPerens, Expression firstValue, Token firstComma)
+        public TupleExpression(TokenCollection tokens, IToken openPerens, Expression firstValue, IToken firstComma)
         {
             OpenPeren = openPerens;
 

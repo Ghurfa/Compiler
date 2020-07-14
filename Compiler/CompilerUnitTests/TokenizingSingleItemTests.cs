@@ -100,7 +100,7 @@ namespace CompilerUnitTests
         {
             var tokens = Tokenizer.Tokenize(text);
             int count = 0;
-            foreach (Token token in tokens)
+            foreach (IToken token in tokens)
             {
                 count++;
                 Assert.Equal(expectedType, token.Type);
@@ -117,7 +117,7 @@ namespace CompilerUnitTests
             {
                 var tokens = Tokenizer.Tokenize(text);
                 int count = 0;
-                foreach (Token token in tokens)
+                foreach (IToken token in tokens)
                 {
                     Assert.Equal(expectedType, token.Type);
                     Assert.Equal(text, token.Text);
@@ -136,7 +136,7 @@ namespace CompilerUnitTests
         {
             var tokens = Tokenizer.Tokenize("//a\r\n");
             int count = 0;
-            foreach (Token token in tokens)
+            foreach (IToken token in tokens)
             {
                 if (count == 0)
                 {
@@ -167,7 +167,7 @@ namespace CompilerUnitTests
             var tokens = Tokenizer.Tokenize('"' + innerText + '"');
 
             int count = 0;
-            foreach (Token token in tokens)
+            foreach (IToken token in tokens)
             {
                 if (count == 0 || count == 2)
                 {
@@ -196,7 +196,7 @@ namespace CompilerUnitTests
                 var tokens = Tokenizer.Tokenize('"' + text + '"');
 
                 int count = 0;
-                foreach (Token token in tokens)
+                foreach (IToken token in tokens)
                 {
                     if (count == 0 || count == 2)
                     {
@@ -233,7 +233,7 @@ namespace CompilerUnitTests
             var tokens = Tokenizer.Tokenize('\'' + innerText + '\'');
 
             int count = 0;
-            foreach (Token token in tokens)
+            foreach (IToken token in tokens)
             {
                 if (count == 0 || count == 2)
                 {

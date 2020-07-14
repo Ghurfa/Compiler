@@ -9,9 +9,9 @@ namespace Compiler.SyntaxTreeItems
 {
     public class ParameterListDeclaration
     {
-        public readonly Token OpenPeren;
+        public readonly IToken OpenPeren;
         public readonly ParameterDeclaration[] Parameters;
-        public readonly Token ClosePeren;
+        public readonly IToken ClosePeren;
         public ParameterListDeclaration(TokenCollection tokens)
         {
             OpenPeren = tokens.PopToken(TokenType.OpenPeren);

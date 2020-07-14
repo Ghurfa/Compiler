@@ -7,9 +7,9 @@ namespace Compiler.SyntaxTreeItems.Expressions.PrimaryExpressions
     public class NullCondArrayAcessExpression : PrimaryExpression
     {
         public readonly PrimaryExpression Array;
-        public readonly Token NullCondOpenBracket;
+        public readonly IToken NullCondOpenBracket;
         public readonly Expression Index;
-        public readonly Token CloseBracket;
+        public readonly IToken CloseBracket;
 
         public NullCondArrayAcessExpression(TokenCollection tokens, PrimaryExpression baseExpr)
         {

@@ -6,10 +6,10 @@ namespace Compiler.SyntaxTreeItems.Statements
 {
     public class ReturnStatement : Statement
     {
-        public readonly Token ReturnKeyword;
-        public readonly Token OpenPeren;
+        public readonly IToken ReturnKeyword;
+        public readonly IToken OpenPeren;
         public readonly Expression Expression;
-        public readonly Token ClosePeren;
+        public readonly IToken ClosePeren;
 
         public ReturnStatement(TokenCollection tokens)
         {

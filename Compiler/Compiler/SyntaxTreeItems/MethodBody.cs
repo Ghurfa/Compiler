@@ -8,9 +8,9 @@ namespace Compiler.SyntaxTreeItems
 {
     public class MethodBodyDeclaration
     {
-        public readonly Token OpenBrace;
+        public readonly IToken OpenBrace;
         public readonly Statement[] Statements;
-        public readonly Token CloseBrace;
+        public readonly IToken CloseBrace;
         public MethodBodyDeclaration(TokenCollection tokens)
         {
             OpenBrace = tokens.PopToken(TokenType.OpenCurly);

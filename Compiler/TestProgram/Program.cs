@@ -12,26 +12,26 @@ namespace TestProgram
     {
         static void PrintTokenList(TokenCollection tokens, bool showWhitespace)
         {
-            foreach (Token token in tokens)
+            foreach (IToken token in tokens)
             {
                 PrintToken(token, true, !showWhitespace);
             }
         }
-        static void PrintContext(TokenCollection tokens, Token token, int tokensBefore, int tokensAfter)
+        static void PrintContext(TokenCollection tokens, IToken token, int tokensBefore, int tokensAfter)
         {
-            foreach (Token contextToken in tokens.GetContext(token, tokensBefore, tokensAfter))
+            foreach (IToken contextToken in tokens.GetContext(token, tokensBefore, tokensAfter))
             {
-                if(token.Index == contextToken.Index)
+                if (token.Index == contextToken.Index)
                 {
                     PrintToken(contextToken, true, true, ConsoleColor.Magenta);
                 }
                 else
                 {
                     PrintToken(contextToken, true);
-                }    
+                }
             }
         }
-        static void PrintToken(Token token, bool withIndex = false, bool skipTrivia = true, ConsoleColor? forceColor = null)
+        static void PrintToken(IToken token, bool withIndex = false, bool skipTrivia = true, ConsoleColor? forceColor = null)
         {
             if (withIndex)
             {
@@ -65,7 +65,7 @@ namespace TestProgram
             Console.ForegroundColor = name.First() == '[' ? ConsoleColor.Magenta : ConsoleColor.White;
             Console.Write($"{name}: ");
 
-            if (obj is Token token)
+            if (obj is IToken token)
             {
                 PrintToken(token);
             }

@@ -7,9 +7,9 @@ namespace Compiler.SyntaxTreeItems.Expressions
     public class InlineIfExpression : Expression
     {
         public readonly Expression Condition;
-        public readonly Token QuestionMark;
+        public readonly IToken QuestionMark;
         public readonly Expression IfTrue;
-        public readonly Token Backslash;
+        public readonly IToken Backslash;
         public readonly Expression IfFalse;
 
         public InlineIfExpression(TokenCollection tokens, Expression condition)

@@ -16,25 +16,25 @@ namespace Compiler
     }
     public class InvalidTokenException : SyntaxTreeBuildingException
     {
-        public readonly Token Token;
-        public InvalidTokenException(Token token)
+        public readonly IToken Token;
+        public InvalidTokenException(IToken token)
             : base($"Unexpected token of type {token.Type.ToString()}") { Token = token; }
-        public InvalidTokenException(Token token, string message)
+        public InvalidTokenException(IToken token, string message)
             : base(message) { Token = token; }
     }
     public class InvalidEndOfStatementException : InvalidTokenException
     {
-        public InvalidEndOfStatementException(Token token)
+        public InvalidEndOfStatementException(IToken token)
             : base(token, $"Invalid end of statement or field declarator. Expected ';' or line break") { }
     }
     public class MissingWhitespaceException : InvalidTokenException
     {
-        public MissingWhitespaceException(Token token)
+        public MissingWhitespaceException(IToken token)
             : base(token, $"Expected whitespace") { }
     }
     public class MissingLineBreakException : InvalidTokenException
     {
-        public MissingLineBreakException(Token token)
+        public MissingLineBreakException(IToken token)
             : base(token, $"Expected a line break between non-perenthesized condition and embedded statement") { }
     }
     public class InvalidStatementException : SyntaxTreeBuildingException

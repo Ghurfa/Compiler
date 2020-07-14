@@ -7,7 +7,7 @@ namespace Compiler.SyntaxTreeItems.Expressions
     public abstract class BinaryOperatorExpression : Expression
     {
         public readonly Expression Left;
-        public readonly Token BinaryOperator;
+        public readonly IToken BinaryOperator;
         public readonly Expression Right;
         public BinaryOperatorExpression(TokenCollection tokens, Expression left)
         {

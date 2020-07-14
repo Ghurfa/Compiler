@@ -10,10 +10,10 @@ namespace Compiler
     public class NamespaceDeclaration
     {
         public QualifiedIdentifier Name;
-        public Token NamespaceKeyword;
-        public Token OpenBrace;
+        public IToken NamespaceKeyword;
+        public IToken OpenBrace;
         public ClassDeclaration[] ClassDeclarations;
-        public Token CloseBrace;
+        public IToken CloseBrace;
         public NamespaceDeclaration(TokenCollection tokens)
         {
             Name = new QualifiedIdentifier(tokens);

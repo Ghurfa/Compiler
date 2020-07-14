@@ -6,8 +6,8 @@ namespace Compiler.SyntaxTreeItems.Expressions
 {
     public class PrimitiveTypeExpression : PrimaryExpression
     {
-        public readonly Token PrimitiveType;
-        public PrimitiveTypeExpression(TokenCollection tokens, Token primitiveToken)
+        public readonly IToken PrimitiveType;
+        public PrimitiveTypeExpression(TokenCollection tokens, IToken primitiveToken)
         {
             PrimitiveType = primitiveToken;
         }

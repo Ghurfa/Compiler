@@ -9,12 +9,12 @@ namespace Compiler
 {
     public class ClassDeclaration
     {
-        public readonly Token Name;
+        public readonly IToken Name;
         public readonly ModifierList Modifiers;
-        public readonly Token ClassKeyword;
-        public readonly Token OpenBrace;
+        public readonly IToken ClassKeyword;
+        public readonly IToken OpenBrace;
         public readonly ClassItemDeclaration[] ClassItemDeclarations;
-        public readonly Token CloseBrace;
+        public readonly IToken CloseBrace;
         public ClassDeclaration(TokenCollection tokens)
         {
             Name = tokens.PopToken(TokenType.Identifier);

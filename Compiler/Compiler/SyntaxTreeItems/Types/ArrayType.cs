@@ -7,8 +7,8 @@ namespace Compiler.SyntaxTreeItems.Types
     public class ArrayType : Type
     {
         public readonly Type BaseType;
-        public readonly Token OpenArrayBracket;
-        public readonly Token CloseArrayBracket;
+        public readonly IToken OpenArrayBracket;
+        public readonly IToken CloseArrayBracket;
         public ArrayType(TokenCollection tokens, Type baseType)
         {
             BaseType = baseType;

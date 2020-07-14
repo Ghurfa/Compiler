@@ -7,7 +7,7 @@ namespace Compiler.SyntaxTreeItems.Statements
     public class ExpressionStatement : Statement
     {
         public readonly Expression Expression;
-        public readonly Token? Semicolon;
+        public readonly IToken? Semicolon;
         public ExpressionStatement(TokenCollection tokens)
         {
             var expression = SyntaxTreeItems.Expression.ReadExpression(tokens);
