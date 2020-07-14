@@ -1,0 +1,23 @@
+>ExpressionParts
+{
+    .Argument
+    Expression
+    Comma?
+
+    .ArgumentList
+    Argument[]:Arguments;until lastMissingComma
+
+    .TupleItem
+    Expression
+    Comma?
+
+    .TupleItemList
+    TupleItem[]:Values;until lastMissingComma
+
+    .QualifiedIdentifierPart
+    Identifier
+    Dot?
+
+    .QualifiedIdentifier
+    QualifiedIdentifierPart[]:Parts;until lastMissingDot
+}

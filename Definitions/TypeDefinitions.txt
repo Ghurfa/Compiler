@@ -1,0 +1,19 @@
++Type
+>Types
+{
+    .ArrayType
+    Type:BaseType;notNullParam
+    OpenBracket
+    CloseBracket
+
+    .PrimitiveType
+    @PrimitiveTypeToken:PrimitiveType
+
+    .QualifiedIdentifierType
+    QualifiedIdentifier:Identifier
+
+    .TupleType
+    OpenPeren
+    TupleTypeItemList:Items
+    ClosePeren
+}

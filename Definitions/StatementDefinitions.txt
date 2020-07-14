@@ -1,0 +1,82 @@
+>Statement
++Statement
+{
+    .CodeBlock
+    OpenCurly
+    Statement[]:Statements;untilPop CloseCurly
+
+    $Statement
+    {
+        .Empty
+        Semicolon
+
+        .Expression
+        Expression;is ICompleteStatement
+        Semicolon?;EnsureValidStatementEnding
+
+        .If
+        IfKeyword
+        Expression:Condition
+        Statement:IfTrue
+        ElseKeyword?
+        Statement:IfFalse;ifNotNull ElseKeyword
+        ;ifNotType PerenthesizedExpression:Condition;EnsureWhitespaceAfter IfKeyword
+        ;ifNotType PerenthesizedExpression:Condition;ifNotType CodeBlock:IfTrue;EnsureLineBreakAfter Condition
+        ;ifNotNull ElseKeyword;ifNotType CodeBlock:IfFalse;EnsureWhitespaceAfter ElseKeyword
+
+        .While
+        WhileKeyword
+        Expression:Condition
+        Statement:Body
+        ;ifNotType PerenthesizedExpression:Condition;EnsureWhitespaceAfter WhileKeyword
+        ;ifNotType PerenthesizedExpression:Condition;ifNotType CodeBlock:Body;EnsureLineBreakAfter Condition
+
+        .For
+        ForKeyword
+        OpenPeren
+        Statement:StartStatement
+        Expression:ContinueExpr
+        SecondSemicolon?;EnsureValidStatementEnding
+        Statement:RepeatStatement
+        ClosePeren
+        Statement:Body
+
+        .Foreach
+        ForeachKeyword
+        OpenPeren
+        DeclarationStatement:IteratorDecl
+        InKeyword
+        Expression:IterateOn
+        ClosePeren
+        Statement:Body
+
+        .Switch
+        SwitchKeyword
+        Expression:SwitchOn
+        OpenBracket
+        CaseStatement[];untilPop CloseBracket
+        ;IfNotType PerenthesizedExpression:SwitchOn;EnsureWhitespaceAfter SwitchKeyword
+
+        .Return
+        ReturnKeyword
+        ;EnsureWhitespaceAfter ReturnKeyword
+        Expression
+
+        .Exit
+        ExitKeyword
+        Semicolon?;EnsureValidStatementEnding
+
+        .Break
+        BreakKeyword
+        Semicolon?;EnsureValidStatementEnding
+
+        .Continue
+        ContinueKeyword
+        Semicolon?;EnsureValidStatementEnding
+
+        .Throw
+        ThrowKeyword
+        Expression:Exception
+        Semicolon?;EnsureValidStatementEnding
+    }
+}

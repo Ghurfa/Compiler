@@ -21,6 +21,7 @@ ForKeyword
 ForeachKeyword
 SwitchKeyword
 ReturnKeyword
+ExitKeyword
 BreakKeyword
 ContinueKeyword
 ThrowKeyword
@@ -28,6 +29,7 @@ ThrowKeyword
 //Miscellaneous keywords
 AsKeyword
 NewKeyword
+InKeyword
 
 //Trivia
 +Trivia
@@ -64,7 +66,7 @@ Decrement
 //Binary operators
 Plus
 Minus
-Asterisk
+Multiply
 Divide
 Modulo
 BitwiseAnd
@@ -79,7 +81,7 @@ Assign
 DeclAssign
 PlusAssign
 MinusAssign
-TimesAssign
+MultiplyAssign
 DivideAssign
 ModuloAssign
 BitwiseAndAssign
