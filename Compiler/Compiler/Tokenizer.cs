@@ -32,18 +32,7 @@ namespace Compiler
             "base",
             "value"
         };
-
-        static string[] syntaxChars = new string[] { ".", ",", "(", ")", "[", "]", "{", "}", "?", ":", ";" };
-        static string[] operators = new string[] {  "=", ":=",
-                                                    "+", "-", "*", "/", "%",
-                                                    "+=", "-=", "*-", "/=", "%=",
-                                                    "++", "--",
-                                                    "==", "!=", "<", ">", "<=", ">=",
-                                                    "&&", "||", "!",
-                                                    "&", "|", "^", "<<", ">>", "~",
-        };
-
-        static char[] nonPunctuationSymbols = new char[] { '+', '=', '<', '>', '|' };
+        static char[] nonPunctuationSymbols = new char[] { '+', '=', '<', '>', '|', '^', '~' };
         static bool IsSymbol(char character)
         {
             if (char.IsPunctuation(character))
@@ -71,11 +60,11 @@ namespace Compiler
             int start = i;
             bool hasLineBreak = false;
 
-            while (char.IsWhiteSpace(text[i]))
+            while (i < text.Length && char.IsWhiteSpace(text[i]))
             {
-                if (!hasLineBreak)
+                if (!hasLineBreak && (i - start) >= newLine.Length - 1)
                 {
-                    hasLineBreak = text.Substring(i - newLine.Length, newLine.Length) == newLine;
+                    hasLineBreak = text.Substring(i - newLine.Length + 1, newLine.Length) == newLine;
                 }
                 i++;
             }
@@ -93,23 +82,46 @@ namespace Compiler
                 if (nextChar == '/')
                 {
                     string newLine = Environment.NewLine;
-                    while (text.Substring(i - newLine.Length, newLine.Length) != newLine)
+                    bool foundLineBreak = false;
+                    while (i < text.Length)
                     {
+                        if ((i - start >= newLine.Length - 1) && text.Substring(i - newLine.Length + 1, newLine.Length) == newLine)
+                        {
+                            foundLineBreak = true;
+                            i++;
+                            break;
+                        }
                         i++;
                     }
-                    tokens.Add(text.Substring(start, i - newLine.Length - start), TokenType.SingleLineComment);
-                    tokens.Add(newLine, TokenType.WhitespaceWithLineBreak);
-                    i++;
+                    if (foundLineBreak)
+                    {
+                        tokens.Add(text.Substring(start, i - newLine.Length - start), TokenType.SingleLineComment);
+                        tokens.Add(newLine, TokenType.WhitespaceWithLineBreak);
+                    }
+                    else
+                    {
+                        tokens.Add(text.Substring(start, i - start), TokenType.SingleLineComment);
+                    }
                 }
                 else if (nextChar == '*')
                 {
                     string endCommentString = "*/";
-                    while (text.Substring(i - endCommentString.Length, endCommentString.Length) != endCommentString)
+                    bool foundEnd = false;
+                    while (i < text.Length)
                     {
+                        if ((i - start >= endCommentString.Length - 1) && text.Substring(i - endCommentString.Length + 1, endCommentString.Length) == endCommentString)
+                        {
+                            foundEnd = true;
+                            i++;
+                            break;
+                        }
                         i++;
                     }
-                    tokens.Add(text.Substring(start, i - start), TokenType.MultiLineComment);
-                    i++;
+                    if (foundEnd)
+                    {
+                        tokens.Add(text.Substring(start, i - start), TokenType.MultiLineComment);
+                    }
+                    else throw new TokenizingException(i);
                 }
                 else if (nextChar == '=')
                 {
@@ -149,6 +161,9 @@ namespace Compiler
                 case "*": type = TokenType.Asterisk; return true;
                 case "/": type = TokenType.Divide; return true;
                 case "%": type = TokenType.Modulo; return true;
+                case "&": type = TokenType.BitwiseAnd; return true;
+                case "|": type = TokenType.BitwiseOr; return true;
+                case "^": type = TokenType.BitwiseXor; return true;
                 case "<<": type = TokenType.LeftShift; return true;
                 case ">>": type = TokenType.RightShift; return true;
                 case "??": type = TokenType.NullCoalescing; return true;
@@ -156,14 +171,19 @@ namespace Compiler
                 case ":=": type = TokenType.DeclAssign; return true;
                 case "+=": type = TokenType.PlusAssign; return true;
                 case "-=": type = TokenType.MinusAssign; return true;
-                case "*-": type = TokenType.TimesAssign; return true;
+                case "*=": type = TokenType.TimesAssign; return true;
                 case "/=": type = TokenType.DivideAssign; return true;
                 case "%=": type = TokenType.ModuloAssign; return true;
+                case "&=": type = TokenType.BitwiseAndAssign; return true;
+                case "|=": type = TokenType.BitwiseOrAssign; return true;
+                case "^=": type = TokenType.BitwiseXorAssign; return true;
                 case "<<=": type = TokenType.LeftShiftAssign; return true;
                 case ">>=": type = TokenType.RightShiftAssign; return true;
                 case "??=": type = TokenType.NullCoalescingAssign; return true;
                 case "++": type = TokenType.Increment; return true;
                 case "--": type = TokenType.Decrement; return true;
+                case "!": type = TokenType.Not; return true;
+                case "~": type = TokenType.BitwiseNot; return true;
                 case "==": type = TokenType.Equals; return true;
                 case "!=": type = TokenType.NotEquals; return true;
                 case "<": type = TokenType.LessThan; return true;
@@ -172,11 +192,6 @@ namespace Compiler
                 case ">=": type = TokenType.GreaterThanOrEqualTo; return true;
                 case "&&": type = TokenType.And; return true;
                 case "||": type = TokenType.Or; return true;
-                case "!": type = TokenType.Not; return true;
-                case "&": type = TokenType.BitwiseAnd; return true;
-                case "|": type = TokenType.BitwiseOr; return true;
-                case "^": type = TokenType.BitwiseXor; return true;
-                case "~": type = TokenType.BitwiseNot; return true;
                 default: type = default; return false;
             }
         }
@@ -228,12 +243,13 @@ namespace Compiler
         {
             int start;
             i++;
-            switch (text[i++])
+            if (i >= text.Length) throw new TokenizingException(i);
+            switch (text[i])
             {
                 case '\\':
                 case '\'':
                 case '"':
-                    return text[i];
+                    return text[i++];
                 case '0': return (char)0;
                 case 'a': return (char)7;
                 case 'b': return (char)8;
@@ -243,24 +259,22 @@ namespace Compiler
                 case 'f': return (char)12;
                 case 'r': return (char)13;
                 case 'u':
+                    i++;
                     for (start = i; i < start + 4; i++)
                     {
+                        if (i >= text.Length) throw new TokenizingException(i);
                         if (!IsHexadecimal(text[i])) throw new TokenizingException(i);
                     }
                     return (char)int.Parse(text.Substring(start, 4), System.Globalization.NumberStyles.HexNumber);
                 case 'x':
+                    i++;
                     for (start = i; i < start + 4; i++)
                     {
+                        if (i >= text.Length) throw new TokenizingException(i);
                         if (!IsHexadecimal(text[i])) break;
                     }
                     if (i == start) throw new TokenizingException(i);
                     return (char)int.Parse(text.Substring(start, i - start), System.Globalization.NumberStyles.HexNumber);
-                case 'U':
-                    for (start = i; i < start + 8; i++)
-                    {
-                        if (!IsHexadecimal(text[i])) throw new TokenizingException(i);
-                    }
-                    return (char)int.Parse(text.Substring(start, 8), System.Globalization.NumberStyles.HexNumber);
                 default: throw new TokenizingException(i);
             }
         }
@@ -298,11 +312,12 @@ namespace Compiler
             i++;
             char literal;
 
+            if (i >= text.Length) throw new TokenizingException(i);
             if (text[i] == '\\') literal = ParseEscapedChar(text, ref i);
             else if (text[i] == '\'') throw new TokenizingException(i);
-            else literal = text[i];
+            else literal = text[i++];
 
-            i++;
+            if (i >= text.Length) throw new TokenizingException(i);
             if (text[i] != '\'') throw new TokenizingException(i);
             i++;
 
@@ -322,9 +337,10 @@ namespace Compiler
                 case "ctor": tokenType = TokenType.ConstructorKeyword; return true;
                 case "if": tokenType = TokenType.IfKeyword; return true;
                 case "else": tokenType = TokenType.ElseKeyword; return true;
+                case "while": tokenType = TokenType.WhileKeyword; return true;
                 case "for": tokenType = TokenType.ForKeyword; return true;
                 case "foreach": tokenType = TokenType.ForeachKeyword; return true;
-                case "while": tokenType = TokenType.WhileKeyword; return true;
+                case "switch": tokenType = TokenType.SwitchKeyword; return true;
                 case "return": tokenType = TokenType.ReturnKeyword; return true;
                 case "break": tokenType = TokenType.BreakKeyword; return true;
                 case "continue": tokenType = TokenType.ContinueKeyword; return true;
@@ -342,7 +358,7 @@ namespace Compiler
                     }
                     else if (valueKeywords.Contains(word))
                     {
-                        tokenType = TokenType.Modifier;
+                        tokenType = TokenType.ValueKeyword;
                         return true;
                     }
                     else

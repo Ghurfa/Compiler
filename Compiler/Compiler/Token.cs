@@ -22,9 +22,10 @@ namespace Compiler
         //Control keywords
         IfKeyword,
         ElseKeyword,
+        WhileKeyword,
         ForKeyword,
         ForeachKeyword,
-        WhileKeyword,
+        SwitchKeyword,
         ReturnKeyword,
         BreakKeyword,
         ContinueKeyword,
