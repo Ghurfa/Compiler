@@ -1,14 +1,14 @@
 $Expression
->GeneratedExpressions
+>#GeneratedExpressions
 {
     +Expression
     >Expressions
     {
         //Assignment Expression
         =UnaryExpression:To Token Expression:From
+        >AssignmentExpressions
         +ICompleteStatement
         {
-            >AssignmentExpressions
             Assign
             DeclAssign
             PlusAssign
@@ -88,25 +88,11 @@ $Expression
         Expression:Index
         CloseBracket
 
-        .CharLiteral
-        SingleQuote:OpenQuote
-        CharLiteral:Text
-        SingleQuote:CloseQuote
-
         .Declaration
         +ICompleteStatement
         Identifier
         Colon
         Type
-
-        .FalseLiteral
-        FalseKeyword
-
-        .Identifier
-        Identifier
-
-        .IntLiteral
-        IntLiteral
 
         .MemberAccess
         PrimaryExpression:BaseExpression
@@ -144,33 +130,53 @@ $Expression
         Expression
         ClosePeren
 
-        .PostDecrement
-        +ICompleteStatement
-        PrimaryExpression:BaseExpression
-        Decrement
-
         .PostIncrement
         +ICompleteStatement
         PrimaryExpression:BaseExpression
         Increment
 
-        .PrimitiveType
-        PrimitiveType
+        .PostDecrement
+        +ICompleteStatement
+        PrimaryExpression:BaseExpression
+        Decrement
 
-        .StringLiteral
-        DoubleQuote:OpenQuote
-        StringLiteral:Text
-        DoubleQuote:CloseQuote
-        
-        .TrueLiteral
-        TrueKeyword
+        >ValueExpressions
+        {
+            .Identifier
+            Identifier
 
-        .Tuple
-        OpenPeren
-        TupleItemList:Values
-        ClosePeren
+            .PrimitiveType
+            PrimitiveType
 
-        .ValueKeyword
-        ValueKeyword
+            .ValueKeyword
+            ValueKeyword
+
+            .Tuple
+            OpenPeren
+            TupleItemList:Values
+            ClosePeren
+        }
+
+        >Literals
+        {
+            .IntLiteral
+            IntLiteral
+
+            .StringLiteral
+            DoubleQuote:OpenQuote
+            StringLiteral:Text
+            DoubleQuote:CloseQuote
+            
+            .CharLiteral
+            SingleQuote:OpenQuote
+            CharLiteral:Text
+            SingleQuote:CloseQuote
+
+            .TrueLiteral
+            TrueKeyword
+
+            .FalseLiteral
+            FalseKeyword
+        }
     }
 }

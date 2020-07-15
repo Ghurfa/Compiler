@@ -22,11 +22,11 @@ namespace CodeGenerator
             GenerateSet(lines, ref i, tokenNames, new Context(baseDir));
         }
 
-        private static void ClearBaseDirectory(string baseDir)
+        private static void ClearDirectory(string dirPath)
         {
-            if (Directory.Exists(baseDir))
+            if (Directory.Exists(dirPath))
             {
-                DirectoryInfo dir = new DirectoryInfo(baseDir);
+                DirectoryInfo dir = new DirectoryInfo(dirPath);
                 foreach (FileInfo file in dir.EnumerateFiles())
                 {
                     file.Delete();
@@ -35,10 +35,6 @@ namespace CodeGenerator
                 {
                     innerDir.Delete(true);
                 }
-            }
-            else
-            {
-                Directory.CreateDirectory(baseDir);
             }
         }
 
@@ -67,7 +63,20 @@ namespace CodeGenerator
                 switch (current.First())
                 {
                     case '/': i++; break;
-                    case '>': context.Directory += current.Substring(1) + "\\"; i++; break;
+                    case '>':
+                        {
+                            if (current[1] == '#')
+                            {
+                                context.Directory += current.Substring(2) + "\\";
+                                ClearDirectory(context.Directory);
+                            }
+                            else
+                            {
+                                context.Directory += current.Substring(1) + "\\";
+                            }
+                            i++;
+                            break;
+                        }
                     case '$': context.Suffix = current.Substring(1) + context.Suffix; i++; break;
                     case '+': context.Interfaces.AddLast(current.Substring(1)); i++; break;
                     case '=': context.Pattern = current.Substring(1); i++; break;
@@ -102,7 +111,19 @@ namespace CodeGenerator
                 switch (current.First())
                 {
                     case '/': break;
-                    case '>': context.Directory += current.Substring(1) + "\\"; break;
+                    case '>':
+                        {
+                            if (current[1] == '#')
+                            {
+                                context.Directory += current.Substring(2) + "\\";
+                                ClearDirectory(context.Directory);
+                            }
+                            else
+                            {
+                                context.Directory += current.Substring(1) + "\\";
+                            }
+                            break;
+                        }
                     case '$': context.Suffix = current.Substring(1) + context.Suffix; break;
                     case '+': context.Interfaces.AddLast(current.Substring(1)); break;
                     case '=': throw new InvalidOperationException();
