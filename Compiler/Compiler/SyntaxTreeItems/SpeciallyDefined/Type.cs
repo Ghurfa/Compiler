@@ -1,17 +1,18 @@
-﻿using Compiler.SyntaxTreeItems.Types;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Compiler.SyntaxTreeItems
+namespace Compiler
 {
     public abstract class Type
     {
+        public abstract IToken LeftToken { get; }
+        public abstract IToken RightToken { get; }
         public static Type ReadType(TokenCollection tokens)
         {
             IToken peek = tokens.PeekToken();
-            if(peek.Type == TokenType.OpenPeren)
+            if(peek is OpenPerenToken openPeren)
             {
                 return new TupleType(tokens);
             }
@@ -19,9 +20,9 @@ namespace Compiler.SyntaxTreeItems
             Type baseType;
 
 
-            if(peek.Type == TokenType.PrimitiveType)
+            if(peek is PrimitiveType primType)
             {
-                baseType = new BuiltInType(tokens);
+                baseType = new PrimitiveType(tokens);
             }
             else
             {
@@ -32,7 +33,7 @@ namespace Compiler.SyntaxTreeItems
             bool finished = false;
             while(!finished)
             {
-                if (tokens.PeekToken().Type == TokenType.OpenBracket)
+                if (tokens.PeekToken() is OpenBracketToken)
                 {
                     typeSoFar = new ArrayType(tokens, typeSoFar);
                 }

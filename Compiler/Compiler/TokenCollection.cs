@@ -64,7 +64,7 @@ namespace Compiler
             else throw new InvalidTokenException(peek);
         }
 
-        public IToken EnsureValidStatementEnding()
+        public SemicolonToken? EnsureValidStatementEnding()
         {
             pointer = lastUsedToken + 1;
             if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
@@ -105,6 +105,7 @@ namespace Compiler
             }
         }
 
+        public void EnsureLineBreakAfter(Expression expr) => EnsureLineBreakAfter(expr.RightToken);
         public void EnsureLineBreakAfter(IToken token)
         {
             int save = pointer;

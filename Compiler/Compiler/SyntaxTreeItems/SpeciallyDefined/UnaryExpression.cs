@@ -2,41 +2,23 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Compiler.SyntaxTreeItems.Expressions
+namespace Compiler
 {
     public abstract class UnaryExpression : Expression
     {
         public static UnaryExpression ReadUnaryExpression(TokenCollection tokens)
         {
-            if (tokens.PopIfMatches(out IToken plusToken, TokenType.Plus))
+            switch(tokens.PeekToken())
             {
-                return new UnaryPlusExpression(tokens, plusToken);
+                case PlusToken _: return new UnaryPlusExpression(tokens);
+                case MinusToken _: return new UnaryMinusExpression(tokens);
+                case IncrementToken _: return new PreIncrementExpression(tokens);
+                case DecrementToken _: return new PreDecrementExpression(tokens);
+                case LogicalNotExpression _: return new LogicalNotExpression(tokens);
+                case BitwiseNotExpression _: return new BitwiseNotExpression(tokens);
+                case AsteriskToken _: return new DereferenceExpression(tokens);
+                default: return PrimaryExpression.ReadPrimaryExpression(tokens);
             }
-            else if (tokens.PopIfMatches(out IToken minusToken, TokenType.Minus))
-            {
-                return new UnaryMinusExpression(tokens, minusToken);
-            }
-            else if (tokens.PopIfMatches(out IToken incrementToken, TokenType.Increment))
-            {
-                return new PreIncrementExpression(tokens, incrementToken);
-            }
-            else if (tokens.PopIfMatches(out IToken decrementToken, TokenType.Decrement))
-            {
-                return new PreDecrementExpression(tokens, decrementToken);
-            }
-            else if (tokens.PopIfMatches(out IToken notToken, TokenType.Not))
-            {
-                return new LogicalNotExpression(tokens, notToken);
-            }
-            else if (tokens.PopIfMatches(out IToken bitwiseNotToken, TokenType.BitwiseNot))
-            {
-                return new BitwiseNotExpression(tokens, bitwiseNotToken);
-            }
-            else if (tokens.PopIfMatches(out IToken derefToken, TokenType.Asterisk))
-            {
-                return new DereferenceExpression(tokens, derefToken);
-            }
-            else return PrimaryExpression.ReadPrimaryExpression(tokens);
         }
     }
 }

@@ -24,7 +24,7 @@ $Expression
         }
 
         //Binary Expressions
-        =Expression:LeftToken Expression:Right
+        =Expression:Left Token Expression:Right
         {
             >BinaryOperators
             Plus
@@ -52,7 +52,7 @@ $Expression
 
         .Cast
         UnaryExpression:Expression
-        AsToken
+        AsKeyword
         Type:CastTo
 
         .If
@@ -79,7 +79,7 @@ $Expression
     }
 
     //Primary Expressions
-    +PrimaryExpressions
+    +PrimaryExpression
     >Expressions
     >PrimaryExpressions
     {
@@ -140,7 +140,7 @@ $Expression
         NullCondDot
         Identifier:Item
 
-        .PerenthesizedExpression
+        .Perenthesized
         OpenPeren
         Expression
         ClosePeren

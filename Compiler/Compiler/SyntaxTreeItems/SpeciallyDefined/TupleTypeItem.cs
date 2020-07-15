@@ -1,40 +1,34 @@
-﻿using Compiler.SyntaxTreeItems.Types;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Compiler.SyntaxTreeItems
+namespace Compiler
 {
     public class TupleTypeItem
     {
-        public readonly IToken? Name;
-        public readonly IToken? Colon;
+        public readonly IdentifierToken? Name;
+        public readonly ColonToken? Colon;
         public readonly Type Type;
-        public readonly IToken? Comma;
+        public readonly CommaToken? Comma;
 
         public TupleTypeItem(TokenCollection tokens)
         {
-            if (tokens.PopIfMatches(out IToken identifier, TokenType.Identifier))
+            if (tokens.PopIfMatches(out Name))
             {
-                if (tokens.PopIfMatches(out IToken colon, TokenType.Colon))
+                if (tokens.PopIfMatches(out Colon))
                 {
-                    Name = identifier;
-                    Colon = colon;
                     Type = Type.ReadType(tokens);
                 }
                 else
                 {
-                    Type = new QualifiedIdentifierType(tokens, identifier);
+                    Type = new QualifiedIdentifierType(tokens, new QualifiedIdentifier(tokens, new QualifiedIdentifierPart[] { new QualifiedIdentifierPart(tokens, Name) }));
                 }
             }
             else
             {
                 Type = Type.ReadType(tokens);
             }
-            if (tokens.PopIfMatches(out IToken comma, TokenType.Comma))
-            {
-                Comma = comma;
-            }
+            tokens.PopIfMatches(out Comma);
         }
         public override string ToString()
         {

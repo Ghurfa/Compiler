@@ -1,5 +1,4 @@
-﻿using Compiler.SyntaxTreeItems;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -18,7 +17,7 @@ namespace Compiler
     {
         public readonly IToken Token;
         public InvalidTokenException(IToken token)
-            : base($"Unexpected token of type {token.Type.ToString()}") { Token = token; }
+            : base($"Unexpected token of type {token.GetType().Name}") { Token = token; }
         public InvalidTokenException(IToken token, string message)
             : base(message) { Token = token; }
     }

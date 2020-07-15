@@ -35,17 +35,17 @@ namespace TestProgram
         {
             if (withIndex)
             {
-                if (token.IsTrivia && skipTrivia) return;
+                if (token is ITriviaToken && skipTrivia) return;
                 Console.ForegroundColor = forceColor ?? ConsoleColor.White;
                 Console.Write($"{token.Index}:\t");
             }
-            if (token.IsTrivia)
+            if (token is ITriviaToken)
             {
                 if (skipTrivia) return;
                 Console.ForegroundColor = forceColor ?? ConsoleColor.White;
                 Console.WriteLine(token.Text);
             }
-            else if (token.Type == TokenType.Identifier || token.Type == TokenType.StringLiteral || token.Type == TokenType.CharLiteral || token.Type == TokenType.IntLiteral)
+            else if (token is IdentifierToken || token is StringLiteralExpression || token is CharLiteralExpression || token is IntLiteralExpression)
             {
                 Console.ForegroundColor = forceColor ?? ConsoleColor.Red;
                 Console.WriteLine(token.Text);
@@ -59,7 +59,7 @@ namespace TestProgram
         static void PrintObject(object obj, string name, int x = 0)
         {
             int depthWidth = 3;
-            Type objType = obj.GetType();
+            System.Type objType = obj.GetType();
 
             Console.CursorLeft = x;
             Console.ForegroundColor = name.First() == '[' ? ConsoleColor.Magenta : ConsoleColor.White;

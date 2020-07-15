@@ -14,10 +14,15 @@
     .TupleItemList
     TupleItem[]:Values;until lastMissingComma
 
+    .TupleTypeItemList
+    TupleTypeItem[]:Items;until lastMissingComma
+
     .QualifiedIdentifierPart
     Identifier
     Dot?
 
     .QualifiedIdentifier
     QualifiedIdentifierPart[]:Parts;until lastMissingDot
+
+    .CaseStatement
 }

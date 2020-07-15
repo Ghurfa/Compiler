@@ -2,12 +2,13 @@
 >Types
 {
     .ArrayType
-    Type:BaseType;notNullParam
+    //NotNullParam
+    Type:BaseType
     OpenBracket
     CloseBracket
 
     .PrimitiveType
-    @PrimitiveTypeToken:PrimitiveType
+    @PrimitiveTypeToken:PrimitiveTypeKeyword
 
     .QualifiedIdentifierType
     QualifiedIdentifier:Identifier

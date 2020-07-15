@@ -4,12 +4,12 @@ using System.Text;
 
 namespace Compiler
 {
-    public struct TimesAssignToken : IToken
+    public struct InKeywordToken : IToken
     {
         public string Text { get; private set; }
         public int Index { get; private set; }
 
-        public TimesAssignToken(string text, int index)
+        public InKeywordToken(string text, int index)
         {
             Text = text;
             Index = index;

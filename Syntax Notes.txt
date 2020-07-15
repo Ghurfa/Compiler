@@ -14,6 +14,7 @@ a:bool = y switch {
     14 -> false
     }
 === Make tokens separate types ===
+=== var (type, name) := (2, 3)
 === Make assignmentExpressions and binaryOperatorExpressions check type of token ==
 === Reconsider colon marking variable declaration ===
     Named parameters

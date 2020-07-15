@@ -38,11 +38,13 @@ namespace Compiler
                 case TokenType.ForeachKeyword: return new ForeachKeywordToken(text, index);
                 case TokenType.SwitchKeyword: return new SwitchKeywordToken(text, index);
                 case TokenType.ReturnKeyword: return new ReturnKeywordToken(text, index);
+                case TokenType.ExitKeyword: return new ExitKeywordToken(text, index);
                 case TokenType.BreakKeyword: return new BreakKeywordToken(text, index);
                 case TokenType.ContinueKeyword: return new ContinueKeywordToken(text, index);
                 case TokenType.ThrowKeyword: return new ThrowKeywordToken(text, index);
                 case TokenType.AsKeyword: return new AsKeywordToken(text, index);
                 case TokenType.NewKeyword: return new NewKeywordToken(text, index);
+                case TokenType.InKeyword: return new InKeywordToken(text, index);
                 case TokenType.SingleLineComment: return new SingleLineCommentToken(text, index);
                 case TokenType.MultiLineComment: return new MultiLineCommentToken(text, index);
                 case TokenType.Whitespace: return new WhitespaceToken(text, index);
@@ -82,7 +84,7 @@ namespace Compiler
                 case TokenType.DeclAssign: return new DeclAssignToken(text, index);
                 case TokenType.PlusAssign: return new PlusAssignToken(text, index);
                 case TokenType.MinusAssign: return new MinusAssignToken(text, index);
-                case TokenType.TimesAssign: return new TimesAssignToken(text, index);
+                case TokenType.MultiplyAssign: return new MultiplyAssignToken(text, index);
                 case TokenType.DivideAssign: return new DivideAssignToken(text, index);
                 case TokenType.ModuloAssign: return new ModuloAssignToken(text, index);
                 case TokenType.BitwiseAndAssign: return new BitwiseAndAssignToken(text, index);
