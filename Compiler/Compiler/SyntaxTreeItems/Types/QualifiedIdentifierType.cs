@@ -1,27 +1,24 @@
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace Compiler
+namespace Compiler.SyntaxTreeItems.Types
 {
     public class QualifiedIdentifierType : Type
     {
         public readonly QualifiedIdentifier Identifier;
-
-        public override IToken LeftToken => Identifier.LeftToken;
-        public override IToken RightToken => Identifier.RightToken;
-
-        public QualifiedIdentifierType(TokenCollection tokens, QualifiedIdentifier identifier = null)
+        public QualifiedIdentifierType(TokenCollection tokens)
         {
-            Identifier = identifier == null ? new QualifiedIdentifier(tokens) : identifier;
+            Identifier = new QualifiedIdentifier(tokens);
         }
-
+        public QualifiedIdentifierType(TokenCollection tokens, IdentifierToken firstIdentifier)
+        {
+            Identifier = new QualifiedIdentifier(tokens, firstIdentifier);
+        }
         public override string ToString()
         {
-            string ret = "";
-            
-            return ret;
+            return Identifier.ToString();
         }
     }
 }

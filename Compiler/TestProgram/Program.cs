@@ -1,4 +1,5 @@
 ﻿using Compiler;
+using Compiler.SyntaxTreeItems;
 using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
@@ -135,7 +136,7 @@ namespace TestProgram
         }
         static void Main(string[] args)
         {
-            var text = File.ReadAllText(@"..\..\..\..\..\FizzBuzz.txt");
+            var text = File.ReadAllText(@"..\..\..\..\..\guessingGame.txt");
             var tokens = Tokenizer.Tokenize(text);
             PrintTokenList(tokens, false);
             Console.WriteLine();

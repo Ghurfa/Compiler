@@ -1,43 +1,30 @@
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Xml;
 
-namespace Compiler
+namespace Compiler.SyntaxTreeItems
 {
     public class ParameterListDeclaration
     {
         public readonly OpenPerenToken OpenPeren;
         public readonly ParameterDeclaration[] Parameters;
         public readonly ClosePerenToken ClosePeren;
-
-        public  IToken LeftToken => OpenPeren;
-        public  IToken RightToken => ClosePeren;
-
-        public ParameterListDeclaration(TokenCollection tokens, OpenPerenToken? openPeren = null, ParameterDeclaration[] parameters = null)
+        public ParameterListDeclaration(TokenCollection tokens)
         {
-            OpenPeren = openPeren == null ? tokens.PopToken<OpenPerenToken>() : (OpenPerenToken)openPeren;
-            var parametersList = new LinkedList<ParameterDeclaration>();
-            if (parameters != null)
+            OpenPeren = tokens.PopToken<OpenPerenToken>();
+            LinkedList<ParameterDeclaration> parameters = new LinkedList<ParameterDeclaration>();
+            bool lastMissingComma = false;
+            while (!tokens.PopIfMatches(out ClosePeren))
             {
-                foreach (var item in parameters)
-                {
-                    parametersList.AddLast(item);
-                }
+                if (lastMissingComma) throw new MissingCommaException(tokens.PeekToken());
+                var parameter = new ParameterDeclaration(tokens);
+                lastMissingComma = parameter.Comma == null;
+                parameters.AddLast(parameter);
             }
-            while(!tokens.PopIfMatches(out ClosePeren))
-            {
-                var newItem = new ParameterDeclaration(tokens);
-                parametersList.AddLast(newItem);
-            }
-            Parameters = parametersList.ToArray();
-        }
-
-        public override string ToString()
-        {
-            string ret = "";
-            
-            return ret;
+            Parameters = parameters.ToArray();
         }
     }
 }

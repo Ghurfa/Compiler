@@ -1,33 +1,39 @@
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace Compiler
+namespace Compiler.SyntaxTreeItems.Types
 {
     public class TupleType : Type
     {
         public readonly OpenPerenToken OpenPeren;
-        public readonly TupleTypeItemList Items;
+        public readonly TupleTypeItem[] Items;
         public readonly ClosePerenToken ClosePeren;
-
-        public override IToken LeftToken => OpenPeren;
-        public override IToken RightToken => ClosePeren;
-
-        public TupleType(TokenCollection tokens, OpenPerenToken? openPeren = null, TupleTypeItemList items = null, ClosePerenToken? closePeren = null)
+        public TupleType(TokenCollection tokens)
         {
-            OpenPeren = openPeren == null ? tokens.PopToken<OpenPerenToken>() : (OpenPerenToken)openPeren;
-            Items = items == null ? new TupleTypeItemList(tokens) : items;
-            ClosePeren = closePeren == null ? tokens.PopToken<ClosePerenToken>() : (ClosePerenToken)closePeren;
-        }
+            OpenPeren = tokens.PopToken<OpenPerenToken>();
 
+            var items = new LinkedList<TupleTypeItem>();
+            bool lastMissingComma = false;
+            while (!tokens.PopIfMatches(out ClosePeren))
+            {
+                if (lastMissingComma) throw new MissingCommaException(tokens.PeekToken());
+                var newItem = new TupleTypeItem(tokens);
+                items.AddLast(newItem);
+                lastMissingComma = newItem.Comma == null;
+            }
+            Items = items.ToArray();
+        }
         public override string ToString()
         {
-            string ret = "";
-            
-            
-            
-            return ret;
+            string ret = OpenPeren.ToString();
+            for(int i = 0; i < Items.Length; i++)
+            {
+                ret += Items[i].ToString();
+                if (i < Items.Length - 1) ret += " ";
+            }
+            return ret + ClosePeren.ToString();
         }
     }
 }

@@ -31,6 +31,12 @@ namespace Compiler
         public MissingWhitespaceException(IToken token)
             : base(token, $"Expected whitespace") { }
     }
+    public class MissingCommaException : InvalidTokenException
+    {
+        public MissingCommaException(IToken token)
+            : base(token, $"Missing a comma between items in argument list, parameter list, tuple type list, or tuple expression") { }
+    }
+    
     public class MissingLineBreakException : InvalidTokenException
     {
         public MissingLineBreakException(IToken token)

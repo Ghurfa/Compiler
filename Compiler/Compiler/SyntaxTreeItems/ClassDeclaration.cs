@@ -1,6 +1,8 @@
+﻿using Compiler.SyntaxTreeItems;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Linq;
 using System.Text;
 
 namespace Compiler
@@ -11,42 +13,21 @@ namespace Compiler
         public readonly ModifierList Modifiers;
         public readonly ClassKeywordToken ClassKeyword;
         public readonly OpenCurlyToken OpenCurly;
-        public readonly ClassItemDeclaration[] ItemDeclarations;
+        public readonly ClassItemDeclaration[] ClassItemDeclarations;
         public readonly CloseCurlyToken CloseCurly;
-
-        public  IToken LeftToken => Name;
-        public  IToken RightToken => CloseCurly;
-
-        public ClassDeclaration(TokenCollection tokens, IdentifierToken? name = null, ModifierList modifiers = null, ClassKeywordToken? classKeyword = null, OpenCurlyToken? openCurly = null, ClassItemDeclaration[] itemDeclarations = null)
+        public ClassDeclaration(TokenCollection tokens)
         {
-            Name = name == null ? tokens.PopToken<IdentifierToken>() : (IdentifierToken)name;
-            Modifiers = modifiers == null ? new ModifierList(tokens) : modifiers;
-            ClassKeyword = classKeyword == null ? tokens.PopToken<ClassKeywordToken>() : (ClassKeywordToken)classKeyword;
-            OpenCurly = openCurly == null ? tokens.PopToken<OpenCurlyToken>() : (OpenCurlyToken)openCurly;
-            var itemDeclarationsList = new LinkedList<ClassItemDeclaration>();
-            if (itemDeclarations != null)
-            {
-                foreach (var item in itemDeclarations)
-                {
-                    itemDeclarationsList.AddLast(item);
-                }
-            }
-            while(!tokens.PopIfMatches(out CloseCurly))
-            {
-                var newItem = ClassItemDeclaration.ReadClassItem(tokens);
-                itemDeclarationsList.AddLast(newItem);
-            }
-            ItemDeclarations = itemDeclarationsList.ToArray();
-        }
+            Name = tokens.PopToken<IdentifierToken>();
+            Modifiers = new ModifierList(tokens);
+            ClassKeyword = tokens.PopToken<ClassKeywordToken>();
+            OpenCurly = tokens.PopToken<OpenCurlyToken>();
 
-        public override string ToString()
-        {
-            string ret = "";
-            
-            
-            
-            
-            return ret;
+            LinkedList<ClassItemDeclaration> items = new LinkedList<ClassItemDeclaration>();
+            while (!tokens.PopIfMatches(out CloseCurly))
+            {
+                items.AddLast(ClassItemDeclaration.ReadClassItem(tokens));
+            }
+            ClassItemDeclarations = items.ToArray();
         }
     }
 }

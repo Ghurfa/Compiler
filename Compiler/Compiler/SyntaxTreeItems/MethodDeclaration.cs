@@ -1,9 +1,7 @@
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Compiler
+namespace Compiler.SyntaxTreeItems
 {
     public class MethodDeclaration : ClassItemDeclaration
     {
@@ -11,29 +9,14 @@ namespace Compiler
         public readonly ModifierList Modifiers;
         public readonly Type ReturnType;
         public readonly ParameterListDeclaration ParameterList;
-        public readonly MethodBodyDeclaration Body;
-
-        public override IToken LeftToken => Name;
-        public override IToken RightToken => Body.RightToken;
-
-        public MethodDeclaration(TokenCollection tokens, IdentifierToken? name = null, ModifierList modifiers = null, Type returnType = null, ParameterListDeclaration parameterList = null, MethodBodyDeclaration body = null)
+        public readonly MethodBodyDeclaration MethodBody;
+        public MethodDeclaration(TokenCollection tokens, IdentifierToken identifier)
         {
-            Name = name == null ? tokens.PopToken<IdentifierToken>() : (IdentifierToken)name;
-            Modifiers = modifiers == null ? new ModifierList(tokens) : modifiers;
-            ReturnType = returnType == null ? Type.ReadType(tokens) : returnType;
-            ParameterList = parameterList == null ? new ParameterListDeclaration(tokens) : parameterList;
-            Body = body == null ? new MethodBodyDeclaration(tokens) : body;
-        }
-
-        public override string ToString()
-        {
-            string ret = "";
-            
-            
-            
-            
-            
-            return ret;
+            Name = identifier;
+            Modifiers = new ModifierList(tokens);
+            ReturnType = Type.ReadType(tokens);
+            ParameterList = new ParameterListDeclaration(tokens);
+            MethodBody = new MethodBodyDeclaration(tokens);
         }
     }
 }

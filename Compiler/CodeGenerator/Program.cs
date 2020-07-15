@@ -25,9 +25,9 @@ namespace CodeGenerator
                                                   baseDir: @"..\..\..\..\..\Compiler\Compiler\Tokens\",
                                                   TCBPath: @"..\..\..\..\..\Compiler\Compiler\TokenCollectionBuilder.cs");
 
-            SyntaxTreeItemsGenerator.GenerateItems(baseDir: @"..\..\..\..\..\Compiler\Compiler\SyntaxTreeItems\",
-                                                   definitionsFolderPath: @"..\..\..\..\..\Definitions\SyntaxTreeItemDefinitions\",
-                                                   TokensGenerator.TokenNames.ToArray());
+            ExpressionsGenerator.GenerateItems(baseDir: @"..\..\..\..\..\Compiler\Compiler\SyntaxTreeItems\",
+                                               filePath: @"..\..\..\..\..\Definitions\ExpressionDefinitions.txt",
+                                               TokensGenerator.TokenNames.ToArray());
         }
     }
 }

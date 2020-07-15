@@ -105,7 +105,6 @@ namespace Compiler
             }
         }
 
-        public void EnsureLineBreakAfter(Expression expr) => EnsureLineBreakAfter(expr.RightToken);
         public void EnsureLineBreakAfter(IToken token)
         {
             int save = pointer;

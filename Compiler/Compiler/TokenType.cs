@@ -82,7 +82,7 @@ namespace Compiler
         DeclAssign,
         PlusAssign,
         MinusAssign,
-        TimesAssign,
+        MultiplyAssign,
         DivideAssign,
         ModuloAssign,
         BitwiseAndAssign,

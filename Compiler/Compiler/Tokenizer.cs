@@ -171,7 +171,7 @@ namespace Compiler
                 case ":=": type = TokenType.DeclAssign; return true;
                 case "+=": type = TokenType.PlusAssign; return true;
                 case "-=": type = TokenType.MinusAssign; return true;
-                case "*=": type = TokenType.TimesAssign; return true;
+                case "*=": type = TokenType.MultiplyAssign; return true;
                 case "/=": type = TokenType.DivideAssign; return true;
                 case "%=": type = TokenType.ModuloAssign; return true;
                 case "&=": type = TokenType.BitwiseAndAssign; return true;

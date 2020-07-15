@@ -21,7 +21,6 @@ ForKeyword
 ForeachKeyword
 SwitchKeyword
 ReturnKeyword
-ExitKeyword
 BreakKeyword
 ContinueKeyword
 ThrowKeyword
@@ -29,7 +28,6 @@ ThrowKeyword
 //Miscellaneous keywords
 AsKeyword
 NewKeyword
-InKeyword
 
 //Trivia
 +Trivia

@@ -1,39 +1,22 @@
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace Compiler
+namespace Compiler.SyntaxTreeItems
 {
     public class ModifierList
     {
         public readonly ModifierToken[] Modifiers;
 
-        public  IToken LeftToken => Modifiers.First();
-        public  IToken RightToken => Modifiers.Last();
-
-        public ModifierList(TokenCollection tokens, ModifierToken[] modifiers = null)
+        public ModifierList(TokenCollection tokens)
         {
-            var modifiersList = new LinkedList<ModifierToken>();
-            if (modifiers != null)
+            LinkedList<ModifierToken> modifiers = new LinkedList<ModifierToken>();
+            while (tokens.PopIfMatches(out ModifierToken token))
             {
-                foreach (var item in modifiers)
-                {
-                    modifiersList.AddLast(item);
-                }
+                modifiers.AddLast(token);
             }
-            while(tokens.PeekToken() is ModifierToken)
-            {
-                var newItem = tokens.PopToken<ModifierToken>();
-                modifiersList.AddLast(newItem);
-            }
-            Modifiers = modifiersList.ToArray();
-        }
-
-        public override string ToString()
-        {
-            string ret = "";
-            return ret;
+            Modifiers = modifiers.ToArray();
         }
     }
 }
