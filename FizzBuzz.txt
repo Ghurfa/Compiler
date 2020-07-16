@@ -3,7 +3,7 @@ FizzBuzz namespace
     FizzBuzz class
     {
         b := 5
-        c :int = b
+        c:int = b
         FizzBuzz public static void(start:int, end:int)
         {
             c:(a:int, b:int) = (3, 4)

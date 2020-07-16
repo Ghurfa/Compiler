@@ -16,7 +16,7 @@ namespace CodeGenerator
                                                  baseDir: @"..\..\..\..\..\Compiler\Compiler\Tokens\",
                                                  TCBPath: @"..\..\..\..\..\Compiler\Compiler\TokenCollectionBuilder.cs");
 
-            List<ClassInfo> classInfos = SyntaxTreeItemDefinitionParser.ParseFile(baseDir: @"..\..\..\..\..\Compiler\Compiler\SyntaxTreeItems\",
+            List<ClassInfo> classInfos = DefinitionParser.ParseFile(baseDir: @"..\..\..\..\..\Compiler\Compiler\SyntaxTreeItems\",
                                                                                   filePath: @"..\..\..\..\..\Definitions\ExpressionDefinitions.txt",
                                                                                   namespaceName: "Compiler.SyntaxTreeItems",
                                                                                   TokensGenerator.TokenNames.ToArray());

@@ -1,0 +1,17 @@
+* is higher precedence than +
+
+if left is lower precedence or equal precedence and right associative then rotate right
+
+
+a = b = c
+> (a = b) = c left is equal precedence and right-associative
+> a = (b = c)
+
+> a - b - c * d - e
+> a - (b - c * d - e)
+> a - (b - (c * d - e))
+> a - (b - (c * (d - e)))
+> a - (b - ((c * d) - e)) 	right is lower precedence
+> a - ((b - (c * d)) - e)	right is equal precedence and left-associative
+> (a - (b - (c * d))) - e	right is equal precedence and left-associative
+> ((a - b) - (c * d)) - e	right is equal precedence and left-associative (need to recheck lef)
