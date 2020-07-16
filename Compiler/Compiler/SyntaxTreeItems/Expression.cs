@@ -67,35 +67,92 @@ namespace Compiler
         }
         private static Expression EnforcePrecedenceRules(Expression expr)
         {
+            if (expr is UnaryExpression || expr is SyntaxTreeItems.Type) return expr;
 
+            bool leftAssoc = expr.Precedence != 12 && expr.Precedence != 13 && expr.Precedence != 14;
+
+
+            bool properPrecedence(Expression upper, Expression lower, bool mayEqual)
+            {
+                return lower.Precedence < upper.Precedence || (mayEqual && lower.Precedence == upper.Precedence);
+            }
+
+            if (properPrecedence(expr, expr.LeftExpr, leftAssoc))
+            {
+                if (!properPrecedence(expr, expr.RightExpr, !leftAssoc))
+                {
+                    return RotateLeft(expr);
+                }
+                else return expr;
+            }
+            else if (properPrecedence(expr, expr.RightExpr, !leftAssoc))
+            {
+                if (!properPrecedence(expr, expr.LeftExpr, leftAssoc))
+                {
+                    return RotateRight(expr);
+                }
+                else return expr;
+            }
+            else if (expr.LeftExpr.Precedence == expr.Precedence && !leftAssoc)
+            {
+                return RotateLeft(RotateRight(expr));
+            }
+            else if (expr.RightExpr.Precedence == expr.Precedence && leftAssoc)
+            {
+                return RotateRight(RotateLeft(expr));
+            }
+            else if (expr.RightExpr.Precedence > expr.Precedence || expr.LeftExpr.Precedence > expr.Precedence) //Only actually need to check one of these
+            {
+                if(expr.RightExpr.Precedence > expr.LeftExpr.Precedence)
+                {
+                    return RotateLeft(RotateRight(expr));
+                }
+                else
+                {
+                    return RotateRight(RotateLeft(expr));
+                }
+            }
+            else return expr;
         }
 
         private static Expression RotateLeft(Expression expr)
         {
             bool leftAssoc = expr.Precedence != 12 && expr.Precedence != 13 && expr.Precedence != 14;
 
-            Expression newHead = expr.RightExpr;
-            Expression rightExprIter = newHead;
-            while(expr.Precedence < rightExprIter.LeftExpr.Precedence || (expr.Precedence == rightExprIter.LeftExpr.Precedence && leftAssoc))
+            Expression rightestLeft = expr;
+            while(rightestLeft.RightExpr.Precedence < expr.Precedence || (rightestLeft.RightExpr.Precedence == expr.Precedence && !leftAssoc))
             {
-                rightExprIter = rightExprIter.LeftExpr;
+                rightestLeft = rightestLeft.RightExpr;
             }
-            expr.RightExpr = rightExprIter.LeftExpr;
-            rightExprIter.LeftExpr = expr;
+            Expression newHead = expr.RightExpr;
+
+            Expression leftestRight = newHead;
+            while(expr.Precedence < leftestRight.LeftExpr.Precedence || (expr.Precedence == leftestRight.LeftExpr.Precedence && leftAssoc))
+            {
+                leftestRight = leftestRight.LeftExpr;
+            }
+            rightestLeft.RightExpr = leftestRight.LeftExpr;
+            leftestRight.LeftExpr = expr;
             return newHead;
         }
         private static Expression RotateRight(Expression expr)
         {
             bool leftAssoc = expr.Precedence != 12 && expr.Precedence != 13 && expr.Precedence != 14;
 
-            Expression newHead = expr.LeftExpr;
-            Expression leftExprIter = newHead;
-            while (expr.Precedence < leftExprIter.RightExpr.Precedence || (expr.Precedence == leftExprIter.RightExpr.Precedence && !leftAssoc))
+            Expression leftestRight = expr;
+            while (leftestRight.LeftExpr.Precedence < expr.Precedence || (leftestRight.LeftExpr.Precedence == expr.Precedence && leftAssoc))
             {
-                leftExprIter = leftExprIter.RightExpr;
+                leftestRight = leftestRight.LeftExpr;
             }
-            expr.RightExpr = leftExprIter.RightExpr;
-            leftExprIter.RightExpr = expr;
+            Expression newHead = expr.LeftExpr;
+
+            Expression rightestLeft = newHead;
+            while (expr.Precedence < rightestLeft.RightExpr.Precedence || (expr.Precedence == rightestLeft.RightExpr.Precedence && !leftAssoc))
+            {
+                rightestLeft = rightestLeft.RightExpr;
+            }
+            leftestRight.LeftExpr = rightestLeft.RightExpr;
+            rightestLeft.RightExpr = expr;
             return newHead;
         }
 

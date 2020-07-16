@@ -12,8 +12,8 @@ namespace Compiler.SyntaxTreeItems
 
         public override int Precedence => 1;
 
-        public override Expression LeftExpr { get => Expression; set => throw new InvalidOperationException() }
-        public override Expression RightExpr { get => Expression; set => throw new InvalidOperationException() }
+        public override Expression LeftExpr { get => Expression; set => throw new InvalidOperationException(); }
+        public override Expression RightExpr { get => CastTo; set => throw new InvalidOperationException(); }
 
         public CastExpression(TokenCollection tokens, UnaryExpression expression = null, AsKeywordToken? asKeyword = null, Type castTo = null)
         {
@@ -26,7 +26,9 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Expression.ToString();
+            ret += " ";
             ret += AsKeyword.ToString();
+            ret += " ";
             ret += CastTo.ToString();
             return ret;
         }

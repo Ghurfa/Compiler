@@ -15,7 +15,7 @@ namespace Compiler.SyntaxTreeItems
         public override int Precedence => 13;
 
         public override Expression LeftExpr { get => Condition; set { Condition = value; } }
-        public override Expression RightExpr { get => Condition; set { Condition = value; } }
+        public override Expression RightExpr { get => IfFalse; set { IfFalse = value; } }
 
         public IfExpression(TokenCollection tokens, Expression condition = null, QuestionMarkToken? questionMark = null, Expression ifTrue = null, BackslashToken? backslash = null, Expression ifFalse = null)
         {
@@ -30,9 +30,13 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Condition.ToString();
+            ret += " ";
             ret += QuestionMark.ToString();
+            ret += " ";
             ret += IfTrue.ToString();
+            ret += " ";
             ret += Backslash.ToString();
+            ret += " ";
             ret += IfFalse.ToString();
             return ret;
         }

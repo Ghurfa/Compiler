@@ -13,7 +13,7 @@ namespace Compiler.SyntaxTreeItems
         public override int Precedence => 3;
 
         public override Expression LeftExpr { get => Left; set { Left = value; } }
-        public override Expression RightExpr { get => Left; set { Left = value; } }
+        public override Expression RightExpr { get => Right; set { Right = value; } }
 
         public MinusExpression(TokenCollection tokens, Expression left = null, MinusToken? minus = null, Expression right = null)
         {
@@ -26,7 +26,9 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Left.ToString();
+            ret += " ";
             ret += Minus.ToString();
+            ret += " ";
             ret += Right.ToString();
             return ret;
         }

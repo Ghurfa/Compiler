@@ -13,8 +13,8 @@ namespace Compiler.SyntaxTreeItems
 
         public override int Precedence => 14;
 
-        public override Expression LeftExpr { get => To; set => throw new InvalidOperationException() }
-        public override Expression RightExpr { get => To; set => throw new InvalidOperationException() }
+        public override Expression LeftExpr { get => To; set { if (value is UnaryExpression unary) To = unary; else throw new InvalidAssignmentLeftException(value);} }
+        public override Expression RightExpr { get => From; set { From = value; } }
 
         public LeftShiftAssignExpression(TokenCollection tokens, UnaryExpression to = null, LeftShiftAssignToken? leftShiftAssign = null, Expression from = null)
         {
@@ -27,7 +27,9 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += To.ToString();
+            ret += " ";
             ret += LeftShiftAssign.ToString();
+            ret += " ";
             ret += From.ToString();
             return ret;
         }

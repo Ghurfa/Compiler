@@ -9,6 +9,7 @@ $Expression
         =UnaryExpression:To Token Expression:From
         >AssignmentExpressions
         +ICompleteStatement
+        ~AssignExpression
         :override int Precedence=14
         {
             Assign
@@ -187,8 +188,8 @@ $Expression
 
         >Literals
         {
-            .override intLiteral
-            override intLiteral
+            .IntLiteral
+            IntLiteral
 
             .StringLiteral
             DoubleQuote:OpenQuote

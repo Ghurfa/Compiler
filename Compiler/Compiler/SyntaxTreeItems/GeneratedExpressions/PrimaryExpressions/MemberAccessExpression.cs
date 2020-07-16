@@ -21,7 +21,9 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += BaseExpression.ToString();
+            ret += " ";
             ret += Dot.ToString();
+            ret += " ";
             ret += Item.ToString();
             return ret;
         }

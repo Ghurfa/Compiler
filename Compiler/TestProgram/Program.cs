@@ -57,14 +57,31 @@ namespace TestProgram
                 Console.WriteLine(token.Text);
             }
         }
-        static void PrintObject(object obj, string name, int x = 0)
+        static void WriteWithDepth(string text, int depth, ConsoleColor textColor)
         {
-            int depthWidth = 3;
+            int depthWidth = 2;
+            string levelString = "|" + new string(' ', depthWidth - 1);
+            for (int i = 0; i < depth; i++)
+            {
+                Console.ForegroundColor = (ConsoleColor)((i % 15) + 1); //Skip black
+                Console.Write(levelString);
+            }
+            Console.ForegroundColor = textColor;
+            Console.Write(text);
+        }
+        static void WriteWithDepth(string text, int depth) => WriteWithDepth(text, depth, Console.ForegroundColor);
+        static void WriteLineWithDepth(string text, int depth, ConsoleColor textColor)
+        {
+            WriteWithDepth(text, depth, textColor);
+            Console.WriteLine();
+        }
+        static void WriteLineWithDepth(string text, int depth) => WriteLineWithDepth(text, depth, Console.ForegroundColor);
+        static void PrintObject(object obj, string name, bool printNames = false, bool printNullFieldNames = true, int x = 0)
+        {
             System.Type objType = obj.GetType();
 
-            Console.CursorLeft = x;
-            Console.ForegroundColor = name.First() == '[' ? ConsoleColor.Magenta : ConsoleColor.White;
-            Console.Write($"{name}: ");
+            if (printNames) WriteWithDepth($"{name}: ", x, name.First() == '[' ? ConsoleColor.Magenta : ConsoleColor.White);
+            else WriteWithDepth("", x);
 
             if (obj is IToken token)
             {
@@ -83,13 +100,11 @@ namespace TestProgram
                         object item = arr.GetValue(i);
                         if (item == null)
                         {
-                            Console.CursorLeft = x + depthWidth;
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
-                            Console.WriteLine("Null");
+                            WriteLineWithDepth("Null", x + 1, ConsoleColor.DarkGray);
                         }
                         else
                         {
-                            PrintObject(item, $"[{i}]", x + depthWidth);
+                            PrintObject(item, $"[{i}]", printNames, printNullFieldNames, x + 1);
                         }
                     }
                 }
@@ -98,37 +113,23 @@ namespace TestProgram
                     foreach (FieldInfo field in objType.GetRuntimeFields())
                     {
                         var value = field.GetValue(obj);
-                        string fieldName = field.Name;
-                        if (field.FieldType.IsPrimitive || field.FieldType == typeof(string) || field.FieldType == typeof(object) || field.FieldType.IsEnum)
+                        string fieldName;
+                        if (field.Name.EndsWith("BackingField"))
                         {
-                            Console.CursorLeft = x + depthWidth;
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.Write($"{fieldName}: ");
-                            if (field.FieldType == typeof(string))
-                            {
-                                Console.ForegroundColor = ConsoleColor.Yellow;
-                            }
-                            else if (field.FieldType.IsEnum)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                            }
-                            else
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                            }
-                            Console.WriteLine(value.ToString());
+                            fieldName = field.Name.Split('>')[0].Substring(1);
                         }
-                        else if (value == null)
+                        else fieldName = field.Name;
+                        if (value == null)
                         {
-                            Console.CursorLeft = x + depthWidth;
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.Write($"{fieldName}: ");
+                            if(printNullFieldNames) WriteWithDepth($"{ fieldName}: ", x + 1, ConsoleColor.White);
+                            else WriteWithDepth("", x + 1);
+
                             Console.ForegroundColor = ConsoleColor.DarkGray;
                             Console.WriteLine("Null");
                         }
                         else
                         {
-                            PrintObject(value, fieldName, x + depthWidth);
+                            PrintObject(value, fieldName, printNames, printNullFieldNames, x + 1);
                         }
                     }
                 }
@@ -136,7 +137,7 @@ namespace TestProgram
         }
         static void Main(string[] args)
         {
-            var text = File.ReadAllText(@"..\..\..\..\..\guessingGame.txt");
+            var text = File.ReadAllText(@"..\..\..\..\..\PrecedenceTest.txt");
             var tokens = Tokenizer.Tokenize(text);
             PrintTokenList(tokens, false);
             Console.WriteLine();
@@ -154,6 +155,13 @@ namespace TestProgram
                 PrintContext(tokens, ex.Token, 10, 10);
             }
             catch (InvalidStatementException ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(ex.GetType().Name + ": ");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(ex.Message);
+            }
+            catch (InvalidAssignmentLeftException ex)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write(ex.GetType().Name + ": ");

@@ -1,0 +1,10 @@
+PrecedenceTest namespace
+{
+    PrecedenceTest class
+    {
+        testMethod void()
+        {
+            1 = a + b - c * e / f + d
+        }
+    }
+}

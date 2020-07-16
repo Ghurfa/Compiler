@@ -22,7 +22,9 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Identifier.ToString();
+            ret += " ";
             ret += Colon.ToString();
+            ret += " ";
             ret += Type.ToString();
             return ret;
         }

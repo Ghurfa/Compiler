@@ -23,8 +23,11 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Array.ToString();
+            ret += " ";
             ret += NullCondOpenBracket.ToString();
+            ret += " ";
             ret += Index.ToString();
+            ret += " ";
             ret += CloseBracket.ToString();
             return ret;
         }

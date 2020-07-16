@@ -19,6 +19,7 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Dereference.ToString();
+            ret += " ";
             ret += Expression.ToString();
             return ret;
         }

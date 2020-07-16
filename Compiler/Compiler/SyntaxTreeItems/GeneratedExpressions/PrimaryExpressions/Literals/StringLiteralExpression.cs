@@ -21,7 +21,9 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += OpenQuote.ToString();
+            ret += " ";
             ret += Text.ToString();
+            ret += " ";
             ret += CloseQuote.ToString();
             return ret;
         }

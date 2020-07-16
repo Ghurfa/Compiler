@@ -9,8 +9,8 @@ namespace Compiler.SyntaxTreeItems
     public abstract class Type : Expression
     {
         public override int Precedence => 0;
-        public override Expression LeftExpr => null;
-        public override Expression RightExpr => null;
+        public override Expression LeftExpr { get => null; set => throw new InvalidOperationException(); }
+        public override Expression RightExpr { get => null; set => throw new InvalidOperationException(); }
         public static Type ReadType(TokenCollection tokens)
         {
             IToken peek = tokens.PeekToken();
