@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeGenerator.SyntaxTreeItemsFieldInfos
+namespace CodeGeneratorLib.SyntaxTreeItemsFieldInfos
 {
     class PrimaryExpressionFieldInfo : FieldInfo
     {

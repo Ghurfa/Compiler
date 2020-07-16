@@ -1,15 +1,13 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class UnaryPlusExpression : UnaryExpression
     {
-        public readonly PlusToken UnaryPlus;
-        public readonly UnaryExpression Expression;
+        public PlusToken UnaryPlus { get; private set; }
+        public UnaryExpression Expression { get; private set; }
 
         public UnaryPlusExpression(TokenCollection tokens, PlusToken? unaryPlus = null, UnaryExpression expression = null)
         {

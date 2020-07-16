@@ -1,16 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class BitwiseAndExpression : Expression
     {
-        public readonly Expression Left;
-        public readonly BitwiseAndToken BitwiseAnd;
-        public readonly Expression Right;
+        public Expression Left { get; private set; }
+        public BitwiseAndToken BitwiseAnd { get; private set; }
+        public Expression Right { get; private set; }
+
+        public override int Precedence => 7;
+
+        public override Expression LeftExpr { get => Left; set { Left = value; } }
+        public override Expression RightExpr { get => Left; set { Left = value; } }
 
         public BitwiseAndExpression(TokenCollection tokens, Expression left = null, BitwiseAndToken? bitwiseAnd = null, Expression right = null)
         {

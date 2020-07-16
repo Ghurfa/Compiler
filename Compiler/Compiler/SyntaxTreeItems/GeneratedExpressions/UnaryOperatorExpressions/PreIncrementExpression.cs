@@ -1,15 +1,13 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class PreIncrementExpression : UnaryExpression
     {
-        public readonly IncrementToken PreIncrement;
-        public readonly UnaryExpression Expression;
+        public IncrementToken PreIncrement { get; private set; }
+        public UnaryExpression Expression { get; private set; }
 
         public PreIncrementExpression(TokenCollection tokens, IncrementToken? preIncrement = null, UnaryExpression expression = null)
         {

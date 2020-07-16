@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Compiler.SyntaxTreeItems.Statements;
@@ -8,9 +7,14 @@ namespace Compiler.SyntaxTreeItems
 {
     public class BitwiseXorAssignExpression : Expression, ICompleteStatement
     {
-        public readonly UnaryExpression To;
-        public readonly BitwiseXorAssignToken BitwiseXorAssign;
-        public readonly Expression From;
+        public UnaryExpression To { get; private set; }
+        public BitwiseXorAssignToken BitwiseXorAssign { get; private set; }
+        public Expression From { get; private set; }
+
+        public override int Precedence => 14;
+
+        public override Expression LeftExpr { get => To; set => throw new InvalidOperationException() }
+        public override Expression RightExpr { get => To; set => throw new InvalidOperationException() }
 
         public BitwiseXorAssignExpression(TokenCollection tokens, UnaryExpression to = null, BitwiseXorAssignToken? bitwiseXorAssign = null, Expression from = null)
         {

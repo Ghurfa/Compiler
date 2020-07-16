@@ -1,17 +1,15 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class ArrayAccessExpression : PrimaryExpression
     {
-        public readonly PrimaryExpression Array;
-        public readonly OpenBracketToken OpenBracket;
-        public readonly Expression Index;
-        public readonly CloseBracketToken CloseBracket;
+        public PrimaryExpression Array { get; private set; }
+        public OpenBracketToken OpenBracket { get; private set; }
+        public Expression Index { get; private set; }
+        public CloseBracketToken CloseBracket { get; private set; }
 
         public ArrayAccessExpression(TokenCollection tokens, PrimaryExpression array = null, OpenBracketToken? openBracket = null, Expression index = null, CloseBracketToken? closeBracket = null)
         {

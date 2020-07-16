@@ -1,16 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class BitwiseXorExpression : Expression
     {
-        public readonly Expression Left;
-        public readonly BitwiseXorToken BitwiseXor;
-        public readonly Expression Right;
+        public Expression Left { get; private set; }
+        public BitwiseXorToken BitwiseXor { get; private set; }
+        public Expression Right { get; private set; }
+
+        public override int Precedence => 8;
+
+        public override Expression LeftExpr { get => Left; set { Left = value; } }
+        public override Expression RightExpr { get => Left; set { Left = value; } }
 
         public BitwiseXorExpression(TokenCollection tokens, Expression left = null, BitwiseXorToken? bitwiseXor = null, Expression right = null)
         {

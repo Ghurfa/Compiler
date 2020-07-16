@@ -6,8 +6,11 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public abstract class Type
+    public abstract class Type : Expression
     {
+        public override int Precedence => 0;
+        public override Expression LeftExpr => null;
+        public override Expression RightExpr => null;
         public static Type ReadType(TokenCollection tokens)
         {
             IToken peek = tokens.PeekToken();

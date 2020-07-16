@@ -1,15 +1,13 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class DereferenceExpression : UnaryExpression
     {
-        public readonly AsteriskToken Dereference;
-        public readonly UnaryExpression Expression;
+        public AsteriskToken Dereference { get; private set; }
+        public UnaryExpression Expression { get; private set; }
 
         public DereferenceExpression(TokenCollection tokens, AsteriskToken? dereference = null, UnaryExpression expression = null)
         {

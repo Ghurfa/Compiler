@@ -1,16 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class EqualsExpression : Expression
     {
-        public readonly Expression Left;
-        public readonly EqualsToken Equals;
-        public readonly Expression Right;
+        public Expression Left { get; private set; }
+        public EqualsToken Equals { get; private set; }
+        public Expression Right { get; private set; }
+
+        public override int Precedence => 6;
+
+        public override Expression LeftExpr { get => Left; set { Left = value; } }
+        public override Expression RightExpr { get => Left; set { Left = value; } }
 
         public EqualsExpression(TokenCollection tokens, Expression left = null, EqualsToken? equals = null, Expression right = null)
         {

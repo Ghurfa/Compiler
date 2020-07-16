@@ -1,15 +1,13 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class PreDecrementExpression : UnaryExpression
     {
-        public readonly DecrementToken PreDecrement;
-        public readonly UnaryExpression Expression;
+        public DecrementToken PreDecrement { get; private set; }
+        public UnaryExpression Expression { get; private set; }
 
         public PreDecrementExpression(TokenCollection tokens, DecrementToken? preDecrement = null, UnaryExpression expression = null)
         {

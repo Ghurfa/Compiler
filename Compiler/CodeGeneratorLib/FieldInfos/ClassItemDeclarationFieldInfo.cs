@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeGenerator.ClassItems
+namespace CodeGeneratorLib.ClassItems
 {
     class ClassItemDeclarationFieldInfo : FieldInfo
     {

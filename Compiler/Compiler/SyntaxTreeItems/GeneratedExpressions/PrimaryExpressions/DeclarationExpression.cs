@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Compiler.SyntaxTreeItems.Statements;
@@ -8,9 +7,9 @@ namespace Compiler.SyntaxTreeItems
 {
     public class DeclarationExpression : PrimaryExpression, ICompleteStatement
     {
-        public readonly IdentifierToken Identifier;
-        public readonly ColonToken Colon;
-        public readonly Type Type;
+        public IdentifierToken Identifier { get; private set; }
+        public ColonToken Colon { get; private set; }
+        public Type Type { get; private set; }
 
         public DeclarationExpression(TokenCollection tokens, IdentifierToken? identifier = null, ColonToken? colon = null, Type type = null)
         {

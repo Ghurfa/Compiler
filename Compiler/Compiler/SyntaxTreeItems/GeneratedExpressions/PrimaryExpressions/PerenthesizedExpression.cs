@@ -1,16 +1,14 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class PerenthesizedExpression : PrimaryExpression
     {
-        public readonly OpenPerenToken OpenPeren;
-        public readonly Expression Expression;
-        public readonly ClosePerenToken ClosePeren;
+        public OpenPerenToken OpenPeren { get; private set; }
+        public Expression Expression { get; private set; }
+        public ClosePerenToken ClosePeren { get; private set; }
 
         public PerenthesizedExpression(TokenCollection tokens, OpenPerenToken? openPeren = null, Expression expression = null, ClosePerenToken? closePeren = null)
         {

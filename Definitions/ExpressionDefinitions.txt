@@ -3,11 +3,13 @@ $Expression
 {
     +Expression
     >Expressions
+    ~BinaryExpression
     {
         //Assignment Expression
         =UnaryExpression:To Token Expression:From
         >AssignmentExpressions
         +ICompleteStatement
+        :override int Precedence=14
         {
             Assign
             DeclAssign
@@ -28,34 +30,60 @@ $Expression
         =Expression:Left Token Expression:Right
         {
             >BinaryOperators
-            Plus
-            Minus
-            Asterisk:Multiply
-            Divide
-            Modulo
-            BitwiseAnd
-            BitwiseOr
-            BitwiseXor
-            LeftShift
-            RightShift
-            NullCoalescing
-            And
-            Or
+            {
+                :override int Precedence=3
+                Plus
+                Minus
+                
+                :override int Precedence=2
+                Asterisk:Multiply
+                Divide
+                Modulo
+
+                :override int Precedence=4
+                LeftShift
+                RightShift
+
+                :override int Precedence=7
+                BitwiseAnd
+
+                :override int Precedence=9
+                BitwiseOr
+                
+                :override int Precedence=8
+                BitwiseXor
+
+                :override int Precedence=12
+                NullCoalescing
+                
+                :override int Precedence=10
+                And
+                
+                :override int Precedence=11
+                Or
+            }
 
             >CompareOperators
-            Equals
-            NotEquals
-            GreaterThan
-            LessThan
-            GreaterThanOrEqualTo
-            LessThanOrEqualTo
+            {
+                :override int Precedence=6
+                Equals
+                NotEquals
+
+                :override int Precedence=5
+                GreaterThan
+                LessThan
+                GreaterThanOrEqualTo
+                LessThanOrEqualTo
+            }
         }
 
+        :override int Precedence=1
         .Cast
         UnaryExpression:Expression
         AsKeyword
         Type:CastTo
 
+        :override int Precedence=13
         .If
         Expression:Condition
         QuestionMark
@@ -159,8 +187,8 @@ $Expression
 
         >Literals
         {
-            .IntLiteral
-            IntLiteral
+            .override intLiteral
+            override intLiteral
 
             .StringLiteral
             DoubleQuote:OpenQuote

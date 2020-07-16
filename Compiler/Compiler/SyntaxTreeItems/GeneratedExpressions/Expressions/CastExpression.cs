@@ -1,16 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class CastExpression : Expression
     {
-        public readonly UnaryExpression Expression;
-        public readonly AsKeywordToken AsKeyword;
-        public readonly Type CastTo;
+        public UnaryExpression Expression { get; private set; }
+        public AsKeywordToken AsKeyword { get; private set; }
+        public Type CastTo { get; private set; }
+
+        public override int Precedence => 1;
+
+        public override Expression LeftExpr { get => Expression; set => throw new InvalidOperationException() }
+        public override Expression RightExpr { get => Expression; set => throw new InvalidOperationException() }
 
         public CastExpression(TokenCollection tokens, UnaryExpression expression = null, AsKeywordToken? asKeyword = null, Type castTo = null)
         {

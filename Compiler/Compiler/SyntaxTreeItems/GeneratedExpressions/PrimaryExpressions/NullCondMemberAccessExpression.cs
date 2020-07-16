@@ -1,16 +1,14 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class NullCondMemberAccessExpression : PrimaryExpression
     {
-        public readonly PrimaryExpression BaseExpression;
-        public readonly NullCondDotToken NullCondDot;
-        public readonly IdentifierToken Item;
+        public PrimaryExpression BaseExpression { get; private set; }
+        public NullCondDotToken NullCondDot { get; private set; }
+        public IdentifierToken Item { get; private set; }
 
         public NullCondMemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression = null, NullCondDotToken? nullCondDot = null, IdentifierToken? item = null)
         {

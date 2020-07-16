@@ -1,14 +1,12 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class FalseLiteralExpression : PrimaryExpression
     {
-        public readonly FalseKeywordToken FalseKeyword;
+        public FalseKeywordToken FalseKeyword { get; private set; }
 
         public FalseLiteralExpression(TokenCollection tokens, FalseKeywordToken? falseKeyword = null)
         {

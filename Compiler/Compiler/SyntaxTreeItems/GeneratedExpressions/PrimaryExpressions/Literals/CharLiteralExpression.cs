@@ -1,16 +1,14 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class CharLiteralExpression : PrimaryExpression
     {
-        public readonly SingleQuoteToken OpenQuote;
-        public readonly CharLiteralToken Text;
-        public readonly SingleQuoteToken CloseQuote;
+        public SingleQuoteToken OpenQuote { get; private set; }
+        public CharLiteralToken Text { get; private set; }
+        public SingleQuoteToken CloseQuote { get; private set; }
 
         public CharLiteralExpression(TokenCollection tokens, SingleQuoteToken? openQuote = null, CharLiteralToken? text = null, SingleQuoteToken? closeQuote = null)
         {

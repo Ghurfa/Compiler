@@ -18,7 +18,7 @@ myNamespace namespace
         Average static int(a:int, b:int)
         {
             return((a + b) / 2)
-            thing:int = a++ * b + c / d as int
+            thing:int = a++ * b + c / d  as int
         }
         Main static void(args:string[]) //b
         {

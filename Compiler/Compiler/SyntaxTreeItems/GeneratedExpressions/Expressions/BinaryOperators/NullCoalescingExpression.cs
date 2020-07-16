@@ -1,16 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class NullCoalescingExpression : Expression
     {
-        public readonly Expression Left;
-        public readonly NullCoalescingToken NullCoalescing;
-        public readonly Expression Right;
+        public Expression Left { get; private set; }
+        public NullCoalescingToken NullCoalescing { get; private set; }
+        public Expression Right { get; private set; }
+
+        public override int Precedence => 12;
+
+        public override Expression LeftExpr { get => Left; set { Left = value; } }
+        public override Expression RightExpr { get => Left; set { Left = value; } }
 
         public NullCoalescingExpression(TokenCollection tokens, Expression left = null, NullCoalescingToken? nullCoalescing = null, Expression right = null)
         {

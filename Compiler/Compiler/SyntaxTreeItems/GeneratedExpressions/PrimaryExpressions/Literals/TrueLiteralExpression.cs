@@ -1,14 +1,12 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class TrueLiteralExpression : PrimaryExpression
     {
-        public readonly TrueKeywordToken TrueKeyword;
+        public TrueKeywordToken TrueKeyword { get; private set; }
 
         public TrueLiteralExpression(TokenCollection tokens, TrueKeywordToken? trueKeyword = null)
         {

@@ -7,6 +7,9 @@ namespace Compiler
 {
     public abstract class UnaryExpression : Expression
     {
+        public override int Precedence => 0;
+        public override Expression LeftExpr => null;
+        public override Expression RightExpr => null;
         public static UnaryExpression ReadUnaryExpression(TokenCollection tokens)
         {
             switch(tokens.PeekToken())

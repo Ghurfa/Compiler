@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Compiler.SyntaxTreeItems.Statements;
@@ -8,9 +7,14 @@ namespace Compiler.SyntaxTreeItems
 {
     public class RightShiftAssignExpression : Expression, ICompleteStatement
     {
-        public readonly UnaryExpression To;
-        public readonly RightShiftAssignToken RightShiftAssign;
-        public readonly Expression From;
+        public UnaryExpression To { get; private set; }
+        public RightShiftAssignToken RightShiftAssign { get; private set; }
+        public Expression From { get; private set; }
+
+        public override int Precedence => 14;
+
+        public override Expression LeftExpr { get => To; set => throw new InvalidOperationException() }
+        public override Expression RightExpr { get => To; set => throw new InvalidOperationException() }
 
         public RightShiftAssignExpression(TokenCollection tokens, UnaryExpression to = null, RightShiftAssignToken? rightShiftAssign = null, Expression from = null)
         {

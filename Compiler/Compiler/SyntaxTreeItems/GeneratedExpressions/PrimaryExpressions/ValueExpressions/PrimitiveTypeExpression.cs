@@ -1,14 +1,12 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class PrimitiveTypeExpression : PrimaryExpression
     {
-        public readonly PrimitiveTypeToken PrimitiveType;
+        public PrimitiveTypeToken PrimitiveType { get; private set; }
 
         public PrimitiveTypeExpression(TokenCollection tokens, PrimitiveTypeToken? primitiveType = null)
         {

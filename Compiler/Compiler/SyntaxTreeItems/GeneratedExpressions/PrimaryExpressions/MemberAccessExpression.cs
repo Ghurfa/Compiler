@@ -1,16 +1,14 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class MemberAccessExpression : PrimaryExpression
     {
-        public readonly PrimaryExpression BaseExpression;
-        public readonly DotToken Dot;
-        public readonly IdentifierToken Item;
+        public PrimaryExpression BaseExpression { get; private set; }
+        public DotToken Dot { get; private set; }
+        public IdentifierToken Item { get; private set; }
 
         public MemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression = null, DotToken? dot = null, IdentifierToken? item = null)
         {

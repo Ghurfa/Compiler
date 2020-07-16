@@ -1,16 +1,14 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class TupleExpression : PrimaryExpression
     {
-        public readonly OpenPerenToken OpenPeren;
-        public readonly TupleItemList Values;
-        public readonly ClosePerenToken ClosePeren;
+        public OpenPerenToken OpenPeren { get; private set; }
+        public TupleItemList Values { get; private set; }
+        public ClosePerenToken ClosePeren { get; private set; }
 
         public TupleExpression(TokenCollection tokens, OpenPerenToken? openPeren = null, TupleItemList values = null, ClosePerenToken? closePeren = null)
         {

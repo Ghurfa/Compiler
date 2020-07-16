@@ -1,17 +1,15 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class NullCondArrayAccessExpression : PrimaryExpression
     {
-        public readonly PrimaryExpression Array;
-        public readonly NullCondOpenBracketToken NullCondOpenBracket;
-        public readonly Expression Index;
-        public readonly CloseBracketToken CloseBracket;
+        public PrimaryExpression Array { get; private set; }
+        public NullCondOpenBracketToken NullCondOpenBracket { get; private set; }
+        public Expression Index { get; private set; }
+        public CloseBracketToken CloseBracket { get; private set; }
 
         public NullCondArrayAccessExpression(TokenCollection tokens, PrimaryExpression array = null, NullCondOpenBracketToken? nullCondOpenBracket = null, Expression index = null, CloseBracketToken? closeBracket = null)
         {

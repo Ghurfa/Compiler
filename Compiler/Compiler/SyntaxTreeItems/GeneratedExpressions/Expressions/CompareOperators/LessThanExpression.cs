@@ -1,16 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class LessThanExpression : Expression
     {
-        public readonly Expression Left;
-        public readonly LessThanToken LessThan;
-        public readonly Expression Right;
+        public Expression Left { get; private set; }
+        public LessThanToken LessThan { get; private set; }
+        public Expression Right { get; private set; }
+
+        public override int Precedence => 5;
+
+        public override Expression LeftExpr { get => Left; set { Left = value; } }
+        public override Expression RightExpr { get => Left; set { Left = value; } }
 
         public LessThanExpression(TokenCollection tokens, Expression left = null, LessThanToken? lessThan = null, Expression right = null)
         {

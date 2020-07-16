@@ -1,16 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class OrExpression : Expression
     {
-        public readonly Expression Left;
-        public readonly OrToken Or;
-        public readonly Expression Right;
+        public Expression Left { get; private set; }
+        public OrToken Or { get; private set; }
+        public Expression Right { get; private set; }
+
+        public override int Precedence => 11;
+
+        public override Expression LeftExpr { get => Left; set { Left = value; } }
+        public override Expression RightExpr { get => Left; set { Left = value; } }
 
         public OrExpression(TokenCollection tokens, Expression left = null, OrToken? or = null, Expression right = null)
         {

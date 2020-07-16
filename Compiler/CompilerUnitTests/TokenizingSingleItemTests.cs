@@ -77,7 +77,7 @@ namespace CompilerUnitTests
         [InlineData(":=", TokenType.DeclAssign)]
         [InlineData("+=", TokenType.PlusAssign)]
         [InlineData("-=", TokenType.MinusAssign)]
-        [InlineData("*=", TokenType.TimesAssign)]
+        [InlineData("*=", TokenType.MultiplyAssign)]
         [InlineData("/=", TokenType.DivideAssign)]
         [InlineData("%=", TokenType.ModuloAssign)]
         [InlineData("&=", TokenType.BitwiseAndAssign)]

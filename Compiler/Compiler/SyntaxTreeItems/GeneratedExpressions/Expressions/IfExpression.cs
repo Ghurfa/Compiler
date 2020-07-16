@@ -1,18 +1,21 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class IfExpression : Expression
     {
-        public readonly Expression Condition;
-        public readonly QuestionMarkToken QuestionMark;
-        public readonly Expression IfTrue;
-        public readonly BackslashToken Backslash;
-        public readonly Expression IfFalse;
+        public Expression Condition { get; private set; }
+        public QuestionMarkToken QuestionMark { get; private set; }
+        public Expression IfTrue { get; private set; }
+        public BackslashToken Backslash { get; private set; }
+        public Expression IfFalse { get; private set; }
+
+        public override int Precedence => 13;
+
+        public override Expression LeftExpr { get => Condition; set { Condition = value; } }
+        public override Expression RightExpr { get => Condition; set { Condition = value; } }
 
         public IfExpression(TokenCollection tokens, Expression condition = null, QuestionMarkToken? questionMark = null, Expression ifTrue = null, BackslashToken? backslash = null, Expression ifFalse = null)
         {

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Compiler.SyntaxTreeItems.Statements;
@@ -8,10 +7,10 @@ namespace Compiler.SyntaxTreeItems
 {
     public class MethodCallExpression : PrimaryExpression, ICompleteStatement
     {
-        public readonly PrimaryExpression Method;
-        public readonly OpenPerenToken OpenPeren;
-        public readonly ArgumentList Arguments;
-        public readonly ClosePerenToken ClosePeren;
+        public PrimaryExpression Method { get; private set; }
+        public OpenPerenToken OpenPeren { get; private set; }
+        public ArgumentList Arguments { get; private set; }
+        public ClosePerenToken ClosePeren { get; private set; }
 
         public MethodCallExpression(TokenCollection tokens, PrimaryExpression method = null, OpenPerenToken? openPeren = null, ArgumentList arguments = null, ClosePerenToken? closePeren = null)
         {

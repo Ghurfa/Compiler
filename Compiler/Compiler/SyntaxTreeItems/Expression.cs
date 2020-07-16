@@ -7,6 +7,9 @@ namespace Compiler
 {
     public abstract class Expression
     {
+        public abstract int Precedence { get; }
+        public abstract Expression LeftExpr { get; set; }
+        public abstract Expression RightExpr { get; set; }
         public static Expression ReadExpression(TokenCollection tokens)
         {
             UnaryExpression baseExpr = UnaryExpression.ReadUnaryExpression(tokens);
@@ -29,6 +32,7 @@ namespace Compiler
                 case RightShiftAssignToken _: exprSoFar = new RightShiftAssignExpression(tokens, baseExpr); break;
                 case NullCoalescingAssignToken _: exprSoFar = new NullCoalescingAssignExpression(tokens, baseExpr); break;
             }
+            exprSoFar = EnforcePrecedenceRules(exprSoFar); //Only needed if it is not an assign expression
 
             bool finishedParsing = false;
             while (!finishedParsing)
@@ -57,9 +61,44 @@ namespace Compiler
                     case OrToken _: exprSoFar = new OrExpression(tokens, exprSoFar); break;
                     default: finishedParsing = true; break;
                 }
+                exprSoFar = EnforcePrecedenceRules(exprSoFar);
             }
             return exprSoFar;
         }
+        private static Expression EnforcePrecedenceRules(Expression expr)
+        {
+
+        }
+
+        private static Expression RotateLeft(Expression expr)
+        {
+            bool leftAssoc = expr.Precedence != 12 && expr.Precedence != 13 && expr.Precedence != 14;
+
+            Expression newHead = expr.RightExpr;
+            Expression rightExprIter = newHead;
+            while(expr.Precedence < rightExprIter.LeftExpr.Precedence || (expr.Precedence == rightExprIter.LeftExpr.Precedence && leftAssoc))
+            {
+                rightExprIter = rightExprIter.LeftExpr;
+            }
+            expr.RightExpr = rightExprIter.LeftExpr;
+            rightExprIter.LeftExpr = expr;
+            return newHead;
+        }
+        private static Expression RotateRight(Expression expr)
+        {
+            bool leftAssoc = expr.Precedence != 12 && expr.Precedence != 13 && expr.Precedence != 14;
+
+            Expression newHead = expr.LeftExpr;
+            Expression leftExprIter = newHead;
+            while (expr.Precedence < leftExprIter.RightExpr.Precedence || (expr.Precedence == leftExprIter.RightExpr.Precedence && !leftAssoc))
+            {
+                leftExprIter = leftExprIter.RightExpr;
+            }
+            expr.RightExpr = leftExprIter.RightExpr;
+            leftExprIter.RightExpr = expr;
+            return newHead;
+        }
+
         public abstract override string ToString();
     }
 }

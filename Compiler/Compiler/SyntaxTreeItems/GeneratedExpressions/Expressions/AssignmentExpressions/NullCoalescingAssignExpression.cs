@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Compiler.SyntaxTreeItems.Statements;
@@ -8,9 +7,14 @@ namespace Compiler.SyntaxTreeItems
 {
     public class NullCoalescingAssignExpression : Expression, ICompleteStatement
     {
-        public readonly UnaryExpression To;
-        public readonly NullCoalescingAssignToken NullCoalescingAssign;
-        public readonly Expression From;
+        public UnaryExpression To { get; private set; }
+        public NullCoalescingAssignToken NullCoalescingAssign { get; private set; }
+        public Expression From { get; private set; }
+
+        public override int Precedence => 14;
+
+        public override Expression LeftExpr { get => To; set => throw new InvalidOperationException() }
+        public override Expression RightExpr { get => To; set => throw new InvalidOperationException() }
 
         public NullCoalescingAssignExpression(TokenCollection tokens, UnaryExpression to = null, NullCoalescingAssignToken? nullCoalescingAssign = null, Expression from = null)
         {

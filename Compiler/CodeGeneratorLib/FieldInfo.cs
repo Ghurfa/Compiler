@@ -1,19 +1,19 @@
-﻿using CodeGenerator.ClassItems;
-using CodeGenerator.SyntaxTreeItemsFieldInfos;
+﻿using CodeGeneratorLib.ClassItems;
+using CodeGeneratorLib.SyntaxTreeItemsFieldInfos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CodeGenerator
+namespace CodeGeneratorLib
 {
-    abstract class FieldInfo
+    public abstract class FieldInfo
     {
         public string Name;
         public string Type;
         public string LowerCaseName => Name.Substring(0, 1).ToLower() + Name.Substring(1);
         public abstract string[] GetCreationStatements();
-        public virtual string[] GetDeclaration() => new string[] { $"public readonly {Type} {Name};" };
+        public virtual string[] GetDeclaration() => new string[] { $"public {Type} {Name} {{ get; private set; }}" };
         public virtual string[] GetToString() => new string[] { $"ret += {Name}.ToString();" };
         protected FieldInfo(string type, string name)
         {
@@ -21,15 +21,15 @@ namespace CodeGenerator
             Name = name;
         }
 
-        public static FieldInfo[] CreateFieldInfoList(IEnumerable<string> fieldDeclarations, string[] tokenNames)
+        public static List<FieldInfo> CreateFieldInfoList(IEnumerable<string> fieldDeclarations, string[] tokenNames)
         {
-            LinkedList<FieldInfo> list = new LinkedList<FieldInfo>();
+            List<FieldInfo> list = new List<FieldInfo>();
             foreach (string declaration in fieldDeclarations)
             {
                 var newField = GetFieldInfo(declaration, tokenNames);
-                list.AddLast(newField);
+                list.Add(newField);
             }
-            return list.ToArray();
+            return list;
         }
 
         public static FieldInfo GetFieldInfo(string current, string[] tokenNames)

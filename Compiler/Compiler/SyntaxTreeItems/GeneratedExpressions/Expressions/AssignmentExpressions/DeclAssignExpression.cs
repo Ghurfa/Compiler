@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Compiler.SyntaxTreeItems.Statements;
@@ -8,9 +7,14 @@ namespace Compiler.SyntaxTreeItems
 {
     public class DeclAssignExpression : Expression, ICompleteStatement
     {
-        public readonly UnaryExpression To;
-        public readonly DeclAssignToken DeclAssign;
-        public readonly Expression From;
+        public UnaryExpression To { get; private set; }
+        public DeclAssignToken DeclAssign { get; private set; }
+        public Expression From { get; private set; }
+
+        public override int Precedence => 14;
+
+        public override Expression LeftExpr { get => To; set => throw new InvalidOperationException() }
+        public override Expression RightExpr { get => To; set => throw new InvalidOperationException() }
 
         public DeclAssignExpression(TokenCollection tokens, UnaryExpression to = null, DeclAssignToken? declAssign = null, Expression from = null)
         {

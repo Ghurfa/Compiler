@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Compiler.SyntaxTreeItems.Statements;
@@ -8,8 +7,8 @@ namespace Compiler.SyntaxTreeItems
 {
     public class PostIncrementExpression : PrimaryExpression, ICompleteStatement
     {
-        public readonly PrimaryExpression BaseExpression;
-        public readonly IncrementToken Increment;
+        public PrimaryExpression BaseExpression { get; private set; }
+        public IncrementToken Increment { get; private set; }
 
         public PostIncrementExpression(TokenCollection tokens, PrimaryExpression baseExpression = null, IncrementToken? increment = null)
         {

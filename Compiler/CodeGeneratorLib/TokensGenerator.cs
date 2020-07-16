@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace CodeGenerator
+namespace CodeGeneratorLib
 {
-    static class TokensGenerator
+    public static class TokensGenerator
     {
         public static List<string> TokenNames = new List<string>();
         public static void GenerateTokenClasses(string tokensDefPath, string baseDir, string TCBPath)

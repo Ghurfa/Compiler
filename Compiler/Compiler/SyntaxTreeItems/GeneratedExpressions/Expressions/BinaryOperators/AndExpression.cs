@@ -1,16 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class AndExpression : Expression
     {
-        public readonly Expression Left;
-        public readonly AndToken And;
-        public readonly Expression Right;
+        public Expression Left { get; private set; }
+        public AndToken And { get; private set; }
+        public Expression Right { get; private set; }
+
+        public override int Precedence => 10;
+
+        public override Expression LeftExpr { get => Left; set { Left = value; } }
+        public override Expression RightExpr { get => Left; set { Left = value; } }
 
         public AndExpression(TokenCollection tokens, Expression left = null, AndToken? and = null, Expression right = null)
         {

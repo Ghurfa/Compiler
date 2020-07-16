@@ -1,16 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class DivideExpression : Expression
     {
-        public readonly Expression Left;
-        public readonly DivideToken Divide;
-        public readonly Expression Right;
+        public Expression Left { get; private set; }
+        public DivideToken Divide { get; private set; }
+        public Expression Right { get; private set; }
+
+        public override int Precedence => 2;
+
+        public override Expression LeftExpr { get => Left; set { Left = value; } }
+        public override Expression RightExpr { get => Left; set { Left = value; } }
 
         public DivideExpression(TokenCollection tokens, Expression left = null, DivideToken? divide = null, Expression right = null)
         {
