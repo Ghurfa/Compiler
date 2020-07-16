@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public class DereferenceExpression : UnaryExpression
+    public class DereferenceExpression : UnaryExpression, IAssignableExpression
     {
         public AsteriskToken Dereference { get; private set; }
         public UnaryExpression Expression { get; private set; }
@@ -19,7 +19,6 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Dereference.ToString();
-            ret += " ";
             ret += Expression.ToString();
             return ret;
         }

@@ -21,9 +21,7 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += OpenPeren.ToString();
-            ret += " ";
             ret += Values.ToString();
-            ret += " ";
             ret += ClosePeren.ToString();
             return ret;
         }

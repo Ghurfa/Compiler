@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public class DeclarationExpression : PrimaryExpression, ICompleteStatement
+    public class DeclarationExpression : PrimaryExpression, IAssignableExpression, ICompleteStatement
     {
         public IdentifierToken Identifier { get; private set; }
         public ColonToken Colon { get; private set; }
@@ -22,9 +21,7 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Identifier.ToString();
-            ret += " ";
             ret += Colon.ToString();
-            ret += " ";
             ret += Type.ToString();
             return ret;
         }

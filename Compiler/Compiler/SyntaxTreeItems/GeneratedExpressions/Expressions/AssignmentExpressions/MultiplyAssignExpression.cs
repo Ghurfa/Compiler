@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class MultiplyAssignExpression : Expression, ICompleteStatement
     {
-        public UnaryExpression To { get; private set; }
-        public MultiplyAssignToken MultiplyAssign { get; private set; }
-        public Expression From { get; private set; }
-
         public override int Precedence => 14;
 
+        private UnaryExpression to;
+        public UnaryExpression To { get => to; set { if (value is IAssignableExpression) to = value; else throw new InvalidAssignmentLeftException(value); } }
+        public MultiplyAssignToken MultiplyAssign { get; private set; }
+        public Expression From { get; private set; }
         public override Expression LeftExpr { get => To; set { if (value is UnaryExpression unary) To = unary; else throw new InvalidAssignmentLeftException(value);} }
         public override Expression RightExpr { get => From; set { From = value; } }
 

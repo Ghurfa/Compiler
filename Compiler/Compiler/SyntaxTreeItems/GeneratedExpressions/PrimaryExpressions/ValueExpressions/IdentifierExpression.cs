@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public class IdentifierExpression : PrimaryExpression
+    public class IdentifierExpression : PrimaryExpression, IAssignableExpression
     {
         public IdentifierToken Identifier { get; private set; }
 

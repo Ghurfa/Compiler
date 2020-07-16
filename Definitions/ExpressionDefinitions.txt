@@ -9,7 +9,7 @@ $Expression
         =UnaryExpression:To Token Expression:From
         >AssignmentExpressions
         +ICompleteStatement
-        ~AssignExpression
+        ~AssignmentExpression
         :override int Precedence=14
         {
             Assign
@@ -95,6 +95,7 @@ $Expression
 
     //UnaryExpressions
     +UnaryExpression
+    ~UnaryExpression
     =Token UnaryExpression:Expression
     >UnaryOperatorExpressions
     {
@@ -104,6 +105,8 @@ $Expression
         Decrement:PreDecrement
         Plus:UnaryPlus
         Minus:UnaryMinus
+        
+        +IAssignableExpression
         Asterisk:Dereference
     }
 
@@ -112,18 +115,21 @@ $Expression
     >PrimaryExpressions
     {
         .ArrayAccess
+        +IAssignableExpression
         PrimaryExpression:Array
         OpenBracket
         Expression:Index
         CloseBracket
 
         .Declaration
+        +IAssignableExpression
         +ICompleteStatement
         Identifier
         Colon
         Type
 
         .MemberAccess
+        +IAssignableExpression
         PrimaryExpression:BaseExpression
         Dot
         Identifier:Item
@@ -144,12 +150,14 @@ $Expression
         ClosePeren
 
         .NullCondArrayAccess
+        +IAssignableExpression
         PrimaryExpression:Array
         NullCondOpenBracket
         Expression:Index
         CloseBracket
 
         .NullCondMemberAccess
+        +IAssignableExpression
         PrimaryExpression:BaseExpression
         NullCondDot
         Identifier:Item
@@ -172,6 +180,7 @@ $Expression
         >ValueExpressions
         {
             .Identifier
+            +IAssignableExpression
             Identifier
 
             .PrimitiveType

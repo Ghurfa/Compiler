@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Compiler.SyntaxTreeItems.Statements;
 
 namespace Compiler.SyntaxTreeItems
 {
@@ -26,9 +25,7 @@ namespace Compiler.SyntaxTreeItems
             ret += Method.ToString();
             ret += " ";
             ret += OpenPeren.ToString();
-            ret += " ";
             ret += Arguments.ToString();
-            ret += " ";
             ret += ClosePeren.ToString();
             return ret;
         }

@@ -19,7 +19,6 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += UnaryPlus.ToString();
-            ret += " ";
             ret += Expression.ToString();
             return ret;
         }

@@ -22,39 +22,65 @@ namespace CodeGenerator
                                                                                   TokensGenerator.TokenNames.ToArray());
             foreach (ClassInfo classInfo in classInfos)
             {
-                if (classInfo.InheritsFrom.Contains("ICompleteStatement")) classInfo.UsingStatements.Add("using Compiler.SyntaxTreeItems.Statements;");
-
+                //ToString method
                 MethodInfo toStringMethod = new MethodInfo("public override string ToString()");
                 toStringMethod.Body.Add("string ret = \"\";");
-                bool isFirst = true;
-                foreach (FieldInfo item in classInfo.InstanceFields)
+                string[] openSyntaxTokenNames = new string[] { "OpenPerenToken", "OpenCurlyToken", "OpenBracketToken" };
+                string[] closeSyntaxTokenNames = new string[] { "ClosePerenToken", "CloseCurlyToken", "CloseBracketToken", "CommaToken", "SemicolonToken" };
+                string[] noSpacesAround = new string[] { "CharLiteralToken", "StringLiteralToken", "DotToken", "ColonToken" };
+                for (int i = 0; i < classInfo.InstanceFields.Count; i++)
                 {
-                    if (isFirst) isFirst = false;
-                    else toStringMethod.Body.Add("ret += \" \";");
-                    foreach (string toStringLine in item.GetToString())
+                    foreach (string toStringLine in classInfo.InstanceFields[i].GetToString())
                     {
                         toStringMethod.Body.Add(toStringLine);
                     }
+                    if(i < classInfo.InstanceFields.Count - 1 && 
+                        !classInfo.Flags.Contains("UnaryExpression") &&
+                        !openSyntaxTokenNames.Contains(classInfo.InstanceFields[i].Type) &&
+                        !noSpacesAround.Contains(classInfo.InstanceFields[i].Type) &&
+                        !closeSyntaxTokenNames.Contains(classInfo.InstanceFields[i + 1].Type) &&
+                        !noSpacesAround.Contains(classInfo.InstanceFields[i + 1].Type))
+                    {
+                        toStringMethod.Body.Add("ret += \" \";");
+                    }
                 }
                 toStringMethod.Body.Add("return ret;");
+                classInfo.Methods.Add(toStringMethod);
 
+                //LeftExpr and RightExpr properties
                 if (classInfo.Flags.Contains("BinaryExpression"))
                 {
                     string leftName = classInfo.InstanceFields.First().Name;
-                    string leftProp = classInfo.InstanceFields.First().Type == "Expression" ?
-                        $"override Expression LeftExpr {{ get => {leftName}; set {{ {leftName} = value; }} }}" :
-                            classInfo.Flags.Contains("AssignExpression") ?
-                            $"override Expression LeftExpr {{ get => {leftName}; set {{ if (value is UnaryExpression unary) {leftName} = unary; else throw new InvalidAssignmentLeftException(value);}} }}":
-                            $"override Expression LeftExpr {{ get => {leftName}; set => throw new InvalidOperationException(); }}";
+                    string leftSet = classInfo.InstanceFields.First().Type == "Expression" ?
+                        $"set {{ {leftName} = value; }}" :
+                            classInfo.Flags.Contains("AssignmentExpression") ?
+                            $"set {{ if (value is UnaryExpression unary) {leftName} = unary; else throw new InvalidAssignmentLeftException(value);}}":
+                            $"set => throw new InvalidOperationException();";
+                    GetSetPropertyInfo leftProp = new GetSetPropertyInfo("Expression", "LeftExpr", $"get => {leftName};", leftSet, null, "public", "override");
+
                     string rightName = classInfo.InstanceFields.Last().Name;
-                    string rightProp = classInfo.InstanceFields.Last().Type == "Expression" ?
-                        $"override Expression RightExpr {{ get => {rightName}; set {{ {rightName} = value; }} }}" :
-                        $"override Expression RightExpr {{ get => {rightName}; set => throw new InvalidOperationException(); }}";
+                    string rightSet = classInfo.InstanceFields.Last().Type == "Expression" ?
+                        $"set {{ {rightName} = value; }}" :
+                        $"set => throw new InvalidOperationException();";
+                    GetSetPropertyInfo rightProp = new GetSetPropertyInfo("Expression", "RightExpr", $"get => {rightName};", rightSet, null, "public", "override");
                     classInfo.GetSetProperties.Add(leftProp);
                     classInfo.GetSetProperties.Add(rightProp);
                 }
 
-                classInfo.Methods.Add(toStringMethod);
+                //Check left-hand side of assignment expressions
+                if(classInfo.Flags.Contains("AssignmentExpression"))
+                {
+                    foreach(GetSetPropertyInfo prop in classInfo.GetSetProperties)
+                    {
+                        if(prop.Name == "To")
+                        {
+                            prop.BackingFieldName = "to";
+                            prop.Get = "get => to;";
+                            prop.Set = "set { if (value is IAssignableExpression) to = value; else throw new InvalidAssignmentLeftException(value); }";
+                            break;
+                        }
+                    }
+                }
             }
 
             ClassWriter.GenerateFiles(classInfos);

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public class MemberAccessExpression : PrimaryExpression
+    public class MemberAccessExpression : PrimaryExpression, IAssignableExpression
     {
         public PrimaryExpression BaseExpression { get; private set; }
         public DotToken Dot { get; private set; }
@@ -21,9 +21,7 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += BaseExpression.ToString();
-            ret += " ";
             ret += Dot.ToString();
-            ret += " ";
             ret += Item.ToString();
             return ret;
         }

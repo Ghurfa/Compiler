@@ -19,7 +19,6 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += LogicalNot.ToString();
-            ret += " ";
             ret += Expression.ToString();
             return ret;
         }

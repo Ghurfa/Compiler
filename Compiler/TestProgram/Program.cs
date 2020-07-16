@@ -13,14 +13,14 @@ namespace TestProgram
     {
         static void Main(string[] args)
         {
-            var text = File.ReadAllText(@"..\..\..\..\..\PrecedenceTest.txt");
+            var text = File.ReadAllText(@"..\..\..\..\..\FizzBuzz.txt");
             var tokens = Tokenizer.Tokenize(text);
             try
             {
                 NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);
                 VisualizationOptions options = 0
                     //| VisualizationOptions.PrintNames
-                    //| VisualizationOptions.PrintNullFieldNames
+                    | VisualizationOptions.PrintNullFieldNames
                     //| VisualizationOptions.PrintTypes
                     //| VisualizationOptions.LineFeedAfterType
                     ;

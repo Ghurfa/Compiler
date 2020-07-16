@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Compiler.SyntaxTreeItems.Statements
+namespace Compiler.SyntaxTreeItems
 {
-    public interface ICompleteStatement
+    public interface IAssignableExpression
     {
     }
 }

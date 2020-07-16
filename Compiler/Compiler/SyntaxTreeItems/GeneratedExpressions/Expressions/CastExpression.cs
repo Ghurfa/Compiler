@@ -6,12 +6,11 @@ namespace Compiler.SyntaxTreeItems
 {
     public class CastExpression : Expression
     {
+        public override int Precedence => 1;
+
         public UnaryExpression Expression { get; private set; }
         public AsKeywordToken AsKeyword { get; private set; }
         public Type CastTo { get; private set; }
-
-        public override int Precedence => 1;
-
         public override Expression LeftExpr { get => Expression; set => throw new InvalidOperationException(); }
         public override Expression RightExpr { get => CastTo; set => throw new InvalidOperationException(); }
 

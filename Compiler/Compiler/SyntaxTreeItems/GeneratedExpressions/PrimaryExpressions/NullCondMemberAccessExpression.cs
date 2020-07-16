@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public class NullCondMemberAccessExpression : PrimaryExpression
+    public class NullCondMemberAccessExpression : PrimaryExpression, IAssignableExpression
     {
         public PrimaryExpression BaseExpression { get; private set; }
         public NullCondDotToken NullCondDot { get; private set; }

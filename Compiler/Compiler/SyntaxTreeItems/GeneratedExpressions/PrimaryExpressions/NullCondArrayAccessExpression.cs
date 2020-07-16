@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
-    public class NullCondArrayAccessExpression : PrimaryExpression
+    public class NullCondArrayAccessExpression : PrimaryExpression, IAssignableExpression
     {
         public PrimaryExpression Array { get; private set; }
         public NullCondOpenBracketToken NullCondOpenBracket { get; private set; }
@@ -27,7 +27,6 @@ namespace Compiler.SyntaxTreeItems
             ret += NullCondOpenBracket.ToString();
             ret += " ";
             ret += Index.ToString();
-            ret += " ";
             ret += CloseBracket.ToString();
             return ret;
         }

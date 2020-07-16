@@ -46,12 +46,12 @@ namespace Compiler
     {
         public readonly Expression Expression;
         public InvalidStatementException(Expression expr)
-            : base($"Expression {{ {expr.ToString()} }} is not a valid statement") { Expression = expr; }
+            : base($"Expression {expr.ToString()} is not a valid statement") { Expression = expr; }
     }
     public class InvalidAssignmentLeftException : SyntaxTreeBuildingException
     {
         public readonly Expression Expression;
         public InvalidAssignmentLeftException(Expression expr)
-            : base($"Expression {{ {expr.ToString()} }} is not valid as the left-hand side of an assignment") { Expression = expr; }
+            : base($"Expression {expr.ToString()} is not valid as the left-hand side of an assignment") { Expression = expr; }
     }
 }

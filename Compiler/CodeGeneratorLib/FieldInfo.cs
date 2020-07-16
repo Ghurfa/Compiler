@@ -13,7 +13,8 @@ namespace CodeGeneratorLib
         public string Type;
         public string LowerCaseName => Name.Substring(0, 1).ToLower() + Name.Substring(1);
         public abstract string[] GetCreationStatements();
-        public virtual string[] GetDeclaration() => new string[] { $"public {Type} {Name} {{ get; private set; }}" };
+        public virtual GetSetPropertyInfo[] GetDeclaration() =>
+            new GetSetPropertyInfo[] { new GetSetPropertyInfo(Type, Name, null, "private set;") };
         public virtual string[] GetToString() => new string[] { $"ret += {Name}.ToString();" };
         protected FieldInfo(string type, string name)
         {

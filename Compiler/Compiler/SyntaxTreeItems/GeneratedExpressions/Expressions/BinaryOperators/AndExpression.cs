@@ -6,12 +6,11 @@ namespace Compiler.SyntaxTreeItems
 {
     public class AndExpression : Expression
     {
+        public override int Precedence => 10;
+
         public Expression Left { get; private set; }
         public AndToken And { get; private set; }
         public Expression Right { get; private set; }
-
-        public override int Precedence => 10;
-
         public override Expression LeftExpr { get => Left; set { Left = value; } }
         public override Expression RightExpr { get => Right; set { Right = value; } }
 

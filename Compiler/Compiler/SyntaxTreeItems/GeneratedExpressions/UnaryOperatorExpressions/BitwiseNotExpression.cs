@@ -19,7 +19,6 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += BitwiseNot.ToString();
-            ret += " ";
             ret += Expression.ToString();
             return ret;
         }

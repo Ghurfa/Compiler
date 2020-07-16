@@ -8,102 +8,102 @@ namespace CompilerUnitTests
     public class TokenizingSingleItemTests
     {
         [Theory]
-        [InlineData(" ", TokenType.Whitespace)]
-        [InlineData(" \t", TokenType.Whitespace)]
-        [InlineData("//a", TokenType.SingleLineComment)]
-        [InlineData("/*a*/", TokenType.MultiLineComment)]
-        [InlineData("/*\na */", TokenType.MultiLineComment)]
+        [InlineData(" ", typeof(WhitespaceToken))]
+        [InlineData(" \t", typeof(WhitespaceToken))]
+        [InlineData("//a", typeof(SingleLineCommentToken))]
+        [InlineData("/*a*/", typeof(MultiLineCommentToken))]
+        [InlineData("/*\na */", typeof(MultiLineCommentToken))]
 
-        [InlineData("public", TokenType.Modifier)]
-        [InlineData("private", TokenType.Modifier)]
-        [InlineData("static", TokenType.Modifier)]
+        [InlineData("public", typeof(ModifierToken))]
+        [InlineData("private", typeof(ModifierToken))]
+        [InlineData("static", typeof(ModifierToken))]
 
-        [InlineData("namespace", TokenType.NamespaceKeyword)]
-        [InlineData("class", TokenType.ClassKeyword)]
-        [InlineData("ctor", TokenType.ConstructorKeyword)]
-        [InlineData("if", TokenType.IfKeyword)]
-        [InlineData("else", TokenType.ElseKeyword)]
-        [InlineData("while", TokenType.WhileKeyword)]
-        [InlineData("for", TokenType.ForKeyword)]
-        [InlineData("foreach", TokenType.ForeachKeyword)]
-        [InlineData("switch", TokenType.SwitchKeyword)]
-        [InlineData("return", TokenType.ReturnKeyword)]
-        [InlineData("break", TokenType.BreakKeyword)]
-        [InlineData("continue", TokenType.ContinueKeyword)]
-        [InlineData("throw", TokenType.ThrowKeyword)]
-        [InlineData("as", TokenType.AsKeyword)]
-        [InlineData("new", TokenType.NewKeyword)]
+        [InlineData("namespace", typeof(NamespaceKeywordToken))]
+        [InlineData("class", typeof(ClassKeywordToken))]
+        [InlineData("ctor", typeof(ConstructorKeywordToken))]
+        [InlineData("if", typeof(IfKeywordToken))]
+        [InlineData("else", typeof(ElseKeywordToken))]
+        [InlineData("while", typeof(WhileKeywordToken))]
+        [InlineData("for", typeof(ForKeywordToken))]
+        [InlineData("foreach", typeof(ForeachKeywordToken))]
+        [InlineData("switch", typeof(SwitchKeywordToken))]
+        [InlineData("return", typeof(ReturnKeywordToken))]
+        [InlineData("break", typeof(BreakKeywordToken))]
+        [InlineData("continue", typeof(ContinueKeywordToken))]
+        [InlineData("throw", typeof(ThrowKeywordToken))]
+        [InlineData("as", typeof(AsKeywordToken))]
+        [InlineData("new", typeof(NewKeywordToken))]
 
-        [InlineData("true", TokenType.TrueKeyword)]
-        [InlineData("false", TokenType.FalseKeyword)]
+        [InlineData("true", typeof(TrueKeywordToken))]
+        [InlineData("false", typeof(FalseKeywordToken))]
 
-        [InlineData("this", TokenType.ValueKeyword)]
-        [InlineData("base", TokenType.ValueKeyword)]
-        [InlineData("value", TokenType.ValueKeyword)]
+        [InlineData("this", typeof(ValueKeywordToken))]
+        [InlineData("base", typeof(ValueKeywordToken))]
+        [InlineData("value", typeof(ValueKeywordToken))]
 
-        [InlineData(".", TokenType.Dot)]
-        [InlineData(":", TokenType.Colon)]
-        [InlineData(";", TokenType.Semicolon)]
-        [InlineData("\\", TokenType.Backslash)]
-        [InlineData("?", TokenType.QuestionMark)]
-        [InlineData(",", TokenType.Comma)]
-        [InlineData("{", TokenType.OpenCurly)]
-        [InlineData("}", TokenType.CloseCurly)]
-        [InlineData("(", TokenType.OpenPeren)]
-        [InlineData(")", TokenType.ClosePeren)]
-        [InlineData("[", TokenType.OpenBracket)]
-        [InlineData("]", TokenType.CloseBracket)]
-        [InlineData("?.", TokenType.NullCondDot)]
-        [InlineData("?[", TokenType.NullCondOpenBracket)]
+        [InlineData(".", typeof(DotToken))]
+        [InlineData(":", typeof(ColonToken))]
+        [InlineData(";", typeof(SemicolonToken))]
+        [InlineData("\\", typeof(BackslashToken))]
+        [InlineData("?", typeof(QuestionMarkToken))]
+        [InlineData(",", typeof(CommaToken))]
+        [InlineData("{", typeof(OpenCurlyToken))]
+        [InlineData("}", typeof(CloseCurlyToken))]
+        [InlineData("(", typeof(OpenPerenToken))]
+        [InlineData(")", typeof(ClosePerenToken))]
+        [InlineData("[", typeof(OpenBracketToken))]
+        [InlineData("]", typeof(CloseBracketToken))]
+        [InlineData("?.", typeof(NullCondDotToken))]
+        [InlineData("?[", typeof(NullCondOpenBracketToken))]
 
-        [InlineData("++", TokenType.Increment)]
-        [InlineData("--", TokenType.Decrement)]
-        [InlineData("!", TokenType.Not)]
-        [InlineData("~", TokenType.BitwiseNot)]
+        [InlineData("++", typeof(IncrementToken))]
+        [InlineData("--", typeof(DecrementToken))]
+        [InlineData("!", typeof(NotToken))]
+        [InlineData("~", typeof(BitwiseNotToken))]
 
-        [InlineData("+", TokenType.Plus)]
-        [InlineData("-", TokenType.Minus)]
-        [InlineData("*", TokenType.Asterisk)]
-        [InlineData("/", TokenType.Divide)]
-        [InlineData("%", TokenType.Modulo)]
-        [InlineData("&", TokenType.BitwiseAnd)]
-        [InlineData("|", TokenType.BitwiseOr)]
-        [InlineData("^", TokenType.BitwiseXor)]
-        [InlineData("<<", TokenType.LeftShift)]
-        [InlineData(">>", TokenType.RightShift)]
-        [InlineData("??", TokenType.NullCoalescing)]
+        [InlineData("+", typeof(PlusToken))]
+        [InlineData("-", typeof(MinusToken))]
+        [InlineData("*", typeof(AsteriskToken))]
+        [InlineData("/", typeof(DivideToken))]
+        [InlineData("%", typeof(ModuloToken))]
+        [InlineData("&", typeof(BitwiseAndToken))]
+        [InlineData("|", typeof(BitwiseOrToken))]
+        [InlineData("^", typeof(BitwiseXorToken))]
+        [InlineData("<<", typeof(LeftShiftToken))]
+        [InlineData(">>", typeof(RightShiftToken))]
+        [InlineData("??", typeof(NullCoalescingToken))]
 
-        [InlineData("=", TokenType.Assign)]
-        [InlineData(":=", TokenType.DeclAssign)]
-        [InlineData("+=", TokenType.PlusAssign)]
-        [InlineData("-=", TokenType.MinusAssign)]
-        [InlineData("*=", TokenType.MultiplyAssign)]
-        [InlineData("/=", TokenType.DivideAssign)]
-        [InlineData("%=", TokenType.ModuloAssign)]
-        [InlineData("&=", TokenType.BitwiseAndAssign)]
-        [InlineData("|=", TokenType.BitwiseOrAssign)]
-        [InlineData("^=", TokenType.BitwiseXorAssign)]
-        [InlineData("<<=", TokenType.LeftShiftAssign)]
-        [InlineData(">>=", TokenType.RightShiftAssign)]
-        [InlineData("??=", TokenType.NullCoalescingAssign)]
+        [InlineData("=", typeof(AssignToken))]
+        [InlineData(":=", typeof(DeclAssignToken))]
+        [InlineData("+=", typeof(PlusAssignToken))]
+        [InlineData("-=", typeof(MinusAssignToken))]
+        [InlineData("*=", typeof(MultiplyAssignToken))]
+        [InlineData("/=", typeof(DivideAssignToken))]
+        [InlineData("%=", typeof(ModuloAssignToken))]
+        [InlineData("&=", typeof(BitwiseAndAssignToken))]
+        [InlineData("|=", typeof(BitwiseOrAssignToken))]
+        [InlineData("^=", typeof(BitwiseXorAssignToken))]
+        [InlineData("<<=", typeof(LeftShiftAssignToken))]
+        [InlineData(">>=", typeof(RightShiftAssignToken))]
+        [InlineData("??=", typeof(NullCoalescingAssignToken))]
 
-        [InlineData("==", TokenType.Equals)]
-        [InlineData("!=", TokenType.NotEquals)]
-        [InlineData("&&", TokenType.And)]
-        [InlineData("||", TokenType.Or)]
+        [InlineData("==", typeof(EqualsToken))]
+        [InlineData("!=", typeof(NotEqualsToken))]
+        [InlineData("&&", typeof(AndToken))]
+        [InlineData("||", typeof(OrToken))]
 
-        [InlineData("<", TokenType.LessThan)]
-        [InlineData(">", TokenType.GreaterThan)]
-        [InlineData("<=", TokenType.LessThanOrEqualTo)]
-        [InlineData(">=", TokenType.GreaterThanOrEqualTo)]
-        public void ParseSingleTokenTest(string text, TokenType expectedType)
+        [InlineData("<", typeof(LessThanToken))]
+        [InlineData(">", typeof(GreaterThanToken))]
+        [InlineData("<=", typeof(LessThanOrEqualToToken))]
+        [InlineData(">=", typeof(GreaterThanOrEqualToToken))]
+        public void ParseSingleTokenTest(string text, Type expectedType)
         {
             var tokens = Tokenizer.Tokenize(text);
             int count = 0;
             foreach (IToken token in tokens)
             {
                 count++;
-                Assert.Equal(expectedType, token.Type);
+                Assert.Equal(expectedType, token.GetType());
                 Assert.Equal(text, token.Text);
             }
             Assert.Equal(1, count);
@@ -113,22 +113,22 @@ namespace CompilerUnitTests
         [Fact]
         public void ParseWhitespaceWithLineBreakTest()
         {
-            void test(string text, TokenType expectedType)
+            void test(string text)
             {
                 var tokens = Tokenizer.Tokenize(text);
                 int count = 0;
                 foreach (IToken token in tokens)
                 {
-                    Assert.Equal(expectedType, token.Type);
+                    Assert.IsType<WhitespaceWithLineBreakToken>(token);
                     Assert.Equal(text, token.Text);
                     count++;
                 }
                 Assert.Equal(1, count);
             }
-            test(newLine, TokenType.WhitespaceWithLineBreak);
-            test(newLine + newLine, TokenType.WhitespaceWithLineBreak);
-            test(" " + newLine, TokenType.WhitespaceWithLineBreak);
-            test(newLine + " \t", TokenType.WhitespaceWithLineBreak);
+            test(newLine);
+            test(newLine + newLine);
+            test(" " + newLine);
+            test(newLine + " \t");
         }
 
         [Fact]
@@ -140,12 +140,12 @@ namespace CompilerUnitTests
             {
                 if (count == 0)
                 {
-                    Assert.Equal(TokenType.SingleLineComment, token.Type);
+                    Assert.IsType<SingleLineCommentToken>(token);
                     Assert.Equal("//a", token.Text);
                 }
                 else
                 {
-                    Assert.Equal(TokenType.WhitespaceWithLineBreak, token.Type);
+                    Assert.IsType<WhitespaceWithLineBreakToken>(token);
                     Assert.Equal("\r\n", token.Text);
                 }
                 count++;
@@ -158,6 +158,7 @@ namespace CompilerUnitTests
         [InlineData("string")]
         [InlineData("+")]
         [InlineData("a += b;")]
+        [InlineData("'")]
         [InlineData("{non-interpolation}")]
         [InlineData("this is a string literal")]
         [InlineData("a:int := 12")]
@@ -171,12 +172,12 @@ namespace CompilerUnitTests
             {
                 if (count == 0 || count == 2)
                 {
-                    Assert.Equal(TokenType.DoubleQuote, token.Type);
+                    Assert.IsType<DoubleQuoteToken>(token);
                     Assert.Equal("\"", token.Text);
                 }
                 else
                 {
-                    Assert.Equal(TokenType.StringLiteral, token.Type);
+                    Assert.IsType<StringLiteralToken>(token);
                     Assert.Equal(innerText, token.Text);
                 }
                 count++;
@@ -200,12 +201,12 @@ namespace CompilerUnitTests
                 {
                     if (count == 0 || count == 2)
                     {
-                        Assert.Equal(TokenType.DoubleQuote, token.Type);
+                        Assert.IsType<DoubleQuoteToken>(token);
                         Assert.Equal("\"", token.Text);
                     }
                     else
                     {
-                        Assert.Equal(TokenType.StringLiteral, token.Type);
+                        Assert.IsType<StringLiteralToken>(token);
                         Assert.Equal(expected, token.Text);
                     }
                     count++;
@@ -219,6 +220,7 @@ namespace CompilerUnitTests
 
         [Theory]
         [InlineData("a")]
+        [InlineData("\"")]
         [InlineData("\t")]
         [InlineData("+")]
         [InlineData("\x1a0")]
@@ -237,12 +239,12 @@ namespace CompilerUnitTests
             {
                 if (count == 0 || count == 2)
                 {
-                    Assert.Equal(TokenType.SingleQuote, token.Type);
+                    Assert.IsType<SingleQuoteToken>(token);
                     Assert.Equal("'", token.Text);
                 }
                 else
                 {
-                    Assert.Equal(TokenType.CharLiteral, token.Type);
+                    Assert.IsType<CharLiteralToken>(token);
                     Assert.Equal(expectedText, token.Text);
                 }
                 count++;

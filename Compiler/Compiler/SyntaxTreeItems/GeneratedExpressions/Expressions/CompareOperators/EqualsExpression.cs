@@ -6,12 +6,11 @@ namespace Compiler.SyntaxTreeItems
 {
     public class EqualsExpression : Expression
     {
+        public override int Precedence => 6;
+
         public Expression Left { get; private set; }
         public EqualsToken Equals { get; private set; }
         public Expression Right { get; private set; }
-
-        public override int Precedence => 6;
-
         public override Expression LeftExpr { get => Left; set { Left = value; } }
         public override Expression RightExpr { get => Right; set { Right = value; } }
 

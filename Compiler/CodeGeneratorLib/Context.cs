@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace CodeGeneratorLib
@@ -21,7 +22,7 @@ namespace CodeGeneratorLib
         }
         public string Namespace;
         public List<KeyValuePair<string, string>> GetProperties { get; }
-        public List<string> GetSetProperties { get; }
+        public List<GetSetPropertyInfo> GetSetProperties { get; }
         public List<string> InheritsFrom { get; }
         public List<string> Flags { get; }
         public Context(string directory, string namespaceStr)
@@ -31,7 +32,7 @@ namespace CodeGeneratorLib
             pattern = "";
             Namespace = namespaceStr;
             GetProperties = new List<KeyValuePair<string, string>>();
-            GetSetProperties = new List<string>();
+            GetSetProperties = new List<GetSetPropertyInfo>();
             InheritsFrom = new List<string>();
             Flags = new List<string>();
         }
@@ -41,7 +42,7 @@ namespace CodeGeneratorLib
             ret.Suffix = Suffix;
             ret.pattern = pattern;
             foreach (KeyValuePair<string, string> pair in GetProperties) ret.GetProperties.Add(pair);
-            foreach (string prop in GetSetProperties) ret.GetSetProperties.Add(prop);
+            foreach (GetSetPropertyInfo prop in GetSetProperties) ret.GetSetProperties.Add(prop);
             foreach (string item in InheritsFrom) ret.InheritsFrom.Add(item);
             foreach (string flag in Flags) ret.Flags.Add(flag);
             return ret;

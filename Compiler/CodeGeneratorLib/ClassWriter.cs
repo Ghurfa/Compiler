@@ -26,11 +26,6 @@ namespace CodeGeneratorLib
             text.AddLast("{");
             text.AddLast($"    public class {classInfo.Name}{CreateInheritanceString(classInfo)}");
             text.AddLast("    {");
-            foreach(string line in classInfo.ConstructorLines)
-            {
-                text.AddLast("        " + line);
-            }
-            text.AddLast("");
             if (classInfo.GetProperties.Count > 0)
             {
                 foreach (KeyValuePair<string, string> property in classInfo.GetProperties)
@@ -41,20 +36,27 @@ namespace CodeGeneratorLib
             }
             if (classInfo.GetSetProperties.Count > 0)
             {
-                foreach (string property in classInfo.GetSetProperties)
+                foreach (GetSetPropertyInfo property in classInfo.GetSetProperties)
                 {
-                    text.AddLast($"        public {property}");
+                    if (property.BackingFieldName != null)
+                    {
+                        text.AddLast($"        private {property.Type} {property.BackingFieldName};");
+                    }
+                    string propLine = "        ";
+                    foreach (string modifier in property.Modifiers) propLine += modifier + " ";
+                    propLine += property.Type + " ";
+                    propLine += property.Name + " { ";
+                    propLine += property.Get + " ";
+                    propLine += property.Set + " }";
+                    text.AddLast(propLine);
                 }
                 text.AddLast("");
             }
             text.AddLast($"        public {classInfo.Name}({GetConstructorParameterString(classInfo)})");
             text.AddLast("        {");
-            foreach (FieldInfo field in classInfo.InstanceFields)
+            foreach (string line in classInfo.ConstructorLines)
             {
-                foreach (string statement in field.GetCreationStatements())
-                {
-                    text.AddLast("            " + statement);
-                }
+                text.AddLast("            " + line);
             }
             text.AddLast("        }");
             foreach (MethodInfo method in classInfo.Methods)

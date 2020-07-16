@@ -6,6 +6,7 @@ FizzBuzz namespace
         c:int = b
         FizzBuzz public static void(start:int, end:int)
         {
+            a = b = c = e
             c:(a:int, b:int) = (3, 4)
             for(i := start; i < end; i++)
             {

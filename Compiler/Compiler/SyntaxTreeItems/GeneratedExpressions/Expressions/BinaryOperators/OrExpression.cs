@@ -6,12 +6,11 @@ namespace Compiler.SyntaxTreeItems
 {
     public class OrExpression : Expression
     {
+        public override int Precedence => 11;
+
         public Expression Left { get; private set; }
         public OrToken Or { get; private set; }
         public Expression Right { get; private set; }
-
-        public override int Precedence => 11;
-
         public override Expression LeftExpr { get => Left; set { Left = value; } }
         public override Expression RightExpr { get => Right; set { Right = value; } }
 

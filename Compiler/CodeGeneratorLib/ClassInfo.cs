@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace CodeGeneratorLib
@@ -16,8 +17,8 @@ namespace CodeGeneratorLib
         public List<string> InheritsFrom { get; set; }
 
         public List<KeyValuePair<string, string>> GetProperties { get; set; }
-        public List<string> GetSetProperties { get; set; }
-        public List<FieldInfo> InstanceFields { get; set; }
+        public List<GetSetPropertyInfo> GetSetProperties { get; set; }
+        public ReadOnlyCollection<FieldInfo> InstanceFields { get; private set; }
         public List<MethodInfo> Methods { get; set; }
         public List<string> ConstructorLines { get; set; }
         public ClassInfo(string name, List<FieldInfo> instanceFields, Context context)
@@ -35,14 +36,18 @@ namespace CodeGeneratorLib
             InheritsFrom = context.InheritsFrom;
             GetProperties = context.GetProperties;
             GetSetProperties = context.GetSetProperties;
-            InstanceFields = instanceFields;
+            InstanceFields = instanceFields.AsReadOnly();
 
             ConstructorLines = new List<string>();
-            foreach (FieldInfo field in InstanceFields)
+            foreach (FieldInfo field in instanceFields)
             {
-                foreach (string declarationLine in field.GetDeclaration())
+                foreach(GetSetPropertyInfo property in field.GetDeclaration())
                 {
-                    ConstructorLines.Add(declarationLine);
+                    GetSetProperties.Add(property);
+                }
+                foreach (string creationLine in field.GetCreationStatements())
+                {
+                    ConstructorLines.Add(creationLine);
                 }
             }
 
