@@ -22,30 +22,25 @@ namespace Compiler.SyntaxTreeItems
         }
         public QualifiedIdentifier(TokenCollection tokens, IdentifierToken firstIdentifier)
         {
-            if (tokens.PopIfMatches(out DotToken firstDot))
-            {
-                var parts = new LinkedList<QualifiedIdentifierPart>();
-                var newPart = new QualifiedIdentifierPart(tokens, firstIdentifier, firstDot);
-                parts.AddLast(newPart);
-                bool lastMissingDot = newPart.Dot == null;
+            var parts = new LinkedList<QualifiedIdentifierPart>();
 
-                while (!lastMissingDot)
-                {
-                    newPart = new QualifiedIdentifierPart(tokens);
-                    parts.AddLast(newPart);
-                    lastMissingDot = newPart.Dot == null;
-                }
-                Parts = parts.ToArray();
-            }
-            else
+            QualifiedIdentifierPart newPart = new QualifiedIdentifierPart(tokens, firstIdentifier);
+
+            parts.AddLast(newPart);
+            bool lastMissingDot = newPart.Dot == null;
+
+            while (!lastMissingDot)
             {
-                Parts = new QualifiedIdentifierPart[] { new QualifiedIdentifierPart(tokens, firstIdentifier, null) };
+                newPart = new QualifiedIdentifierPart(tokens);
+                parts.AddLast(newPart);
+                lastMissingDot = newPart.Dot == null;
             }
+            Parts = parts.ToArray();
         }
         public override string ToString()
         {
             string ret = "";
-            for(int i = 0; i < Parts.Length; i++)
+            for (int i = 0; i < Parts.Length; i++)
             {
                 ret += Parts[i];
                 if (i < Parts.Length - 1) ret += " ";

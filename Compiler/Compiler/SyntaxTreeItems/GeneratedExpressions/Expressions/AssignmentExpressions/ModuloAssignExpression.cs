@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public ModuloAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            ModuloAssign = tokens.PopToken<ModuloAssignToken>();;
+            ModuloAssign = tokens.PopToken<ModuloAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

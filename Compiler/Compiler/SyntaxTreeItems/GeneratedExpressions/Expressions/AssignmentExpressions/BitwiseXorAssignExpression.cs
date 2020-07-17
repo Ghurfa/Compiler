@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public BitwiseXorAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            BitwiseXorAssign = tokens.PopToken<BitwiseXorAssignToken>();;
+            BitwiseXorAssign = tokens.PopToken<BitwiseXorAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

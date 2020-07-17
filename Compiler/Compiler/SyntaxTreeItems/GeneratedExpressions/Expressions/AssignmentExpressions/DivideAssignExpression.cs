@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public DivideAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            DivideAssign = tokens.PopToken<DivideAssignToken>();;
+            DivideAssign = tokens.PopToken<DivideAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

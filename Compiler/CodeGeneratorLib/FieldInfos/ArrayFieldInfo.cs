@@ -33,7 +33,8 @@ namespace CodeGeneratorLib.FieldInfos
             }
             statements.Add($"while ({Condition.GetCondition()})");
             statements.Add("{");
-            statements.Add($"    {LowerCaseName}List.AddLast({NormalInitialization(BaseType)});");
+            statements.Add($"    var add = {NormalInitialization(BaseType)};");
+            statements.Add($"    {LowerCaseName}List.AddLast(add);");
             foreach (string updateStatement in Condition.GetUpdateStatements())
             {
                 statements.Add("    " + updateStatement);
@@ -41,6 +42,17 @@ namespace CodeGeneratorLib.FieldInfos
             statements.Add("}");
             statements.Add($"{Name} = {LowerCaseName}List.ToArray();");
             return statements.ToArray();
+        }
+
+        public override string[] GetToString()
+        {
+            return new string[]
+            {
+                $"foreach (var item in {Name})",
+                "{",
+                "    ret += item.ToString();",
+                "}",
+            };
         }
     }
 }

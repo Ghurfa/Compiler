@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public LessThanOrEqualToExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            LessThanOrEqualTo = tokens.PopToken<LessThanOrEqualToToken>();;
+            LessThanOrEqualTo = tokens.PopToken<LessThanOrEqualToToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

@@ -1,13 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
     public class Argument
     {
-        public readonly Expression Expression;
-        public readonly CommaToken? Comma;
+        public Expression Expression { get; private set; }
+        public CommaToken? Comma { get; private set; }
 
         public Argument(TokenCollection tokens)
         {
@@ -17,9 +18,13 @@ namespace Compiler.SyntaxTreeItems
                 Comma = comma;
             }
         }
+
         public override string ToString()
         {
-            return Expression.ToString() + Comma?.ToString();
+            string ret = "";
+            ret += Expression.ToString();
+            ret += Comma?.ToString();
+            return ret;
         }
     }
 }

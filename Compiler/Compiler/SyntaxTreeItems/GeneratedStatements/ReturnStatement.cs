@@ -14,10 +14,10 @@ namespace Compiler.SyntaxTreeItems
 
         public ReturnStatement(TokenCollection tokens)
         {
-            ReturnKeyword = tokens.PopToken<ReturnKeywordToken>();;
-            OpenPeren = tokens.PopToken<OpenPerenToken>();;
+            ReturnKeyword = tokens.PopToken<ReturnKeywordToken>();
+            OpenPeren = tokens.PopToken<OpenPerenToken>();
             Expression = Expression.ReadExpression(tokens);
-            ClosePeren = tokens.PopToken<ClosePerenToken>();;
+            ClosePeren = tokens.PopToken<ClosePerenToken>();
         }
 
         public override string ToString()

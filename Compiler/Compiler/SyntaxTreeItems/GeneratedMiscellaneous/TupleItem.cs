@@ -23,8 +23,7 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Expression.ToString();
-            ret += " ";
-            ret += Comma.ToString();
+            ret += Comma?.ToString();
             return ret;
         }
     }

@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public NullCoalescingExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            NullCoalescing = tokens.PopToken<NullCoalescingToken>();;
+            NullCoalescing = tokens.PopToken<NullCoalescingToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

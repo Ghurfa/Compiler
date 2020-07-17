@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public PlusAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            PlusAssign = tokens.PopToken<PlusAssignToken>();;
+            PlusAssign = tokens.PopToken<PlusAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

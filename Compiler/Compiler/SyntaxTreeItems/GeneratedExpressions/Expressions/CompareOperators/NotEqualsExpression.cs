@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public NotEqualsExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            NotEquals = tokens.PopToken<NotEqualsToken>();;
+            NotEquals = tokens.PopToken<NotEqualsToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

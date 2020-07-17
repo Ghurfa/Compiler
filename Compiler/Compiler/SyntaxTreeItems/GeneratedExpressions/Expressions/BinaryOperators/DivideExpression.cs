@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public DivideExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            Divide = tokens.PopToken<DivideToken>();;
+            Divide = tokens.PopToken<DivideToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

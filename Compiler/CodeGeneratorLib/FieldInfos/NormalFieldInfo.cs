@@ -15,8 +15,6 @@ namespace CodeGeneratorLib.SyntaxTreeItemsFieldInfos
         {
             if (ValueAttr == null)
             {
-                string creation;
-
                 return new string[]
                 {
                     $"{Name} = {NormalInitialization(Type)};"

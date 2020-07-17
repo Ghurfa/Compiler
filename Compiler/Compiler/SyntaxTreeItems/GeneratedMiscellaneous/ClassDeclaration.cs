@@ -17,14 +17,15 @@ namespace Compiler.SyntaxTreeItems
 
         public ClassDeclaration(TokenCollection tokens)
         {
-            Name = tokens.PopToken<IdentifierToken>();;
+            Name = tokens.PopToken<IdentifierToken>();
             Modifiers = new ModifierList(tokens);
-            ClassKeyword = tokens.PopToken<ClassKeywordToken>();;
-            OpenCurly = tokens.PopToken<OpenCurlyToken>();;
+            ClassKeyword = tokens.PopToken<ClassKeywordToken>();
+            OpenCurly = tokens.PopToken<OpenCurlyToken>();
             LinkedList<ClassItemDeclaration> classItemsList = new LinkedList<ClassItemDeclaration>();
             while (!tokens.PopIfMatches(out this.closeCurly))
             {
-                classItemsList.AddLast(ClassItemDeclaration.ReadClassItem(tokens));
+                var add = ClassItemDeclaration.ReadClassItem(tokens);
+                classItemsList.AddLast(add);
             }
             ClassItems = classItemsList.ToArray();
         }
@@ -40,7 +41,10 @@ namespace Compiler.SyntaxTreeItems
             ret += " ";
             ret += OpenCurly.ToString();
             ret += " ";
-            ret += ClassItems.ToString();
+            foreach (var item in ClassItems)
+            {
+                ret += item.ToString();
+            }
             ret += " ";
             ret += CloseCurly.ToString();
             return ret;

@@ -17,9 +17,9 @@ namespace Compiler.SyntaxTreeItems
         {
             NewKeyword = newKeyword;
             Type = Type.ReadType(tokens);
-            OpenPeren = tokens.PopToken<OpenPerenToken>();;
+            OpenPeren = tokens.PopToken<OpenPerenToken>();
             argument = new ArgumentList(tokens);
-            ClosePeren = tokens.PopToken<ClosePerenToken>();;
+            ClosePeren = tokens.PopToken<ClosePerenToken>();
         }
 
         public override string ToString()

@@ -14,8 +14,8 @@ namespace Compiler.SyntaxTreeItems
         public CharLiteralExpression(TokenCollection tokens, SingleQuoteToken openQuote)
         {
             OpenQuote = openQuote;
-            Text = tokens.PopToken<CharLiteralToken>();;
-            CloseQuote = tokens.PopToken<SingleQuoteToken>();;
+            Text = tokens.PopToken<CharLiteralToken>();
+            CloseQuote = tokens.PopToken<SingleQuoteToken>();
         }
 
         public override string ToString()

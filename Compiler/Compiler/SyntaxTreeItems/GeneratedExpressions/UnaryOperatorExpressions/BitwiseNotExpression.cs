@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
 
         public BitwiseNotExpression(TokenCollection tokens)
         {
-            BitwiseNot = tokens.PopToken<BitwiseNotToken>();;
+            BitwiseNot = tokens.PopToken<BitwiseNotToken>();
             Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 

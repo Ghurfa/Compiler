@@ -14,8 +14,8 @@ namespace Compiler.SyntaxTreeItems
         public StringLiteralExpression(TokenCollection tokens, DoubleQuoteToken openQuote)
         {
             OpenQuote = openQuote;
-            Text = tokens.PopToken<StringLiteralToken>();;
-            CloseQuote = tokens.PopToken<DoubleQuoteToken>();;
+            Text = tokens.PopToken<StringLiteralToken>();
+            CloseQuote = tokens.PopToken<DoubleQuoteToken>();
         }
 
         public override string ToString()

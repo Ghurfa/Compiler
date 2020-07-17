@@ -13,7 +13,7 @@ namespace Compiler.SyntaxTreeItems
         public PostDecrementExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {
             BaseExpression = baseExpression;
-            Decrement = tokens.PopToken<DecrementToken>();;
+            Decrement = tokens.PopToken<DecrementToken>();
         }
 
         public override string ToString()

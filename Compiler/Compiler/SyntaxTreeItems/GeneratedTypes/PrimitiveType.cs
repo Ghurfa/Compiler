@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
 
         public PrimitiveType(TokenCollection tokens)
         {
-            TypeKeyword = tokens.PopToken<PrimitiveTypeToken>();;
+            TypeKeyword = tokens.PopToken<PrimitiveTypeToken>();
         }
 
         public override string ToString()

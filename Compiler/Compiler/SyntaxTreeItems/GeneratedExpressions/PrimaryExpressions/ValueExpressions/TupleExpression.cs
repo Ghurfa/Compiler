@@ -15,7 +15,7 @@ namespace Compiler.SyntaxTreeItems
         {
             OpenPeren = openPeren;
             Values = values;
-            ClosePeren = tokens.PopToken<ClosePerenToken>();;
+            ClosePeren = tokens.PopToken<ClosePerenToken>();
         }
 
         public override string ToString()

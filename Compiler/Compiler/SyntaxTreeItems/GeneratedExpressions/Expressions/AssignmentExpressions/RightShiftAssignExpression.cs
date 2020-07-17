@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public RightShiftAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            RightShiftAssign = tokens.PopToken<RightShiftAssignToken>();;
+            RightShiftAssign = tokens.PopToken<RightShiftAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

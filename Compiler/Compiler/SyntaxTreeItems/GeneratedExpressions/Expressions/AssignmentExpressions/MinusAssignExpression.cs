@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public MinusAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            MinusAssign = tokens.PopToken<MinusAssignToken>();;
+            MinusAssign = tokens.PopToken<MinusAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

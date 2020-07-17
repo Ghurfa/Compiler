@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public MinusExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            Minus = tokens.PopToken<MinusToken>();;
+            Minus = tokens.PopToken<MinusToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

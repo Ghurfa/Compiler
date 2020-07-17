@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public MultiplyExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            Multiply = tokens.PopToken<AsteriskToken>();;
+            Multiply = tokens.PopToken<AsteriskToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

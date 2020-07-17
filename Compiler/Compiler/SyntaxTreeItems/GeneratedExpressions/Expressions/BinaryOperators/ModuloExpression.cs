@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public ModuloExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            Modulo = tokens.PopToken<ModuloToken>();;
+            Modulo = tokens.PopToken<ModuloToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

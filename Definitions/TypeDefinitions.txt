@@ -12,4 +12,9 @@ $Type
 
     .QualifiedIdentifier
     QualifiedIdentifier:Identifier;argument
+
+    .Tuple
+    OpenPeren
+    [TupleTypeItem:Items;notmissingcomma
+    ClosePeren
 }

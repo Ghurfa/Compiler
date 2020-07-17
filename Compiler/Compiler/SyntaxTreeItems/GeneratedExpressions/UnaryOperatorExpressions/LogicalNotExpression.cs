@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
 
         public LogicalNotExpression(TokenCollection tokens)
         {
-            LogicalNot = tokens.PopToken<NotToken>();;
+            LogicalNot = tokens.PopToken<NotToken>();
             Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 

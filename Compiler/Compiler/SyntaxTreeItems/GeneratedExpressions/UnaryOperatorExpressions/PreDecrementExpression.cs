@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
 
         public PreDecrementExpression(TokenCollection tokens)
         {
-            PreDecrement = tokens.PopToken<DecrementToken>();;
+            PreDecrement = tokens.PopToken<DecrementToken>();
             Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 

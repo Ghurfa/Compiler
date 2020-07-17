@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public RightShiftExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            RightShift = tokens.PopToken<RightShiftToken>();;
+            RightShift = tokens.PopToken<RightShiftToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

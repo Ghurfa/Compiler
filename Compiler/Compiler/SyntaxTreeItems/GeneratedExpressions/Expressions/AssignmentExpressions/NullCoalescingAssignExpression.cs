@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public NullCoalescingAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            NullCoalescingAssign = tokens.PopToken<NullCoalescingAssignToken>();;
+            NullCoalescingAssign = tokens.PopToken<NullCoalescingAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

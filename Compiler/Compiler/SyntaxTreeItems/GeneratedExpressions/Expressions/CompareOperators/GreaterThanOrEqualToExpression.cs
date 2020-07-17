@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public GreaterThanOrEqualToExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            GreaterThanOrEqualTo = tokens.PopToken<GreaterThanOrEqualToToken>();;
+            GreaterThanOrEqualTo = tokens.PopToken<GreaterThanOrEqualToToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

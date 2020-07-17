@@ -20,9 +20,9 @@ namespace Compiler.SyntaxTreeItems
         public IfExpression(TokenCollection tokens, Expression condition)
         {
             Condition = condition;
-            QuestionMark = tokens.PopToken<QuestionMarkToken>();;
+            QuestionMark = tokens.PopToken<QuestionMarkToken>();
             IfTrue = Expression.ReadExpression(tokens);
-            Backslash = tokens.PopToken<BackslashToken>();;
+            Backslash = tokens.PopToken<BackslashToken>();
             IfFalse = Expression.ReadExpression(tokens);
         }
 

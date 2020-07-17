@@ -31,37 +31,32 @@ namespace CodeGeneratorLib
                     if (BackingField == null) BackingField = backingField;
                     else throw new InvalidOperationException();
                 }
-                else if (attr is OptionalAttribute popAttr)
+                else if (attr is ValueAttribute valueAttr)
                 {
-                    if (ValueAttr == null)
+                    if (ValueAttr == null) ValueAttr = valueAttr;
+                    else throw new InvalidOperationException();
+
+                    if (valueAttr is OptionalAttribute popAttr)
                     {
                         popAttr.NameToPop = LowerCaseName;
                         popAttr.TypeToPop = Type;
-                        ValueAttr = popAttr;
                         Type += "?";
                     }
-                    else throw new InvalidOperationException();
-                }
-                else if (attr is ArgumentAttribute argumentAttr)
-                {
-                    if (ValueAttr == null)
+                    else if (valueAttr is ArgumentAttribute argumentAttr)
                     {
                         argumentAttr.ArgumentName = LowerCaseName;
                         argumentAttr.Type = Type;
-                        ValueAttr = argumentAttr;
                     }
-                    else throw new InvalidOperationException();
-                }
-                else if (attr is OptionalArgAttribute optionalArgAttr)
-                {
-                    if (ValueAttr == null)
+                    else if (valueAttr is OptionalArgAttribute optionalArgAttr)
                     {
                         optionalArgAttr.ArgumentName = LowerCaseName;
-                        optionalArgAttr.Type = Type.Last() == '?' ? Type.Substring(0, type.Length - 1) : Type;
+                        optionalArgAttr.Type = Type.EndsWith("Token") ? Type + "?" : Type;
                         optionalArgAttr.NormalInitialization = NormalInitialization(Type);
-                        ValueAttr = optionalArgAttr;
                     }
-                    else throw new InvalidOperationException();
+                    else if (valueAttr is ValidStatementEndingAttribute)
+                    {
+                        Type += "?";
+                    }
                 }
             }
         }
@@ -78,7 +73,7 @@ namespace CodeGeneratorLib
                 case "ClassItemDeclaration": return "ClassItemDeclaration.ReadClassItem(tokens)";
                 default:
                     {
-                        if (type.EndsWith("Token")) return $"tokens.PopToken<{type}>();";
+                        if (type.EndsWith("Token")) return $"tokens.PopToken<{type}>()";
                         else return $"new {type}(tokens)";
 
                     }
@@ -168,6 +163,10 @@ namespace CodeGeneratorLib
             }
         }
 
-        public virtual string[] GetToString() => new string[] { $"ret += {Name}.ToString();" };
+        public virtual string[] GetToString()
+        {
+            if (Type.Last() == '?') return new string[] { $"ret += {Name}?.ToString();" };
+            else return new string[] { $"ret += {Name}.ToString();" };
+        }
     }
 }

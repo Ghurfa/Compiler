@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public MultiplyAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            MultiplyAssign = tokens.PopToken<MultiplyAssignToken>();;
+            MultiplyAssign = tokens.PopToken<MultiplyAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

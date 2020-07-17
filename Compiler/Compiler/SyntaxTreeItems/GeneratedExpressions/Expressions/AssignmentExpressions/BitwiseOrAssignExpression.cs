@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public BitwiseOrAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            BitwiseOrAssign = tokens.PopToken<BitwiseOrAssignToken>();;
+            BitwiseOrAssign = tokens.PopToken<BitwiseOrAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

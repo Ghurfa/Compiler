@@ -15,8 +15,8 @@ namespace Compiler.SyntaxTreeItems
         public ArrayType(TokenCollection tokens, Type baseType)
         {
             BaseType = baseType;
-            OpenBracket = tokens.PopToken<OpenBracketToken>();;
-            CloseBracket = tokens.PopToken<CloseBracketToken>();;
+            OpenBracket = tokens.PopToken<OpenBracketToken>();
+            CloseBracket = tokens.PopToken<CloseBracketToken>();
         }
 
         public override string ToString()

@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public AndExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            And = tokens.PopToken<AndToken>();;
+            And = tokens.PopToken<AndToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

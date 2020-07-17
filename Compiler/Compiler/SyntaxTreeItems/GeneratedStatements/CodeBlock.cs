@@ -14,11 +14,12 @@ namespace Compiler.SyntaxTreeItems
 
         public CodeBlock(TokenCollection tokens)
         {
-            OpenCurly = tokens.PopToken<OpenCurlyToken>();;
+            OpenCurly = tokens.PopToken<OpenCurlyToken>();
             LinkedList<Statement> statementsList = new LinkedList<Statement>();
             while (!tokens.PopIfMatches(out this.closeCurly))
             {
-                statementsList.AddLast(Statement.ReadStatement(tokens));
+                var add = Statement.ReadStatement(tokens);
+                statementsList.AddLast(add);
             }
             Statements = statementsList.ToArray();
         }
@@ -28,7 +29,10 @@ namespace Compiler.SyntaxTreeItems
             string ret = "";
             ret += OpenCurly.ToString();
             ret += " ";
-            ret += Statements.ToString();
+            foreach (var item in Statements)
+            {
+                ret += item.ToString();
+            }
             ret += " ";
             ret += CloseCurly.ToString();
             return ret;

@@ -14,8 +14,8 @@ namespace Compiler.SyntaxTreeItems
         public NullCondMemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {
             BaseExpression = baseExpression;
-            NullCondDot = tokens.PopToken<NullCondDotToken>();;
-            Item = tokens.PopToken<IdentifierToken>();;
+            NullCondDot = tokens.PopToken<NullCondDotToken>();
+            Item = tokens.PopToken<IdentifierToken>();
         }
 
         public override string ToString()

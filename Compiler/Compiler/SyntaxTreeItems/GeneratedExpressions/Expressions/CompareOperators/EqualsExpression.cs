@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public EqualsExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            Equals = tokens.PopToken<EqualsToken>();;
+            Equals = tokens.PopToken<EqualsToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

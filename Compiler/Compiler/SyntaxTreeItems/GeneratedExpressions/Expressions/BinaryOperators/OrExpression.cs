@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public OrExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            Or = tokens.PopToken<OrToken>();;
+            Or = tokens.PopToken<OrToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

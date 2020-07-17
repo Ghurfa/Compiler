@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
 
         public PreIncrementExpression(TokenCollection tokens)
         {
-            PreIncrement = tokens.PopToken<IncrementToken>();;
+            PreIncrement = tokens.PopToken<IncrementToken>();
             Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 

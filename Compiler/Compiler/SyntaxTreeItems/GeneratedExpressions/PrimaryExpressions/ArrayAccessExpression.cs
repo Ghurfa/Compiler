@@ -15,9 +15,9 @@ namespace Compiler.SyntaxTreeItems
         public ArrayAccessExpression(TokenCollection tokens, PrimaryExpression array)
         {
             Array = array;
-            OpenBracket = tokens.PopToken<OpenBracketToken>();;
+            OpenBracket = tokens.PopToken<OpenBracketToken>();
             Index = Expression.ReadExpression(tokens);
-            CloseBracket = tokens.PopToken<CloseBracketToken>();;
+            CloseBracket = tokens.PopToken<CloseBracketToken>();
         }
 
         public override string ToString()

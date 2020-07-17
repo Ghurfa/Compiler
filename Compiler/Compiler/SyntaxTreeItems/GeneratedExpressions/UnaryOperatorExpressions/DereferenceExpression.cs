@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
 
         public DereferenceExpression(TokenCollection tokens)
         {
-            Dereference = tokens.PopToken<AsteriskToken>();;
+            Dereference = tokens.PopToken<AsteriskToken>();
             Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 

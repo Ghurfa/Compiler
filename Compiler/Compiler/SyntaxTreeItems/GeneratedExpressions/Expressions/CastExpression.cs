@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public CastExpression(TokenCollection tokens, UnaryExpression expression)
         {
             Expression = expression;
-            AsKeyword = tokens.PopToken<AsKeywordToken>();;
+            AsKeyword = tokens.PopToken<AsKeywordToken>();
             CastTo = Type.ReadType(tokens);
         }
 

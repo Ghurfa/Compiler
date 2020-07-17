@@ -11,7 +11,7 @@ namespace Compiler.SyntaxTreeItems
 
         public EmptyStatement(TokenCollection tokens)
         {
-            Semicolon = tokens.PopToken<SemicolonToken>();;
+            Semicolon = tokens.PopToken<SemicolonToken>();
         }
 
         public override string ToString()

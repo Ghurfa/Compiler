@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
         public DeclAssignExpression(TokenCollection tokens, UnaryExpression to)
         {
             To = to;
-            DeclAssign = tokens.PopToken<DeclAssignToken>();;
+            DeclAssign = tokens.PopToken<DeclAssignToken>();
             From = Expression.ReadExpression(tokens);
         }
 

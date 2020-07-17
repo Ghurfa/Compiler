@@ -9,9 +9,24 @@
     .EmptyStatement
     Semicolon
 
+    .ExpressionStatement
+    Expression
+    Semicolon;ensurevalidstatementending
+
+    .ForBlock
+    ForKeyword
+    OpenPeren
+    Statement:StartStatement
+    Expression:ContinueExpr
+    Semicolon:SecondSemicolon;ensurevalidstatementending
+    Statement:IterateStatement
+    ClosePeren
+    Statement:Body
+
     .ReturnStatement
     ReturnKeyword
     OpenPeren
     Expression
     ClosePeren
+
 }

@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public PlusExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            Plus = tokens.PopToken<PlusToken>();;
+            Plus = tokens.PopToken<PlusToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

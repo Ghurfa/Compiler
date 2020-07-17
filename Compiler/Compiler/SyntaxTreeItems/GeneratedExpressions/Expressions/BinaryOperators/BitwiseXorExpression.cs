@@ -18,7 +18,7 @@ namespace Compiler.SyntaxTreeItems
         public BitwiseXorExpression(TokenCollection tokens, Expression left)
         {
             Left = left;
-            BitwiseXor = tokens.PopToken<BitwiseXorToken>();;
+            BitwiseXor = tokens.PopToken<BitwiseXorToken>();
             Right = Expression.ReadExpression(tokens);
         }
 

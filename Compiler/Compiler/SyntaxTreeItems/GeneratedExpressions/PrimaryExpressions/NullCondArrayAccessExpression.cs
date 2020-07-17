@@ -15,9 +15,9 @@ namespace Compiler.SyntaxTreeItems
         public NullCondArrayAccessExpression(TokenCollection tokens, PrimaryExpression array)
         {
             Array = array;
-            NullCondOpenBracket = tokens.PopToken<NullCondOpenBracketToken>();;
+            NullCondOpenBracket = tokens.PopToken<NullCondOpenBracketToken>();
             Index = Expression.ReadExpression(tokens);
-            CloseBracket = tokens.PopToken<CloseBracketToken>();;
+            CloseBracket = tokens.PopToken<CloseBracketToken>();
         }
 
         public override string ToString()

@@ -14,8 +14,8 @@ namespace Compiler.SyntaxTreeItems
         public MemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {
             BaseExpression = baseExpression;
-            Dot = tokens.PopToken<DotToken>();;
-            Item = tokens.PopToken<IdentifierToken>();;
+            Dot = tokens.PopToken<DotToken>();
+            Item = tokens.PopToken<IdentifierToken>();
         }
 
         public override string ToString()

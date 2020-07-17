@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
 
         public UnaryPlusExpression(TokenCollection tokens)
         {
-            UnaryPlus = tokens.PopToken<PlusToken>();;
+            UnaryPlus = tokens.PopToken<PlusToken>();
             Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 

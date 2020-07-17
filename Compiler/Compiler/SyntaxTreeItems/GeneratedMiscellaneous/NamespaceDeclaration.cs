@@ -17,12 +17,13 @@ namespace Compiler.SyntaxTreeItems
         public NamespaceDeclaration(TokenCollection tokens)
         {
             Name = new QualifiedIdentifier(tokens);
-            NamespaceKeyword = tokens.PopToken<NamespaceKeywordToken>();;
-            OpenCurly = tokens.PopToken<OpenCurlyToken>();;
+            NamespaceKeyword = tokens.PopToken<NamespaceKeywordToken>();
+            OpenCurly = tokens.PopToken<OpenCurlyToken>();
             LinkedList<ClassDeclaration> classDeclarationsList = new LinkedList<ClassDeclaration>();
             while (!tokens.PopIfMatches(out this.closeCurly))
             {
-                classDeclarationsList.AddLast(new ClassDeclaration(tokens));
+                var add = new ClassDeclaration(tokens);
+                classDeclarationsList.AddLast(add);
             }
             ClassDeclarations = classDeclarationsList.ToArray();
         }
@@ -36,7 +37,10 @@ namespace Compiler.SyntaxTreeItems
             ret += " ";
             ret += OpenCurly.ToString();
             ret += " ";
-            ret += ClassDeclarations.ToString();
+            foreach (var item in ClassDeclarations)
+            {
+                ret += item.ToString();
+            }
             ret += " ";
             ret += CloseCurly.ToString();
             return ret;

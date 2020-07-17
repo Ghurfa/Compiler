@@ -39,5 +39,30 @@
     .TupleItem
     Expression;optionalarg
     Comma;optional
+
+    .ParameterListDeclaration
+    OpenPeren
+    [ParameterDeclaration:Parameters;notmissingcomma
+    ClosePeren
+
+    .ParameterDeclaration
+    Identifier
+    Colon
+    Type
+    Comma;optional
+
+    .ArgumentList
+    [Argument:Arguments;notmissingcomma
+
+    .Argument
+    Expression
+    Comma;optional
+
+    .QualifiedIdentifierPart
+    Identifier;optionalarg
+    Dot;optional
+
+    .ModifierList
+    [ModifierToken:Modifiers;peek Modifier
 }
 
