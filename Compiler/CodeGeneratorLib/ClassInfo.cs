@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeGeneratorLib.AttributeInfos;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -45,9 +46,12 @@ namespace CodeGeneratorLib
                 {
                     GetSetProperties.Add(property);
                 }
-                foreach (string creationLine in field.GetCreationStatements())
+                if(!(field.HasAttribute<DisableCreationAttribute>()))
                 {
-                    ConstructorLines.Add(creationLine);
+                    foreach (string creationLine in field.GetCreationStatements())
+                    {
+                        ConstructorLines.Add(creationLine);
+                    }
                 }
             }
 

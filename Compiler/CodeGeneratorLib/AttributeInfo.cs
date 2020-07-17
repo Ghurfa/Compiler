@@ -1,20 +1,28 @@
-﻿using System;
+﻿using CodeGeneratorLib.AttributeInfos;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CodeGeneratorLib
 {
-    abstract class AttributeInfo
+    public abstract class AttributeInfo
     {
-        public abstract string Keyword { get; set; }
+        public string Keyword { get; set; }
+
+        protected AttributeInfo(string keyword)
+        {
+            Keyword = keyword;
+        }
 
         public static AttributeInfo ReadAttribute(string text)
         {
             string[] parts = text.Split(' ');
             switch (parts[0].ToLower())
             {
-                case "untilpop": return new UntilPopAttribute(text, parts);
-                case "disablecreation": return new DisableCreationAttribute(text, parts);
+                case "notpop": return new NotPopAttribute(parts);
+                case "disablecreation": return new DisableCreationAttribute(parts);
+                case "backingfield": return new BackingFieldAttribute(parts);
+                default: throw new InvalidOperationException();
             }            
         }
     }

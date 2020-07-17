@@ -1,23 +1,10 @@
-.NamespaceDeclaration
-    QualifiedIdentifier:Name
-    NamespaceKeyword
-    OpenCurly
-    ClassDeclaration[]:ClassDeclarations;untilpop CloseCurly
-    CloseCurly;disablecreation
-
->#GeneratedClassItemDeclarations
+>#GeneratedMiscellaneous
 {
-    .ConstructorDeclaration
-    ConstructorKeyword
-    ModifierList:Modifiers
-    ParameterListDeclaration:ParameterList
-    MethodBodyDeclaration:ConstructorBody
-
-    .MethodDeclaration
-    Identifier:Name
-    ModifierList:Modifiers
-    Type:ReturnType
-    ParameterListDeclaration:ParameterList
-    MethodBodyDeclaration:MethodBody
+    .NamespaceDeclaration
+        QualifiedIdentifier:Name
+        NamespaceKeyword
+        OpenCurly
+        [ClassDeclaration:ClassDeclarations;notpop this.closeCurly
+        CloseCurly;disablecreation;backingfield closeCurly
 }
 
