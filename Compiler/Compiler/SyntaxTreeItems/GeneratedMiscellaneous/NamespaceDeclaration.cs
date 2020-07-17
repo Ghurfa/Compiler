@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Text;
 
 namespace Compiler.SyntaxTreeItems
 {
@@ -14,17 +14,32 @@ namespace Compiler.SyntaxTreeItems
         private CloseCurlyToken closeCurly;
         public CloseCurlyToken CloseCurly { get => closeCurly; private set { closeCurly = value; } }
 
-        public NamespaceDeclaration(TokenCollection tokens, QualifiedIdentifier name = null, NamespaceKeywordToken? namespaceKeyword = null, OpenCurlyToken? openCurly = null, ClassDeclaration[] classDeclarations = null, CloseCurlyToken? closeCurly = null)
+        public NamespaceDeclaration(TokenCollection tokens)
         {
-            Name = name == null ? new QualifiedIdentifier(tokens) : name;
-            NamespaceKeyword = namespaceKeyword == null ? tokens.PopToken<NamespaceKeywordToken>() : (NamespaceKeywordToken)namespaceKeyword;
-            OpenCurly = openCurly == null ? tokens.PopToken<OpenCurlyToken>() : (OpenCurlyToken)openCurly;
+            Name = new QualifiedIdentifier(tokens);
+            NamespaceKeyword = tokens.PopToken<NamespaceKeywordToken>();;
+            OpenCurly = tokens.PopToken<OpenCurlyToken>();;
             LinkedList<ClassDeclaration> classDeclarationsList = new LinkedList<ClassDeclaration>();
             while (!tokens.PopIfMatches(out this.closeCurly))
             {
                 classDeclarationsList.AddLast(new ClassDeclaration(tokens));
             }
             ClassDeclarations = classDeclarationsList.ToArray();
+        }
+
+        public override string ToString()
+        {
+            string ret = "";
+            ret += Name.ToString();
+            ret += " ";
+            ret += NamespaceKeyword.ToString();
+            ret += " ";
+            ret += OpenCurly.ToString();
+            ret += " ";
+            ret += ClassDeclarations.ToString();
+            ret += " ";
+            ret += CloseCurly.ToString();
+            return ret;
         }
     }
 }

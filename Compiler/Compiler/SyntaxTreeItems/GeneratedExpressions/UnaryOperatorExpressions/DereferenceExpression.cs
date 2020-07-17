@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -9,10 +10,10 @@ namespace Compiler.SyntaxTreeItems
         public AsteriskToken Dereference { get; private set; }
         public UnaryExpression Expression { get; private set; }
 
-        public DereferenceExpression(TokenCollection tokens, AsteriskToken? dereference = null, UnaryExpression expression = null)
+        public DereferenceExpression(TokenCollection tokens)
         {
-            Dereference = dereference == null ? tokens.PopToken<AsteriskToken>() : (AsteriskToken)dereference;
-            Expression = expression == null ? UnaryExpression.ReadUnaryExpression(tokens) : expression;
+            Dereference = tokens.PopToken<AsteriskToken>();;
+            Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 
         public override string ToString()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -14,11 +15,11 @@ namespace Compiler.SyntaxTreeItems
         public override Expression LeftExpr { get => Expression; set => throw new InvalidOperationException(); }
         public override Expression RightExpr { get => CastTo; set => throw new InvalidOperationException(); }
 
-        public CastExpression(TokenCollection tokens, UnaryExpression expression = null, AsKeywordToken? asKeyword = null, Type castTo = null)
+        public CastExpression(TokenCollection tokens, UnaryExpression expression)
         {
-            Expression = expression == null ? UnaryExpression.ReadUnaryExpression(tokens) : expression;
-            AsKeyword = asKeyword == null ? tokens.PopToken<AsKeywordToken>() : (AsKeywordToken)asKeyword;
-            CastTo = castTo == null ? Type.ReadType(tokens) : castTo;
+            Expression = expression;
+            AsKeyword = tokens.PopToken<AsKeywordToken>();;
+            CastTo = Type.ReadType(tokens);
         }
 
         public override string ToString()

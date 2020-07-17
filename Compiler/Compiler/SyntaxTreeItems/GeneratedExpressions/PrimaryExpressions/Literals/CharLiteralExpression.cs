@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -10,11 +11,11 @@ namespace Compiler.SyntaxTreeItems
         public CharLiteralToken Text { get; private set; }
         public SingleQuoteToken CloseQuote { get; private set; }
 
-        public CharLiteralExpression(TokenCollection tokens, SingleQuoteToken? openQuote = null, CharLiteralToken? text = null, SingleQuoteToken? closeQuote = null)
+        public CharLiteralExpression(TokenCollection tokens, SingleQuoteToken openQuote)
         {
-            OpenQuote = openQuote == null ? tokens.PopToken<SingleQuoteToken>() : (SingleQuoteToken)openQuote;
-            Text = text == null ? tokens.PopToken<CharLiteralToken>() : (CharLiteralToken)text;
-            CloseQuote = closeQuote == null ? tokens.PopToken<SingleQuoteToken>() : (SingleQuoteToken)closeQuote;
+            OpenQuote = openQuote;
+            Text = tokens.PopToken<CharLiteralToken>();;
+            CloseQuote = tokens.PopToken<SingleQuoteToken>();;
         }
 
         public override string ToString()

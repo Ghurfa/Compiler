@@ -1,4 +1,5 @@
 ﻿using CodeGeneratorLib.AttributeInfos;
+using CodeGeneratorLib.AttributeInfos.ValueAttributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,9 +20,12 @@ namespace CodeGeneratorLib
             string[] parts = text.Split(' ');
             switch (parts[0].ToLower())
             {
+                case "optional": return new OptionalAttribute(parts);
                 case "notpop": return new NotPopAttribute(parts);
                 case "disablecreation": return new DisableCreationAttribute(parts);
                 case "backingfield": return new BackingFieldAttribute(parts);
+                case "argument": return new ArgumentAttribute(parts);
+                case "optionalarg": return new OptionalArgAttribute(parts);
                 default: throw new InvalidOperationException();
             }            
         }

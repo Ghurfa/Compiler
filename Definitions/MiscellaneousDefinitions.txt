@@ -6,5 +6,38 @@
         OpenCurly
         [ClassDeclaration:ClassDeclarations;notpop this.closeCurly
         CloseCurly;disablecreation;backingfield closeCurly
+    
+    .ClassDeclaration
+        Identifier:Name
+        ModifierList:Modifiers
+        ClassKeyword
+        OpenCurly
+        [ClassItemDeclaration:ClassItems;notpop this.closeCurly
+        CloseCurly;disablecreation;backingfield closeCurly
+
+    +ClassItemDeclaration
+    {
+        .ConstructorDeclaration
+            ConstructorKeyword;argument
+            ModifierList:Modifiers
+            ParameterListDeclaration:ParameterList
+            MethodBodyDeclaration:ConstructorBody
+        
+        .MethodDeclaration
+            Identifier:Name;argument
+            ModifierList:Modifiers
+            Type:ReturnType
+            ParameterListDeclaration:ParameterList
+            MethodBodyDeclaration:MethodBody
+    }
+
+    .MethodBodyDeclaration
+        OpenCurly
+        [Statement:Statements;notpop this.closeCurly
+        CloseCurly;disablecreation;backingfield closeCurly
+
+    .TupleItem
+    Expression;optionalarg
+    Comma;optional
 }
 

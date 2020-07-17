@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -14,11 +15,11 @@ namespace Compiler.SyntaxTreeItems
         public override Expression LeftExpr { get => Left; set { Left = value; } }
         public override Expression RightExpr { get => Right; set { Right = value; } }
 
-        public NullCoalescingExpression(TokenCollection tokens, Expression left = null, NullCoalescingToken? nullCoalescing = null, Expression right = null)
+        public NullCoalescingExpression(TokenCollection tokens, Expression left)
         {
-            Left = left == null ? Expression.ReadExpression(tokens) : left;
-            NullCoalescing = nullCoalescing == null ? tokens.PopToken<NullCoalescingToken>() : (NullCoalescingToken)nullCoalescing;
-            Right = right == null ? Expression.ReadExpression(tokens) : right;
+            Left = left;
+            NullCoalescing = tokens.PopToken<NullCoalescingToken>();;
+            Right = Expression.ReadExpression(tokens);
         }
 
         public override string ToString()

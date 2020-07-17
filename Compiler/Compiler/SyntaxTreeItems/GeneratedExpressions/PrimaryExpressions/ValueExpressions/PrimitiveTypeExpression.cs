@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -8,9 +9,9 @@ namespace Compiler.SyntaxTreeItems
     {
         public PrimitiveTypeToken PrimitiveType { get; private set; }
 
-        public PrimitiveTypeExpression(TokenCollection tokens, PrimitiveTypeToken? primitiveType = null)
+        public PrimitiveTypeExpression(TokenCollection tokens, PrimitiveTypeToken primitiveType)
         {
-            PrimitiveType = primitiveType == null ? tokens.PopToken<PrimitiveTypeToken>() : (PrimitiveTypeToken)primitiveType;
+            PrimitiveType = primitiveType;
         }
 
         public override string ToString()

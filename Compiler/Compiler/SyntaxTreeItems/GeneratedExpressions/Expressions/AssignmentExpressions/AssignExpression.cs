@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -15,11 +16,11 @@ namespace Compiler.SyntaxTreeItems
         public override Expression LeftExpr { get => To; set { if (value is UnaryExpression unary) To = unary; else throw new InvalidAssignmentLeftException(value);} }
         public override Expression RightExpr { get => From; set { From = value; } }
 
-        public AssignExpression(TokenCollection tokens, UnaryExpression to = null, AssignToken? assign = null, Expression from = null)
+        public AssignExpression(TokenCollection tokens, UnaryExpression to)
         {
-            To = to == null ? UnaryExpression.ReadUnaryExpression(tokens) : to;
-            Assign = assign == null ? tokens.PopToken<AssignToken>() : (AssignToken)assign;
-            From = from == null ? Expression.ReadExpression(tokens) : from;
+            To = to;
+            Assign = tokens.PopToken<AssignToken>();;
+            From = Expression.ReadExpression(tokens);
         }
 
         public override string ToString()

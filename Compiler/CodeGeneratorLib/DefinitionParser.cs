@@ -168,10 +168,10 @@ namespace CodeGeneratorLib
                         }
                     default:
                         var fieldInfo = FieldInfo.GetFieldInfo(current, tokenNames);
-                        if (fieldInfo is TokenFieldInfo tokenFieldInfo)
+                        if (fieldInfo.Type.EndsWith("Token"))
                         {
-                            fieldInfos[indexToReplace] = tokenFieldInfo;
-                            ret.Add(new ClassInfo(tokenFieldInfo.Name, fieldInfos.Clone(), context.Clone()));
+                            fieldInfos[indexToReplace] = fieldInfo;
+                            ret.Add(new ClassInfo(fieldInfo.Name, fieldInfos.Clone(), context.Clone()));
                             i++;
                             break;
                         }

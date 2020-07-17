@@ -15,7 +15,7 @@ namespace Compiler.SyntaxTreeItems.Types
             OpenPeren = tokens.PopToken<OpenPerenToken>();
 
             var items = new LinkedList<TupleTypeItem>();
-            bool lastMissingComma = false;
+            bool lastMissingComma = tokens.PeekToken() is ClosePerenToken;
             while (!lastMissingComma)
             {
                 var newItem = new TupleTypeItem(tokens);

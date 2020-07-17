@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -8,9 +9,9 @@ namespace Compiler.SyntaxTreeItems
     {
         public IntLiteralToken IntLiteral { get; private set; }
 
-        public IntLiteralExpression(TokenCollection tokens, IntLiteralToken? intLiteral = null)
+        public IntLiteralExpression(TokenCollection tokens, IntLiteralToken intLiteral)
         {
-            IntLiteral = intLiteral == null ? tokens.PopToken<IntLiteralToken>() : (IntLiteralToken)intLiteral;
+            IntLiteral = intLiteral;
         }
 
         public override string ToString()

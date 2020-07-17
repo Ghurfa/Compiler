@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -8,9 +9,9 @@ namespace Compiler.SyntaxTreeItems
     {
         public FalseKeywordToken FalseKeyword { get; private set; }
 
-        public FalseLiteralExpression(TokenCollection tokens, FalseKeywordToken? falseKeyword = null)
+        public FalseLiteralExpression(TokenCollection tokens, FalseKeywordToken falseKeyword)
         {
-            FalseKeyword = falseKeyword == null ? tokens.PopToken<FalseKeywordToken>() : (FalseKeywordToken)falseKeyword;
+            FalseKeyword = falseKeyword;
         }
 
         public override string ToString()

@@ -1,5 +1,5 @@
 ﻿using CodeGeneratorLib.AttributeInfos;
-using CodeGeneratorLib.ClassItems;
+using CodeGeneratorLib.AttributeInfos.ValueAttributes;
 using CodeGeneratorLib.FieldInfos;
 using CodeGeneratorLib.SyntaxTreeItemsFieldInfos;
 using System;
@@ -15,6 +15,7 @@ namespace CodeGeneratorLib
         public string Type { get; set; }
         public AttributeInfo[] Attributes { get; set; }
         public BackingFieldAttribute BackingField { get; set; }
+        public ValueAttribute ValueAttr { get; set; }
 
         public string LowerCaseName => Name.Substring(0, 1).ToLower() + Name.Substring(1);
 
@@ -30,6 +31,57 @@ namespace CodeGeneratorLib
                     if (BackingField == null) BackingField = backingField;
                     else throw new InvalidOperationException();
                 }
+                else if (attr is OptionalAttribute popAttr)
+                {
+                    if (ValueAttr == null)
+                    {
+                        popAttr.NameToPop = LowerCaseName;
+                        popAttr.TypeToPop = Type;
+                        ValueAttr = popAttr;
+                        Type += "?";
+                    }
+                    else throw new InvalidOperationException();
+                }
+                else if (attr is ArgumentAttribute argumentAttr)
+                {
+                    if (ValueAttr == null)
+                    {
+                        argumentAttr.ArgumentName = LowerCaseName;
+                        argumentAttr.Type = Type;
+                        ValueAttr = argumentAttr;
+                    }
+                    else throw new InvalidOperationException();
+                }
+                else if (attr is OptionalArgAttribute optionalArgAttr)
+                {
+                    if (ValueAttr == null)
+                    {
+                        optionalArgAttr.ArgumentName = LowerCaseName;
+                        optionalArgAttr.Type = Type.Last() == '?' ? Type.Substring(0, type.Length - 1) : Type;
+                        optionalArgAttr.NormalInitialization = NormalInitialization(Type);
+                        ValueAttr = optionalArgAttr;
+                    }
+                    else throw new InvalidOperationException();
+                }
+            }
+        }
+
+        public static string NormalInitialization(string type)
+        {
+            switch (type)
+            {
+                case "Expression": return "Expression.ReadExpression(tokens)";
+                case "UnaryExpression": return "UnaryExpression.ReadUnaryExpression(tokens)";
+                case "PrimaryExpression": return "PrimaryExpression.ReadPrimaryExpression(tokens)";
+                case "Statement": return "Statement.ReadStatement(tokens)";
+                case "Type": return "Type.ReadType(tokens)";
+                case "ClassItemDeclaration": return "ClassItemDeclaration.ReadClassItem(tokens)";
+                default:
+                    {
+                        if (type.EndsWith("Token")) return $"tokens.PopToken<{type}>();";
+                        else return $"new {type}(tokens)";
+
+                    }
             }
         }
 
@@ -57,24 +109,9 @@ namespace CodeGeneratorLib
             }
             AttributeInfo[] attributesArr = attributes.ToArray();
 
-            switch (type)
-            {
-                case "Expression": return new ExpressionFieldInfo(type, name, attributesArr);
-                case "UnaryExpression": return new UnaryExpressionFieldInfo(type, name, attributesArr);
-                case "PrimaryExpression": return new PrimaryExpressionFieldInfo(type, name, attributesArr);
-                case "Statement": return new StatementFieldInfo(type, name, attributesArr);
-                case "Type": return new TypeFieldInfo(type, name, attributesArr);
-                case "Token": return new PlaceHolderFieldInfo(type, name, attributesArr);
-                default:
-                    {
-                        if (tokenNames.Contains(type)) return new TokenFieldInfo(type, name, attributesArr);
-                        else
-                        {
-                            if (type.First() == '[') return new ArrayFieldInfo(type, name, attributesArr);
-                            else return new NormalFieldInfo(type, name, attributesArr);
-                        }
-                    }
-            }
+            if (type == "Token") return new PlaceHolderFieldInfo(type, name, attributesArr);
+            else if (type.First() == '[') return new ArrayFieldInfo(type, name, attributesArr);
+            else return new NormalFieldInfo(type, name, attributesArr);
         }
 
         public static (string type, string name) ReadDeclaration(string declTexts, string[] tokenNames)
@@ -97,6 +134,20 @@ namespace CodeGeneratorLib
             {
                 if (attr is T) return true;
             }
+            return false;
+        }
+
+        public bool HasAttribute<T>(out T attribute) where T : AttributeInfo
+        {
+            foreach (AttributeInfo attr in Attributes)
+            {
+                if (attr is T)
+                {
+                    attribute = (T)attr;
+                    return true;
+                }
+            }
+            attribute = default;
             return false;
         }
 

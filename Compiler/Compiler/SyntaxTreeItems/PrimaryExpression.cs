@@ -18,9 +18,9 @@ namespace Compiler
                 {
                     baseExpr = new PerenthesizedExpression(tokens, openPeren, innerExpr, closePeren);
                 }
-                else if (tokens.PopIfMatches(out CommaToken comma))
+                else if (tokens.PeekToken() is CommaToken)
                 {
-                    baseExpr = new TupleExpression(tokens, openPeren, new TupleItemList(tokens, new TupleItem(innerExpr, comma)));
+                    baseExpr = new TupleExpression(tokens, openPeren, new TupleItemList(tokens, new TupleItem(tokens, innerExpr)));
                 }
                 else throw new InvalidTokenException(tokens);
             }

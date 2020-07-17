@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -14,11 +15,11 @@ namespace Compiler.SyntaxTreeItems
         public override Expression LeftExpr { get => Left; set { Left = value; } }
         public override Expression RightExpr { get => Right; set { Right = value; } }
 
-        public BitwiseOrExpression(TokenCollection tokens, Expression left = null, BitwiseOrToken? bitwiseOr = null, Expression right = null)
+        public BitwiseOrExpression(TokenCollection tokens, Expression left)
         {
-            Left = left == null ? Expression.ReadExpression(tokens) : left;
-            BitwiseOr = bitwiseOr == null ? tokens.PopToken<BitwiseOrToken>() : (BitwiseOrToken)bitwiseOr;
-            Right = right == null ? Expression.ReadExpression(tokens) : right;
+            Left = left;
+            BitwiseOr = tokens.PopToken<BitwiseOrToken>();;
+            Right = Expression.ReadExpression(tokens);
         }
 
         public override string ToString()

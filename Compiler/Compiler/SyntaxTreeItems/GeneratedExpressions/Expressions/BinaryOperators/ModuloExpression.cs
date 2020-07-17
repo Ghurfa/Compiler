@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -14,11 +15,11 @@ namespace Compiler.SyntaxTreeItems
         public override Expression LeftExpr { get => Left; set { Left = value; } }
         public override Expression RightExpr { get => Right; set { Right = value; } }
 
-        public ModuloExpression(TokenCollection tokens, Expression left = null, ModuloToken? modulo = null, Expression right = null)
+        public ModuloExpression(TokenCollection tokens, Expression left)
         {
-            Left = left == null ? Expression.ReadExpression(tokens) : left;
-            Modulo = modulo == null ? tokens.PopToken<ModuloToken>() : (ModuloToken)modulo;
-            Right = right == null ? Expression.ReadExpression(tokens) : right;
+            Left = left;
+            Modulo = tokens.PopToken<ModuloToken>();;
+            Right = Expression.ReadExpression(tokens);
         }
 
         public override string ToString()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -10,11 +11,11 @@ namespace Compiler.SyntaxTreeItems
         public NullCondDotToken NullCondDot { get; private set; }
         public IdentifierToken Item { get; private set; }
 
-        public NullCondMemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression = null, NullCondDotToken? nullCondDot = null, IdentifierToken? item = null)
+        public NullCondMemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {
-            BaseExpression = baseExpression == null ? PrimaryExpression.ReadPrimaryExpression(tokens) : baseExpression;
-            NullCondDot = nullCondDot == null ? tokens.PopToken<NullCondDotToken>() : (NullCondDotToken)nullCondDot;
-            Item = item == null ? tokens.PopToken<IdentifierToken>() : (IdentifierToken)item;
+            BaseExpression = baseExpression;
+            NullCondDot = tokens.PopToken<NullCondDotToken>();;
+            Item = tokens.PopToken<IdentifierToken>();;
         }
 
         public override string ToString()

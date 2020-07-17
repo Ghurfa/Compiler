@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -16,13 +17,13 @@ namespace Compiler.SyntaxTreeItems
         public override Expression LeftExpr { get => Condition; set { Condition = value; } }
         public override Expression RightExpr { get => IfFalse; set { IfFalse = value; } }
 
-        public IfExpression(TokenCollection tokens, Expression condition = null, QuestionMarkToken? questionMark = null, Expression ifTrue = null, BackslashToken? backslash = null, Expression ifFalse = null)
+        public IfExpression(TokenCollection tokens, Expression condition)
         {
-            Condition = condition == null ? Expression.ReadExpression(tokens) : condition;
-            QuestionMark = questionMark == null ? tokens.PopToken<QuestionMarkToken>() : (QuestionMarkToken)questionMark;
-            IfTrue = ifTrue == null ? Expression.ReadExpression(tokens) : ifTrue;
-            Backslash = backslash == null ? tokens.PopToken<BackslashToken>() : (BackslashToken)backslash;
-            IfFalse = ifFalse == null ? Expression.ReadExpression(tokens) : ifFalse;
+            Condition = condition;
+            QuestionMark = tokens.PopToken<QuestionMarkToken>();;
+            IfTrue = Expression.ReadExpression(tokens);
+            Backslash = tokens.PopToken<BackslashToken>();;
+            IfFalse = Expression.ReadExpression(tokens);
         }
 
         public override string ToString()

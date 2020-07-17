@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -9,16 +10,16 @@ namespace Compiler.SyntaxTreeItems
         public NewKeywordToken NewKeyword { get; private set; }
         public Type Type { get; private set; }
         public OpenPerenToken OpenPeren { get; private set; }
-        public ArgumentList Arguments { get; private set; }
+        public ArgumentList argument { get; private set; }
         public ClosePerenToken ClosePeren { get; private set; }
 
-        public NewObjectExpression(TokenCollection tokens, NewKeywordToken? newKeyword = null, Type type = null, OpenPerenToken? openPeren = null, ArgumentList arguments = null, ClosePerenToken? closePeren = null)
+        public NewObjectExpression(TokenCollection tokens, NewKeywordToken newKeyword)
         {
-            NewKeyword = newKeyword == null ? tokens.PopToken<NewKeywordToken>() : (NewKeywordToken)newKeyword;
-            Type = type == null ? Type.ReadType(tokens) : type;
-            OpenPeren = openPeren == null ? tokens.PopToken<OpenPerenToken>() : (OpenPerenToken)openPeren;
-            Arguments = arguments == null ? new ArgumentList(tokens) : arguments;
-            ClosePeren = closePeren == null ? tokens.PopToken<ClosePerenToken>() : (ClosePerenToken)closePeren;
+            NewKeyword = newKeyword;
+            Type = Type.ReadType(tokens);
+            OpenPeren = tokens.PopToken<OpenPerenToken>();;
+            argument = new ArgumentList(tokens);
+            ClosePeren = tokens.PopToken<ClosePerenToken>();;
         }
 
         public override string ToString()
@@ -29,7 +30,7 @@ namespace Compiler.SyntaxTreeItems
             ret += Type.ToString();
             ret += " ";
             ret += OpenPeren.ToString();
-            ret += Arguments.ToString();
+            ret += argument.ToString();
             ret += ClosePeren.ToString();
             return ret;
         }

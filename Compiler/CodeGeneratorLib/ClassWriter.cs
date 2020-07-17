@@ -1,4 +1,4 @@
-﻿using CodeGeneratorLib.ClassItems;
+﻿using CodeGeneratorLib.AttributeInfos;
 using CodeGeneratorLib.SyntaxTreeItemsFieldInfos;
 using System;
 using System.Collections.Generic;
@@ -97,7 +97,10 @@ namespace CodeGeneratorLib
             string parametersStr = "TokenCollection tokens";
             foreach (FieldInfo field in classInfo.InstanceFields)
             {
-                parametersStr += ", " + field.Type + (field is TokenFieldInfo ? "? " : " ") + field.LowerCaseName + " = null";
+                if(field.HasAttribute(out ValueAttribute valAttr) && valAttr.GetConstructorParam() != null)
+                {
+                    parametersStr += ", " + valAttr.GetConstructorParam();
+                }
             }
             return parametersStr;
         }

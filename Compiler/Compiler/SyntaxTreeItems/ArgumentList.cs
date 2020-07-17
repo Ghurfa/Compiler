@@ -11,7 +11,7 @@ namespace Compiler.SyntaxTreeItems
         public ArgumentList(TokenCollection tokens)
         {
             var arguments = new LinkedList<Argument>();
-            bool lastMissingComma = false;
+            bool lastMissingComma = tokens.PeekToken() is ClosePerenToken;
             while(!lastMissingComma)
             {
                 var argument = new Argument(tokens);

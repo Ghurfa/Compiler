@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -8,9 +9,9 @@ namespace Compiler.SyntaxTreeItems
     {
         public ValueKeywordToken ValueKeyword { get; private set; }
 
-        public ValueKeywordExpression(TokenCollection tokens, ValueKeywordToken? valueKeyword = null)
+        public ValueKeywordExpression(TokenCollection tokens, ValueKeywordToken valueKeyword)
         {
-            ValueKeyword = valueKeyword == null ? tokens.PopToken<ValueKeywordToken>() : (ValueKeywordToken)valueKeyword;
+            ValueKeyword = valueKeyword;
         }
 
         public override string ToString()

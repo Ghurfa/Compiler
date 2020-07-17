@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -8,9 +9,9 @@ namespace Compiler.SyntaxTreeItems
     {
         public TrueKeywordToken TrueKeyword { get; private set; }
 
-        public TrueLiteralExpression(TokenCollection tokens, TrueKeywordToken? trueKeyword = null)
+        public TrueLiteralExpression(TokenCollection tokens, TrueKeywordToken trueKeyword)
         {
-            TrueKeyword = trueKeyword == null ? tokens.PopToken<TrueKeywordToken>() : (TrueKeywordToken)trueKeyword;
+            TrueKeyword = trueKeyword;
         }
 
         public override string ToString()

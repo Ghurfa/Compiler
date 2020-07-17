@@ -16,8 +16,10 @@ namespace CodeGenerator
                                                  baseDir: @"..\..\..\..\..\Compiler\Compiler\Tokens\",
                                                  TCBPath: @"..\..\..\..\..\Compiler\Compiler\TokenCollectionBuilder.cs");
 
-            //ExpressionsGenerator.Generate();
+            ExpressionsGenerator.Generate();
             MiscellaneousGenerator.Generate();
+            TypesGenerator.Generate();
+            StatementsGenerator.Generate();
         }
     }
 }

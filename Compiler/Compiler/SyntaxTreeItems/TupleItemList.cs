@@ -12,7 +12,7 @@ namespace Compiler.SyntaxTreeItems
         public TupleItemList(TokenCollection tokens, TupleItem initialItem = null)
         {
             var items = new LinkedList<TupleItem>();
-            bool lastMissingComma = false;
+            bool lastMissingComma = tokens.PeekToken() is ClosePerenToken;
 
             if (initialItem != null)
             {

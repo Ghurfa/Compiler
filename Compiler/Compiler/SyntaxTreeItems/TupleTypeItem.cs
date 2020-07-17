@@ -24,7 +24,7 @@ namespace Compiler.SyntaxTreeItems
                 }
                 else
                 {
-                    Type = new QualifiedIdentifierType(tokens, identifier);
+                    Type = new QualifiedIdentifierType(tokens, new QualifiedIdentifier(tokens, identifier));
                 }
             }
             else

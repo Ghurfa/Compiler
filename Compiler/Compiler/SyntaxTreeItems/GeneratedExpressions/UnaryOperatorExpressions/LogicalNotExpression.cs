@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -9,10 +10,10 @@ namespace Compiler.SyntaxTreeItems
         public NotToken LogicalNot { get; private set; }
         public UnaryExpression Expression { get; private set; }
 
-        public LogicalNotExpression(TokenCollection tokens, NotToken? logicalNot = null, UnaryExpression expression = null)
+        public LogicalNotExpression(TokenCollection tokens)
         {
-            LogicalNot = logicalNot == null ? tokens.PopToken<NotToken>() : (NotToken)logicalNot;
-            Expression = expression == null ? UnaryExpression.ReadUnaryExpression(tokens) : expression;
+            LogicalNot = tokens.PopToken<NotToken>();;
+            Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 
         public override string ToString()

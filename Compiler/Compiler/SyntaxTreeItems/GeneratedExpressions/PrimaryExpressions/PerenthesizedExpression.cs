@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -10,11 +11,11 @@ namespace Compiler.SyntaxTreeItems
         public Expression Expression { get; private set; }
         public ClosePerenToken ClosePeren { get; private set; }
 
-        public PerenthesizedExpression(TokenCollection tokens, OpenPerenToken? openPeren = null, Expression expression = null, ClosePerenToken? closePeren = null)
+        public PerenthesizedExpression(TokenCollection tokens, OpenPerenToken openPeren, Expression expression, ClosePerenToken closePeren)
         {
-            OpenPeren = openPeren == null ? tokens.PopToken<OpenPerenToken>() : (OpenPerenToken)openPeren;
-            Expression = expression == null ? Expression.ReadExpression(tokens) : expression;
-            ClosePeren = closePeren == null ? tokens.PopToken<ClosePerenToken>() : (ClosePerenToken)closePeren;
+            OpenPeren = openPeren;
+            Expression = expression;
+            ClosePeren = closePeren;
         }
 
         public override string ToString()

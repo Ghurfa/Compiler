@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -10,11 +11,11 @@ namespace Compiler.SyntaxTreeItems
         public TupleItemList Values { get; private set; }
         public ClosePerenToken ClosePeren { get; private set; }
 
-        public TupleExpression(TokenCollection tokens, OpenPerenToken? openPeren = null, TupleItemList values = null, ClosePerenToken? closePeren = null)
+        public TupleExpression(TokenCollection tokens, OpenPerenToken openPeren, TupleItemList values)
         {
-            OpenPeren = openPeren == null ? tokens.PopToken<OpenPerenToken>() : (OpenPerenToken)openPeren;
-            Values = values == null ? new TupleItemList(tokens) : values;
-            ClosePeren = closePeren == null ? tokens.PopToken<ClosePerenToken>() : (ClosePerenToken)closePeren;
+            OpenPeren = openPeren;
+            Values = values;
+            ClosePeren = tokens.PopToken<ClosePerenToken>();;
         }
 
         public override string ToString()

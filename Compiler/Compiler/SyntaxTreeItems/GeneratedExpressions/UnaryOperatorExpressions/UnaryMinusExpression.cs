@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -9,10 +10,10 @@ namespace Compiler.SyntaxTreeItems
         public MinusToken UnaryMinus { get; private set; }
         public UnaryExpression Expression { get; private set; }
 
-        public UnaryMinusExpression(TokenCollection tokens, MinusToken? unaryMinus = null, UnaryExpression expression = null)
+        public UnaryMinusExpression(TokenCollection tokens)
         {
-            UnaryMinus = unaryMinus == null ? tokens.PopToken<MinusToken>() : (MinusToken)unaryMinus;
-            Expression = expression == null ? UnaryExpression.ReadUnaryExpression(tokens) : expression;
+            UnaryMinus = tokens.PopToken<MinusToken>();;
+            Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 
         public override string ToString()

@@ -1,0 +1,15 @@
++Type
+>#GeneratedTypes
+$Type
+{
+    .Array
+    Type:BaseType;argument
+    OpenBracket
+    CloseBracket
+
+    .Primitive
+    PrimitiveTypeToken:TypeKeyword
+
+    .QualifiedIdentifier
+    QualifiedIdentifier:Identifier;argument
+}

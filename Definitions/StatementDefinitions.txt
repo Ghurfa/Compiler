@@ -1,0 +1,17 @@
+>#GeneratedStatements
++Statement
+{
+    .CodeBlock
+    OpenCurly
+    [Statement:Statements;notpop this.closeCurly
+    CloseCurly;disablecreation;backingfield closeCurly
+
+    .EmptyStatement
+    Semicolon
+
+    .ReturnStatement
+    ReturnKeyword
+    OpenPeren
+    Expression
+    ClosePeren
+}

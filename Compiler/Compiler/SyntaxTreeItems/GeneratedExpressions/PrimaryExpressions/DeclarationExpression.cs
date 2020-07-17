@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -10,11 +11,11 @@ namespace Compiler.SyntaxTreeItems
         public ColonToken Colon { get; private set; }
         public Type Type { get; private set; }
 
-        public DeclarationExpression(TokenCollection tokens, IdentifierToken? identifier = null, ColonToken? colon = null, Type type = null)
+        public DeclarationExpression(TokenCollection tokens, IdentifierToken identifier, ColonToken colon)
         {
-            Identifier = identifier == null ? tokens.PopToken<IdentifierToken>() : (IdentifierToken)identifier;
-            Colon = colon == null ? tokens.PopToken<ColonToken>() : (ColonToken)colon;
-            Type = type == null ? Type.ReadType(tokens) : type;
+            Identifier = identifier;
+            Colon = colon;
+            Type = Type.ReadType(tokens);
         }
 
         public override string ToString()

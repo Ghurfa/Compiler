@@ -6,7 +6,7 @@ $Expression
     ~BinaryExpression
     {
         //Assignment Expression
-        =UnaryExpression:To Token Expression:From
+        =UnaryExpression:To;argument Token Expression:From
         >AssignmentExpressions
         +ICompleteStatement
         ~AssignmentExpression
@@ -28,7 +28,7 @@ $Expression
         }
 
         //Binary Expressions
-        =Expression:Left Token Expression:Right
+        =Expression:Left;argument Token Expression:Right
         {
             >BinaryOperators
             {
@@ -80,13 +80,13 @@ $Expression
 
         :override int Precedence=1
         .Cast
-        UnaryExpression:Expression
+        UnaryExpression:Expression;argument
         AsKeyword
         Type:CastTo
 
         :override int Precedence=13
         .If
-        Expression:Condition
+        Expression:Condition;argument
         QuestionMark
         Expression:IfTrue
         Backslash
@@ -116,7 +116,7 @@ $Expression
     {
         .ArrayAccess
         +IAssignableExpression
-        PrimaryExpression:Array
+        PrimaryExpression:Array;argument
         OpenBracket
         Expression:Index
         CloseBracket
@@ -124,97 +124,97 @@ $Expression
         .Declaration
         +IAssignableExpression
         +ICompleteStatement
-        Identifier
-        Colon
+        Identifier;argument
+        Colon;argument
         Type
 
         .MemberAccess
         +IAssignableExpression
-        PrimaryExpression:BaseExpression
+        PrimaryExpression:BaseExpression;argument
         Dot
         Identifier:Item
 
         .MethodCall
         +ICompleteStatement
-        PrimaryExpression:Method
+        PrimaryExpression:Method;argument
         OpenPeren
-        ArgumentList:Arguments
+        ArgumentList:argument
         ClosePeren
 
         .NewObject
         +ICompleteStatement
-        NewKeyword
+        NewKeyword;argument
         Type
         OpenPeren
-        ArgumentList:Arguments
+        ArgumentList:argument
         ClosePeren
 
         .NullCondArrayAccess
         +IAssignableExpression
-        PrimaryExpression:Array
+        PrimaryExpression:Array;argument
         NullCondOpenBracket
         Expression:Index
         CloseBracket
 
         .NullCondMemberAccess
         +IAssignableExpression
-        PrimaryExpression:BaseExpression
+        PrimaryExpression:BaseExpression;argument
         NullCondDot
         Identifier:Item
 
         .Perenthesized
-        OpenPeren
-        Expression
-        ClosePeren
+        OpenPeren;argument
+        Expression;argument
+        ClosePeren;argument
 
         .PostIncrement
         +ICompleteStatement
-        PrimaryExpression:BaseExpression
+        PrimaryExpression:BaseExpression;argument
         Increment
 
         .PostDecrement
         +ICompleteStatement
-        PrimaryExpression:BaseExpression
+        PrimaryExpression:BaseExpression;argument
         Decrement
 
         >ValueExpressions
         {
             .Identifier
             +IAssignableExpression
-            Identifier
+            Identifier;argument
 
             .PrimitiveType
-            PrimitiveType
+            PrimitiveType;argument
 
             .ValueKeyword
-            ValueKeyword
+            ValueKeyword;argument
 
             .Tuple
-            OpenPeren
-            TupleItemList:Values
+            OpenPeren;argument
+            TupleItemList:Values;argument
             ClosePeren
         }
 
         >Literals
         {
             .IntLiteral
-            IntLiteral
+            IntLiteral;argument
 
             .StringLiteral
-            DoubleQuote:OpenQuote
+            DoubleQuote:OpenQuote;argument
             StringLiteral:Text
             DoubleQuote:CloseQuote
             
             .CharLiteral
-            SingleQuote:OpenQuote
+            SingleQuote:OpenQuote;argument
             CharLiteral:Text
             SingleQuote:CloseQuote
 
             .TrueLiteral
-            TrueKeyword
+            TrueKeyword;argument
 
             .FalseLiteral
-            FalseKeyword
+            FalseKeyword;argument
         }
     }
 }

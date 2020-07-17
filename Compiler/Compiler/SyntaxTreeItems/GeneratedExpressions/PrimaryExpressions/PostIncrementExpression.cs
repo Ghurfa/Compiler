@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -9,10 +10,10 @@ namespace Compiler.SyntaxTreeItems
         public PrimaryExpression BaseExpression { get; private set; }
         public IncrementToken Increment { get; private set; }
 
-        public PostIncrementExpression(TokenCollection tokens, PrimaryExpression baseExpression = null, IncrementToken? increment = null)
+        public PostIncrementExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {
-            BaseExpression = baseExpression == null ? PrimaryExpression.ReadPrimaryExpression(tokens) : baseExpression;
-            Increment = increment == null ? tokens.PopToken<IncrementToken>() : (IncrementToken)increment;
+            BaseExpression = baseExpression;
+            Increment = tokens.PopToken<IncrementToken>();;
         }
 
         public override string ToString()

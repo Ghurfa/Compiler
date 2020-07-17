@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -9,10 +10,10 @@ namespace Compiler.SyntaxTreeItems
         public BitwiseNotToken BitwiseNot { get; private set; }
         public UnaryExpression Expression { get; private set; }
 
-        public BitwiseNotExpression(TokenCollection tokens, BitwiseNotToken? bitwiseNot = null, UnaryExpression expression = null)
+        public BitwiseNotExpression(TokenCollection tokens)
         {
-            BitwiseNot = bitwiseNot == null ? tokens.PopToken<BitwiseNotToken>() : (BitwiseNotToken)bitwiseNot;
-            Expression = expression == null ? UnaryExpression.ReadUnaryExpression(tokens) : expression;
+            BitwiseNot = tokens.PopToken<BitwiseNotToken>();;
+            Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 
         public override string ToString()

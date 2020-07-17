@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -9,10 +10,10 @@ namespace Compiler.SyntaxTreeItems
         public DecrementToken PreDecrement { get; private set; }
         public UnaryExpression Expression { get; private set; }
 
-        public PreDecrementExpression(TokenCollection tokens, DecrementToken? preDecrement = null, UnaryExpression expression = null)
+        public PreDecrementExpression(TokenCollection tokens)
         {
-            PreDecrement = preDecrement == null ? tokens.PopToken<DecrementToken>() : (DecrementToken)preDecrement;
-            Expression = expression == null ? UnaryExpression.ReadUnaryExpression(tokens) : expression;
+            PreDecrement = tokens.PopToken<DecrementToken>();;
+            Expression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 
         public override string ToString()

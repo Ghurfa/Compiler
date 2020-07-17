@@ -16,7 +16,7 @@ namespace Compiler.SyntaxTreeItems
         {
             OpenPeren = tokens.PopToken<OpenPerenToken>();
             LinkedList<ParameterDeclaration> parameters = new LinkedList<ParameterDeclaration>();
-            bool lastMissingComma = false;
+            bool lastMissingComma = tokens.PeekToken() is ClosePerenToken;
             while (!lastMissingComma)
             {
                 var parameter = new ParameterDeclaration(tokens);

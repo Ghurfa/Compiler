@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -8,15 +9,15 @@ namespace Compiler.SyntaxTreeItems
     {
         public PrimaryExpression Method { get; private set; }
         public OpenPerenToken OpenPeren { get; private set; }
-        public ArgumentList Arguments { get; private set; }
+        public ArgumentList argument { get; private set; }
         public ClosePerenToken ClosePeren { get; private set; }
 
-        public MethodCallExpression(TokenCollection tokens, PrimaryExpression method = null, OpenPerenToken? openPeren = null, ArgumentList arguments = null, ClosePerenToken? closePeren = null)
+        public MethodCallExpression(TokenCollection tokens, PrimaryExpression method)
         {
-            Method = method == null ? PrimaryExpression.ReadPrimaryExpression(tokens) : method;
-            OpenPeren = openPeren == null ? tokens.PopToken<OpenPerenToken>() : (OpenPerenToken)openPeren;
-            Arguments = arguments == null ? new ArgumentList(tokens) : arguments;
-            ClosePeren = closePeren == null ? tokens.PopToken<ClosePerenToken>() : (ClosePerenToken)closePeren;
+            Method = method;
+            OpenPeren = tokens.PopToken<OpenPerenToken>();;
+            argument = new ArgumentList(tokens);
+            ClosePeren = tokens.PopToken<ClosePerenToken>();;
         }
 
         public override string ToString()
@@ -25,7 +26,7 @@ namespace Compiler.SyntaxTreeItems
             ret += Method.ToString();
             ret += " ";
             ret += OpenPeren.ToString();
-            ret += Arguments.ToString();
+            ret += argument.ToString();
             ret += ClosePeren.ToString();
             return ret;
         }

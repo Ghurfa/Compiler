@@ -1,7 +1,9 @@
 ﻿using CodeGeneratorLib.AttributeInfos;
+using CodeGeneratorLib.FieldInfos;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace CodeGeneratorLib
@@ -30,6 +32,7 @@ namespace CodeGeneratorLib
             {
                 "using System;",
                 "using System.Collections.Generic;",
+                "using System.Linq;",
                 "using System.Text;"
             };
             Namespace = context.Namespace;
@@ -42,11 +45,11 @@ namespace CodeGeneratorLib
             ConstructorLines = new List<string>();
             foreach (FieldInfo field in instanceFields)
             {
-                foreach(GetSetPropertyInfo property in field.GetDeclaration())
+                foreach (GetSetPropertyInfo property in field.GetDeclaration())
                 {
                     GetSetProperties.Add(property);
                 }
-                if(!(field.HasAttribute<DisableCreationAttribute>()))
+                if (!(field.HasAttribute<DisableCreationAttribute>()))
                 {
                     foreach (string creationLine in field.GetCreationStatements())
                     {
@@ -56,6 +59,34 @@ namespace CodeGeneratorLib
             }
 
             Methods = new List<MethodInfo>();
+            CreateToStringMethod();
+        }
+
+        private void CreateToStringMethod()
+        {
+            MethodInfo toStringMethod = new MethodInfo("public override string ToString()");
+            toStringMethod.Body.Add("string ret = \"\";");
+            string[] openSyntaxTokenNames = new string[] { "OpenPerenToken", "OpenBracketToken" };
+            string[] closeSyntaxTokenNames = new string[] { "ClosePerenToken", "CloseBracketToken", "CommaToken", "SemicolonToken" };
+            string[] noSpacesAround = new string[] { "CharLiteralToken", "StringLiteralToken", "DotToken", "ColonToken" };
+            for (int i = 0; i < InstanceFields.Count; i++)
+            {
+                foreach (string toStringLine in InstanceFields[i].GetToString())
+                {
+                    toStringMethod.Body.Add(toStringLine);
+                }
+                if (i < InstanceFields.Count - 1 &&
+                    !Flags.Contains("UnaryExpression") &&
+                    !openSyntaxTokenNames.Contains(InstanceFields[i].Type) &&
+                    !noSpacesAround.Contains(InstanceFields[i].Type) &&
+                    !closeSyntaxTokenNames.Contains(InstanceFields[i + 1].Type) &&
+                    !noSpacesAround.Contains(InstanceFields[i + 1].Type))
+                {
+                    toStringMethod.Body.Add("ret += \" \";");
+                }
+            }
+            toStringMethod.Body.Add("return ret;");
+            Methods.Add(toStringMethod);
         }
     }
 }

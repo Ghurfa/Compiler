@@ -16,30 +16,6 @@ namespace CodeGenerator
                                                                                   TokensGenerator.TokenNames.ToArray());
             foreach (ClassInfo classInfo in classInfos)
             {
-                //ToString method
-                MethodInfo toStringMethod = new MethodInfo("public override string ToString()");
-                toStringMethod.Body.Add("string ret = \"\";");
-                string[] openSyntaxTokenNames = new string[] { "OpenPerenToken", "OpenCurlyToken", "OpenBracketToken" };
-                string[] closeSyntaxTokenNames = new string[] { "ClosePerenToken", "CloseCurlyToken", "CloseBracketToken", "CommaToken", "SemicolonToken" };
-                string[] noSpacesAround = new string[] { "CharLiteralToken", "StringLiteralToken", "DotToken", "ColonToken" };
-                for (int i = 0; i < classInfo.InstanceFields.Count; i++)
-                {
-                    foreach (string toStringLine in classInfo.InstanceFields[i].GetToString())
-                    {
-                        toStringMethod.Body.Add(toStringLine);
-                    }
-                    if (i < classInfo.InstanceFields.Count - 1 &&
-                        !classInfo.Flags.Contains("UnaryExpression") &&
-                        !openSyntaxTokenNames.Contains(classInfo.InstanceFields[i].Type) &&
-                        !noSpacesAround.Contains(classInfo.InstanceFields[i].Type) &&
-                        !closeSyntaxTokenNames.Contains(classInfo.InstanceFields[i + 1].Type) &&
-                        !noSpacesAround.Contains(classInfo.InstanceFields[i + 1].Type))
-                    {
-                        toStringMethod.Body.Add("ret += \" \";");
-                    }
-                }
-                toStringMethod.Body.Add("return ret;");
-                classInfo.Methods.Add(toStringMethod);
 
                 //LeftExpr and RightExpr properties
                 if (classInfo.Flags.Contains("BinaryExpression"))

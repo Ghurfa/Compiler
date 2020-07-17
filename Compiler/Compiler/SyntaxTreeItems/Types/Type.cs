@@ -28,7 +28,7 @@ namespace Compiler.SyntaxTreeItems
             }
             else
             {
-                baseType = new QualifiedIdentifierType(tokens);
+                baseType = new QualifiedIdentifierType(tokens, new QualifiedIdentifier(tokens));
             }
 
             Type typeSoFar = baseType;

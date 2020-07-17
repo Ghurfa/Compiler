@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -14,11 +15,11 @@ namespace Compiler.SyntaxTreeItems
         public override Expression LeftExpr { get => Left; set { Left = value; } }
         public override Expression RightExpr { get => Right; set { Right = value; } }
 
-        public GreaterThanOrEqualToExpression(TokenCollection tokens, Expression left = null, GreaterThanOrEqualToToken? greaterThanOrEqualTo = null, Expression right = null)
+        public GreaterThanOrEqualToExpression(TokenCollection tokens, Expression left)
         {
-            Left = left == null ? Expression.ReadExpression(tokens) : left;
-            GreaterThanOrEqualTo = greaterThanOrEqualTo == null ? tokens.PopToken<GreaterThanOrEqualToToken>() : (GreaterThanOrEqualToToken)greaterThanOrEqualTo;
-            Right = right == null ? Expression.ReadExpression(tokens) : right;
+            Left = left;
+            GreaterThanOrEqualTo = tokens.PopToken<GreaterThanOrEqualToToken>();;
+            Right = Expression.ReadExpression(tokens);
         }
 
         public override string ToString()

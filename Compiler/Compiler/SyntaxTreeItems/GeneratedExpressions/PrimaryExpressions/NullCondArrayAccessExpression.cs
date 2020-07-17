@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -11,12 +12,12 @@ namespace Compiler.SyntaxTreeItems
         public Expression Index { get; private set; }
         public CloseBracketToken CloseBracket { get; private set; }
 
-        public NullCondArrayAccessExpression(TokenCollection tokens, PrimaryExpression array = null, NullCondOpenBracketToken? nullCondOpenBracket = null, Expression index = null, CloseBracketToken? closeBracket = null)
+        public NullCondArrayAccessExpression(TokenCollection tokens, PrimaryExpression array)
         {
-            Array = array == null ? PrimaryExpression.ReadPrimaryExpression(tokens) : array;
-            NullCondOpenBracket = nullCondOpenBracket == null ? tokens.PopToken<NullCondOpenBracketToken>() : (NullCondOpenBracketToken)nullCondOpenBracket;
-            Index = index == null ? Expression.ReadExpression(tokens) : index;
-            CloseBracket = closeBracket == null ? tokens.PopToken<CloseBracketToken>() : (CloseBracketToken)closeBracket;
+            Array = array;
+            NullCondOpenBracket = tokens.PopToken<NullCondOpenBracketToken>();;
+            Index = Expression.ReadExpression(tokens);
+            CloseBracket = tokens.PopToken<CloseBracketToken>();;
         }
 
         public override string ToString()

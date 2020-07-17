@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -10,11 +11,11 @@ namespace Compiler.SyntaxTreeItems
         public DotToken Dot { get; private set; }
         public IdentifierToken Item { get; private set; }
 
-        public MemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression = null, DotToken? dot = null, IdentifierToken? item = null)
+        public MemberAccessExpression(TokenCollection tokens, PrimaryExpression baseExpression)
         {
-            BaseExpression = baseExpression == null ? PrimaryExpression.ReadPrimaryExpression(tokens) : baseExpression;
-            Dot = dot == null ? tokens.PopToken<DotToken>() : (DotToken)dot;
-            Item = item == null ? tokens.PopToken<IdentifierToken>() : (IdentifierToken)item;
+            BaseExpression = baseExpression;
+            Dot = tokens.PopToken<DotToken>();;
+            Item = tokens.PopToken<IdentifierToken>();;
         }
 
         public override string ToString()

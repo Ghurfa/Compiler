@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Compiler.SyntaxTreeItems
@@ -8,9 +9,9 @@ namespace Compiler.SyntaxTreeItems
     {
         public IdentifierToken Identifier { get; private set; }
 
-        public IdentifierExpression(TokenCollection tokens, IdentifierToken? identifier = null)
+        public IdentifierExpression(TokenCollection tokens, IdentifierToken identifier)
         {
-            Identifier = identifier == null ? tokens.PopToken<IdentifierToken>() : (IdentifierToken)identifier;
+            Identifier = identifier;
         }
 
         public override string ToString()
