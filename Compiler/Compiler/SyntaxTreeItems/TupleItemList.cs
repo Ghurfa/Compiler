@@ -22,7 +22,7 @@ namespace Compiler.SyntaxTreeItems
 
             while (!(tokens.PeekToken() is ClosePerenToken))
             {
-                if (lastMissingComma) throw new MissingCommaException(tokens.PeekToken());
+                if (lastMissingComma) throw new MissingCommaException(tokens);
                 var item = new TupleItem(tokens);
                 items.AddLast(item);
                 lastMissingComma = item.Comma == null;

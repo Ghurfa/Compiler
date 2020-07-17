@@ -29,7 +29,7 @@ namespace Compiler
                     return new MethodDeclaration(tokens, identifier);
                 }
             }
-            else throw new InvalidTokenException(tokens.PeekToken());
+            else throw new InvalidTokenException(tokens);
         }
     }
 }

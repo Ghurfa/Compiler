@@ -19,7 +19,7 @@ namespace Compiler.SyntaxTreeItems
             bool lastMissingComma = false;
             while (!tokens.PopIfMatches(out ClosePeren))
             {
-                if (lastMissingComma) throw new MissingCommaException(tokens.PeekToken());
+                if (lastMissingComma) throw new MissingCommaException(tokens);
                 var parameter = new ParameterDeclaration(tokens);
                 lastMissingComma = parameter.Comma == null;
                 parameters.AddLast(parameter);

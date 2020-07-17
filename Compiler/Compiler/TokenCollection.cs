@@ -21,19 +21,42 @@ namespace Compiler
         {
             this.tokens = tokens.ToArray();
         }
-        public IToken PeekToken()
+        public bool PeekToken(out IToken token)
         {
-            if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
+            if (pointer >= tokens.Length)
+            {
+                token = default;
+                return false;
+            }
             while (tokens[pointer] is ITriviaToken)
             {
                 pointer++;
-                if (pointer > tokens.Length) throw new UnexpectedEndOfFrameException();
+                if (pointer >= tokens.Length)
+                {
+                    token = default;
+                    return false;
+                }
+            }
+            token = tokens[pointer];
+            return true;
+        }
+        public IToken PeekToken()
+        {
+            if (pointer >= tokens.Length) throw new UnexpectedEndOfFrameException();
+            while (tokens[pointer] is ITriviaToken)
+            {
+                pointer++;
+                if (pointer >= tokens.Length) throw new UnexpectedEndOfFrameException();
             }
             return tokens[pointer];
         }
         public bool PopIfMatches<T>(out T tokenIfMatches)
         {
-            IToken peek = PeekToken();
+            if(!PeekToken(out IToken peek))
+            {
+                tokenIfMatches = default;
+                return false;
+            }
             if (peek is T matched)
             {
                 lastUsedToken = pointer;
@@ -45,13 +68,6 @@ namespace Compiler
             return false;
         }
 
-        /*public IToken PopToken()
-        {
-            IToken ret = PeekToken();
-            lastUsedToken = pointer;
-            pointer++;
-            return ret;
-        }*/
         public T PopToken<T>()
         {
             IToken peek = PeekToken();

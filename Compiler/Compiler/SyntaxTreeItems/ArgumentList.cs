@@ -14,7 +14,7 @@ namespace Compiler.SyntaxTreeItems
             bool lastMissingComma = false;
             while(!(tokens.PeekToken() is ClosePerenToken))
             {
-                if (lastMissingComma) throw new MissingCommaException(tokens.PeekToken());
+                if (lastMissingComma) throw new MissingCommaException(tokens);
                 var argument = new Argument(tokens);
                 arguments.AddLast(argument);
                 lastMissingComma = argument.Comma == null;

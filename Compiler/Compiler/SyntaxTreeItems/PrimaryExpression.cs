@@ -22,7 +22,7 @@ namespace Compiler
                 {
                     baseExpr = new TupleExpression(tokens, openPeren, new TupleItemList(tokens, new TupleItem(innerExpr, comma)));
                 }
-                else throw new InvalidTokenException(tokens.PeekToken());
+                else throw new InvalidTokenException(tokens);
             }
             else if (tokens.PopIfMatches(out NewKeywordToken newKeyword))
             {
@@ -67,13 +67,13 @@ namespace Compiler
             {
                 baseExpr = new PrimitiveTypeExpression(tokens, primitiveTypeKeyword);
             }
-            else throw new InvalidTokenException(tokens.PeekToken());
+            else throw new InvalidTokenException(tokens);
 
             PrimaryExpression exprSoFar = baseExpr;
             bool finishedParsing = false;
-            while (!finishedParsing)
+            while (!finishedParsing && tokens.PeekToken(out IToken token))
             {
-                switch (tokens.PeekToken())
+                switch (token)
                 {
                     case DotToken _:                 exprSoFar = new MemberAccessExpression(tokens, exprSoFar);  break;
                     case OpenPerenToken _:           exprSoFar = new MethodCallExpression(tokens, exprSoFar);    break;
