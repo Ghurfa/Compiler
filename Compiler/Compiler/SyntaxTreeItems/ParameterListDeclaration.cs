@@ -17,13 +17,13 @@ namespace Compiler.SyntaxTreeItems
             OpenPeren = tokens.PopToken<OpenPerenToken>();
             LinkedList<ParameterDeclaration> parameters = new LinkedList<ParameterDeclaration>();
             bool lastMissingComma = false;
-            while (!tokens.PopIfMatches(out ClosePeren))
+            while (!lastMissingComma)
             {
-                if (lastMissingComma) throw new MissingCommaException(tokens);
                 var parameter = new ParameterDeclaration(tokens);
                 lastMissingComma = parameter.Comma == null;
                 parameters.AddLast(parameter);
             }
+            ClosePeren = tokens.PopToken<ClosePerenToken>();
             Parameters = parameters.ToArray();
         }
     }

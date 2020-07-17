@@ -16,13 +16,13 @@ namespace Compiler.SyntaxTreeItems.Types
 
             var items = new LinkedList<TupleTypeItem>();
             bool lastMissingComma = false;
-            while (!tokens.PopIfMatches(out ClosePeren))
+            while (!lastMissingComma)
             {
-                if (lastMissingComma) throw new MissingCommaException(tokens);
                 var newItem = new TupleTypeItem(tokens);
                 items.AddLast(newItem);
                 lastMissingComma = newItem.Comma == null;
             }
+            ClosePeren = tokens.PopToken<ClosePerenToken>();
             Items = items.ToArray();
         }
         public override string ToString()

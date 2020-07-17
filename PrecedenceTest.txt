@@ -2,9 +2,9 @@ PrecedenceTest namespace
 {
     PrecedenceTest class
     {
-        testMethod void()
+        testMethod void(a:int)
         {
-            0 = a + b * c || d
+            a = (a)
         }
     }
 }

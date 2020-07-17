@@ -14,6 +14,7 @@ namespace Compiler
         public OpenCurlyToken OpenCurly;
         public ClassDeclaration[] ClassDeclarations;
         public CloseCurlyToken CloseCurly;
+
         public NamespaceDeclaration(TokenCollection tokens)
         {
             Name = new QualifiedIdentifier(tokens);

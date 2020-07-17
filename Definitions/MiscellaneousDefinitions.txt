@@ -1,0 +1,23 @@
+.NamespaceDeclaration
+    QualifiedIdentifier:Name
+    NamespaceKeyword
+    OpenCurly
+    ClassDeclaration[]:ClassDeclarations;untilpop CloseCurly
+    CloseCurly;disablecreation
+
+>#GeneratedClassItemDeclarations
+{
+    .ConstructorDeclaration
+    ConstructorKeyword
+    ModifierList:Modifiers
+    ParameterListDeclaration:ParameterList
+    MethodBodyDeclaration:ConstructorBody
+
+    .MethodDeclaration
+    Identifier:Name
+    ModifierList:Modifiers
+    Type:ReturnType
+    ParameterListDeclaration:ParameterList
+    MethodBodyDeclaration:MethodBody
+}
+

@@ -20,9 +20,8 @@ namespace Compiler.SyntaxTreeItems
                 items.AddLast(initialItem);
             }
 
-            while (!(tokens.PeekToken() is ClosePerenToken))
+            while (!lastMissingComma)
             {
-                if (lastMissingComma) throw new MissingCommaException(tokens);
                 var item = new TupleItem(tokens);
                 items.AddLast(item);
                 lastMissingComma = item.Comma == null;

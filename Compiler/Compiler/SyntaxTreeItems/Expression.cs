@@ -69,10 +69,12 @@ namespace Compiler
             }
             return exprSoFar;
         }
+
         private static bool ProperPrecedence(Expression upper, Expression lower, bool mayEqual)
         {
             return lower.Precedence < upper.Precedence || (mayEqual && lower.Precedence == upper.Precedence);
         }
+
         private static Expression EnforcePrecedenceRules(Expression expr)
         {
             if (expr is UnaryExpression || expr is SyntaxTreeItems.Type) return expr;
