@@ -10,64 +10,55 @@ namespace Compiler
         public abstract int Precedence { get; }
         public abstract Expression LeftExpr { get; set; }
         public abstract Expression RightExpr { get; set; }
+
         public static Expression ReadExpression(TokenCollection tokens)
         {
             UnaryExpression baseExpr = UnaryExpression.ReadUnaryExpression(tokens);
 
-            Expression exprSoFar = baseExpr;
             if (tokens.PeekToken(out IToken token))
             {
+                Expression expr;
                 switch (token)
                 {
-                    case AsKeywordToken _: exprSoFar = new CastExpression(tokens, baseExpr); break;
-                    case AssignToken _: exprSoFar = new AssignExpression(tokens, baseExpr); break;
-                    case DeclAssignToken _: exprSoFar = new DeclAssignExpression(tokens, baseExpr); break;
-                    case PlusAssignToken _: exprSoFar = new PlusAssignExpression(tokens, baseExpr); break;
-                    case MinusAssignToken _: exprSoFar = new MinusAssignExpression(tokens, baseExpr); break;
-                    case MultiplyAssignToken _: exprSoFar = new MultiplyAssignExpression(tokens, baseExpr); break;
-                    case DivideAssignToken _: exprSoFar = new DivideAssignExpression(tokens, baseExpr); break;
-                    case ModuloAssignToken _: exprSoFar = new ModuloAssignExpression(tokens, baseExpr); break;
-                    case BitwiseAndAssignToken _: exprSoFar = new BitwiseAndAssignExpression(tokens, baseExpr); break;
-                    case BitwiseOrAssignToken _: exprSoFar = new BitwiseOrAssignExpression(tokens, baseExpr); break;
-                    case BitwiseXorAssignToken _: exprSoFar = new BitwiseXorAssignExpression(tokens, baseExpr); break;
-                    case LeftShiftAssignToken _: exprSoFar = new LeftShiftAssignExpression(tokens, baseExpr); break;
-                    case RightShiftAssignToken _: exprSoFar = new RightShiftAssignExpression(tokens, baseExpr); break;
-                    case NullCoalescingAssignToken _: exprSoFar = new NullCoalescingAssignExpression(tokens, baseExpr); break;
+                    case AsKeywordToken _: expr = new CastExpression(tokens, baseExpr); break;
+                    case AssignToken _: expr = new AssignExpression(tokens, baseExpr); break;
+                    case DeclAssignToken _: expr = new DeclAssignExpression(tokens, baseExpr); break;
+                    case PlusAssignToken _: expr = new PlusAssignExpression(tokens, baseExpr); break;
+                    case MinusAssignToken _: expr = new MinusAssignExpression(tokens, baseExpr); break;
+                    case MultiplyAssignToken _: expr = new MultiplyAssignExpression(tokens, baseExpr); break;
+                    case DivideAssignToken _: expr = new DivideAssignExpression(tokens, baseExpr); break;
+                    case ModuloAssignToken _: expr = new ModuloAssignExpression(tokens, baseExpr); break;
+                    case BitwiseAndAssignToken _: expr = new BitwiseAndAssignExpression(tokens, baseExpr); break;
+                    case BitwiseOrAssignToken _: expr = new BitwiseOrAssignExpression(tokens, baseExpr); break;
+                    case BitwiseXorAssignToken _: expr = new BitwiseXorAssignExpression(tokens, baseExpr); break;
+                    case LeftShiftAssignToken _: expr = new LeftShiftAssignExpression(tokens, baseExpr); break;
+                    case RightShiftAssignToken _: expr = new RightShiftAssignExpression(tokens, baseExpr); break;
+                    case NullCoalescingAssignToken _: expr = new NullCoalescingAssignExpression(tokens, baseExpr); break;
+                    case QuestionMarkToken _: expr = new IfExpression(tokens, baseExpr); break;
+                    case PlusToken _: expr = new PlusExpression(tokens, baseExpr); break;
+                    case MinusToken _: expr = new MinusExpression(tokens, baseExpr); break;
+                    case AsteriskToken _: expr = new MultiplyExpression(tokens, baseExpr); break;
+                    case DivideToken _: expr = new DivideExpression(tokens, baseExpr); break;
+                    case ModuloToken _: expr = new ModuloExpression(tokens, baseExpr); break;
+                    case BitwiseAndToken _: expr = new BitwiseAndExpression(tokens, baseExpr); break;
+                    case BitwiseOrToken _: expr = new BitwiseOrExpression(tokens, baseExpr); break;
+                    case BitwiseXorToken _: expr = new BitwiseXorExpression(tokens, baseExpr); break;
+                    case LeftShiftToken _: expr = new LeftShiftExpression(tokens, baseExpr); break;
+                    case RightShiftToken _: expr = new RightShiftExpression(tokens, baseExpr); break;
+                    case NullCoalescingToken _: expr = new NullCoalescingExpression(tokens, baseExpr); break;
+                    case EqualsToken _: expr = new EqualsExpression(tokens, baseExpr); break;
+                    case NotEqualsToken _: expr = new NotEqualsExpression(tokens, baseExpr); break;
+                    case GreaterThanToken _: expr = new GreaterThanExpression(tokens, baseExpr); break;
+                    case LessThanToken _: expr = new LessThanExpression(tokens, baseExpr); break;
+                    case GreaterThanOrEqualToToken _: expr = new GreaterThanOrEqualToExpression(tokens, baseExpr); break;
+                    case LessThanOrEqualToToken _: expr = new LessThanOrEqualToExpression(tokens, baseExpr); break;
+                    case AndToken _: expr = new AndExpression(tokens, baseExpr); break;
+                    case OrToken _: expr = new OrExpression(tokens, baseExpr); break;
+                    default: return baseExpr;
                 }
+                return EnforcePrecedenceRules(expr);
             }
-
-            // Need not enfore precedence rules here
-
-            bool finishedParsing = false;
-            while (!finishedParsing && tokens.PeekToken(out token))
-            {
-                switch (token)
-                {
-                    case QuestionMarkToken _: exprSoFar = new IfExpression(tokens, exprSoFar); break;
-                    case PlusToken _: exprSoFar = new PlusExpression(tokens, exprSoFar); break;
-                    case MinusToken _: exprSoFar = new MinusExpression(tokens, exprSoFar); break;
-                    case AsteriskToken _: exprSoFar = new MultiplyExpression(tokens, exprSoFar); break;
-                    case DivideToken _: exprSoFar = new DivideExpression(tokens, exprSoFar); break;
-                    case ModuloToken _: exprSoFar = new ModuloExpression(tokens, exprSoFar); break;
-                    case BitwiseAndToken _: exprSoFar = new BitwiseAndExpression(tokens, exprSoFar); break;
-                    case BitwiseOrToken _: exprSoFar = new BitwiseOrExpression(tokens, exprSoFar); break;
-                    case BitwiseXorToken _: exprSoFar = new BitwiseXorExpression(tokens, exprSoFar); break;
-                    case LeftShiftToken _: exprSoFar = new LeftShiftExpression(tokens, exprSoFar); break;
-                    case RightShiftToken _: exprSoFar = new RightShiftExpression(tokens, exprSoFar); break;
-                    case NullCoalescingToken _: exprSoFar = new NullCoalescingExpression(tokens, exprSoFar); break;
-                    case EqualsToken _: exprSoFar = new EqualsExpression(tokens, exprSoFar); break;
-                    case NotEqualsToken _: exprSoFar = new NotEqualsExpression(tokens, exprSoFar); break;
-                    case GreaterThanToken _: exprSoFar = new GreaterThanExpression(tokens, exprSoFar); break;
-                    case LessThanToken _: exprSoFar = new LessThanExpression(tokens, exprSoFar); break;
-                    case GreaterThanOrEqualToToken _: exprSoFar = new GreaterThanOrEqualToExpression(tokens, exprSoFar); break;
-                    case LessThanOrEqualToToken _: exprSoFar = new LessThanOrEqualToExpression(tokens, exprSoFar); break;
-                    case AndToken _: exprSoFar = new AndExpression(tokens, exprSoFar); break;
-                    case OrToken _: exprSoFar = new OrExpression(tokens, exprSoFar); break;
-                    default: finishedParsing = true; break;
-                }
-                exprSoFar = EnforcePrecedenceRules(exprSoFar);
-            }
-            return exprSoFar;
+            else return baseExpr;
         }
 
         private static bool ProperPrecedence(Expression upper, Expression lower, bool mayEqual)
@@ -77,7 +68,7 @@ namespace Compiler
 
         private static Expression EnforcePrecedenceRules(Expression expr)
         {
-            if (expr is UnaryExpression || expr is SyntaxTreeItems.Type) return expr;
+            //if (expr is UnaryExpression || expr is SyntaxTreeItems.Type) return expr;
 
             bool leftAssoc = expr.Precedence != 12 && expr.Precedence != 13 && expr.Precedence != 14;
 
@@ -103,6 +94,7 @@ namespace Compiler
             leftestRight.LeftExpr = expr;
             return newHead;
         }
+
         public abstract override string ToString();
     }
 }

@@ -3,6 +3,7 @@ using Compiler.SyntaxTreeItems;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Xunit;
 
 namespace CompilerUnitTests
@@ -20,13 +21,16 @@ namespace CompilerUnitTests
         public void TestRandomlyGeneratedExpressions()
         {
             Random random = new Random();
-            for (int i = 0; i < 100; i++)
+            int count = 50;
+            string[] exprsStrings = new string[count];
+            for (int i = 0; i < count; i++)
             {
                 LinkedList<IToken> tokens = new LinkedList<IToken>();
                 int tokenPointer = 0;
-                GenerateRandomExpression(100, ref tokenPointer, tokens, random);
+                GenerateRandomExpression(i, ref tokenPointer, tokens, random);
 
                 Expression total = Expression.ReadExpression(new TokenCollection(tokens));
+                exprsStrings[i] = total.ToString();
 
                 Queue<Expression> expressions = new Queue<Expression>();
                 expressions.Enqueue(total);
@@ -45,6 +49,7 @@ namespace CompilerUnitTests
                     if (expr is IfExpression ifExpr) expressions.Enqueue(ifExpr.IfTrue);
                 }
             }
+            File.WriteAllLines(@"..\..\..\..\..\TestedExpressions.txt", exprsStrings);
         }
 
         private bool ProperPrecedence(Expression upper, Expression lower, bool mayEqual)
