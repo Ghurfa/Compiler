@@ -8,19 +8,19 @@ namespace Compiler.SyntaxTreeItems
     public class UnaryPlusExpression : UnaryExpression
     {
         public PlusToken UnaryPlus { get; private set; }
-        public UnaryExpression Expression { get; private set; }
+        public UnaryExpression BaseExpression { get; private set; }
 
         public UnaryPlusExpression(TokenCollection tokens)
         {
             UnaryPlus = tokens.PopToken<PlusToken>();
-            Expression = UnaryExpression.ReadUnaryExpression(tokens);
+            BaseExpression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 
         public override string ToString()
         {
             string ret = "";
             ret += UnaryPlus.ToString();
-            ret += Expression.ToString();
+            ret += BaseExpression.ToString();
             return ret;
         }
     }

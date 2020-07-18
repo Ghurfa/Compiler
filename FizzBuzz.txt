@@ -6,7 +6,8 @@ FizzBuzz namespace
         c:int = b
         FizzBuzz public static void(start:int, end:int)
         {
-            c:(a:int, b:int) = (3, 4)
+            c:(a:int, b:int) = (2, 3)
+            (a[2] + a) = f
             for(i := start; i < end; i++)
             {
                 boolean:bool = c ?? false

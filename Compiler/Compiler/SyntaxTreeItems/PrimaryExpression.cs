@@ -30,7 +30,7 @@ namespace Compiler
             }
             else if (tokens.PopIfMatches(out IdentifierToken identifier))
             {
-                if(tokens.PopIfMatches(out ColonToken colon))
+                if (tokens.PopIfMatches(out ColonToken colon))
                 {
                     baseExpr = new DeclarationExpression(tokens, identifier, colon);
                 }
@@ -75,13 +75,23 @@ namespace Compiler
             {
                 switch (token)
                 {
-                    case DotToken _:                 exprSoFar = new MemberAccessExpression(tokens, exprSoFar);  break;
-                    case OpenPerenToken _:           exprSoFar = new MethodCallExpression(tokens, exprSoFar);    break;
-                    case OpenBracketToken _:         exprSoFar = new ArrayAccessExpression(tokens, exprSoFar);   break;
-                    case IncrementToken _:           exprSoFar = new PostIncrementExpression(tokens, exprSoFar); break;
-                    case DecrementToken _:           exprSoFar = new PostDecrementExpression(tokens, exprSoFar); break;
-                    case NullCondDotToken _:         exprSoFar = new MemberAccessExpression(tokens, exprSoFar);  break;
-                    case NullCondOpenBracketToken _: exprSoFar = new MethodCallExpression(tokens, exprSoFar);    break;
+                    case DotToken _: exprSoFar = new MemberAccessExpression(tokens, exprSoFar); break;
+                    case NullCondDotToken _: exprSoFar = new NullCondMemberAccessExpression(tokens, exprSoFar); break;
+                    case OpenPerenToken _:
+                        {
+                            if (exprSoFar is MemberAccessExpression||
+                                exprSoFar is NullCondArrayAccessExpression ||
+                                exprSoFar is IdentifierExpression)
+                            {
+                                exprSoFar = new MethodCallExpression(tokens, exprSoFar); break;
+                            }
+                            else finishedParsing = true;
+                            break;
+                        }
+                    case OpenBracketToken _: exprSoFar = new ArrayAccessExpression(tokens, exprSoFar); break;
+                    case NullCondOpenBracketToken _: exprSoFar = new NullCondArrayAccessExpression(tokens, exprSoFar); break;
+                    case IncrementToken _: exprSoFar = new PostIncrementExpression(tokens, exprSoFar); break;
+                    case DecrementToken _: exprSoFar = new PostDecrementExpression(tokens, exprSoFar); break;
                     default: finishedParsing = true; break;
                 }
             }

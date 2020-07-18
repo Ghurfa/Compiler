@@ -7,7 +7,8 @@ namespace Compiler.SyntaxTreeItems
 {
     public class PostDecrementExpression : PrimaryExpression, ICompleteStatement
     {
-        public PrimaryExpression BaseExpression { get; private set; }
+        private PrimaryExpression baseExpr;
+        public PrimaryExpression BaseExpression { get => baseExpr; set { if (value is IAssignableExpression) baseExpr = value; else throw new InvalidIncrDecrOperand(value); } }
         public DecrementToken Decrement { get; private set; }
 
         public PostDecrementExpression(TokenCollection tokens, PrimaryExpression baseExpression)

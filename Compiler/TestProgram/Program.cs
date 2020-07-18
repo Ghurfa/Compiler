@@ -27,27 +27,14 @@ namespace TestProgram
                 DepthWriteStyle style = DepthWriteStyle.ColorPipes;
                 Visualizer.PrintObject(namespaceDecl, "Namespace", style, options);
             }
-            catch (InvalidTokenException ex)
+            catch (SyntaxTreeBuildingException ex)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write(ex.GetType().Name + ": ");
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.WriteLine(ex.Message);
-                Visualizer.PrintContext(tokens, ex.Token, 10, 10);
-            }
-            catch (InvalidStatementException ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write(ex.GetType().Name + ": ");
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine(ex.Message);
-            }
-            catch (InvalidAssignmentLeftException ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write(ex.GetType().Name + ": ");
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine(ex.Message);
+                if (ex is InvalidTokenException invToken)
+                    Visualizer.PrintContext(tokens, invToken.Token, 10, 10);
             }
             Console.ReadLine();
         }

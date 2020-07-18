@@ -96,15 +96,17 @@ $Expression
     //UnaryExpressions
     +UnaryExpression
     ~UnaryExpression
-    =Token UnaryExpression:Expression
+    =Token UnaryExpression:BaseExpression
     >UnaryOperatorExpressions
     {
         Not:LogicalNot
         BitwiseNot
-        Increment:PreIncrement
-        Decrement:PreDecrement
         Plus:UnaryPlus
         Minus:UnaryMinus
+
+        ~IncrDecr
+        Increment:PreIncrement
+        Decrement:PreDecrement
         
         +IAssignableExpression
         Asterisk:Dereference
@@ -167,15 +169,17 @@ $Expression
         Expression;argument
         ClosePeren;argument
 
-        .PostIncrement
+        ~IncrDecr
         +ICompleteStatement
-        PrimaryExpression:BaseExpression;argument
-        Increment
+        {
+            .PostIncrement
+            PrimaryExpression:BaseExpression;argument
+            Increment
 
-        .PostDecrement
-        +ICompleteStatement
-        PrimaryExpression:BaseExpression;argument
-        Decrement
+            .PostDecrement
+            PrimaryExpression:BaseExpression;argument
+            Decrement
+        }
 
         >ValueExpressions
         {

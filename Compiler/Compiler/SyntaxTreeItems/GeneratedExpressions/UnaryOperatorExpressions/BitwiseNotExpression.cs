@@ -8,19 +8,19 @@ namespace Compiler.SyntaxTreeItems
     public class BitwiseNotExpression : UnaryExpression
     {
         public BitwiseNotToken BitwiseNot { get; private set; }
-        public UnaryExpression Expression { get; private set; }
+        public UnaryExpression BaseExpression { get; private set; }
 
         public BitwiseNotExpression(TokenCollection tokens)
         {
             BitwiseNot = tokens.PopToken<BitwiseNotToken>();
-            Expression = UnaryExpression.ReadUnaryExpression(tokens);
+            BaseExpression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 
         public override string ToString()
         {
             string ret = "";
             ret += BitwiseNot.ToString();
-            ret += Expression.ToString();
+            ret += BaseExpression.ToString();
             return ret;
         }
     }

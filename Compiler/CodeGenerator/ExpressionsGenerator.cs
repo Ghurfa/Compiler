@@ -51,6 +51,19 @@ namespace CodeGenerator
                         }
                     }
                 }
+                else if (classInfo.Flags.Contains("IncrDecr"))
+                {
+                    foreach (GetSetPropertyInfo prop in classInfo.GetSetProperties)
+                    {
+                        if (prop.Name == "BaseExpression")
+                        {
+                            prop.BackingFieldName = "baseExpr";
+                            prop.Get = "get => baseExpr;";
+                            prop.Set = "set { if (value is IAssignableExpression) baseExpr = value; else throw new InvalidIncrDecrOperand(value); }";
+                            break;
+                        }
+                    }
+                }
             }
 
             ClassWriter.GenerateFiles(classInfos);

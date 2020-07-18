@@ -66,34 +66,11 @@ namespace CodeGeneratorLib
         {
             MethodInfo toStringMethod = new MethodInfo("public override string ToString()");
             toStringMethod.Body.Add("string ret = \"\";");
-            string[] noSpacesAfter = new string[] { "OpenPerenToken", "OpenBracketToken" };
-            string[] noSpacesBefore = new string[] { "ClosePerenToken", "CloseBracketToken", "CommaToken", "SemicolonToken" };
-            string[] noSpacesAround = new string[] { "CharLiteralToken", "StringLiteralToken", "DotToken", "ColonToken" };
-            string[] alwaysSpacesAfter = new string[] { "CommaToken" };
             for (int i = 0; i < InstanceFields.Count; i++)
             {
                 foreach (string toStringLine in InstanceFields[i].GetToString())
                 {
                     toStringMethod.Body.Add(toStringLine);
-                }
-                if (i < InstanceFields.Count - 1)
-                {
-                    string type = InstanceFields[i].Type;
-                    string realType = type.Last() == '?' ? type.Substring(0, type.Length - 1) : type;
-                    string nextType = InstanceFields[i + 1].Type;
-                    string realNextType = nextType.Last() == '?' ? nextType.Substring(0, nextType.Length - 1) : nextType;
-                    if (!Flags.Contains("UnaryExpression") &&
-                        !noSpacesAfter.Contains(realType) &&
-                        !noSpacesAround.Contains(realType) &&
-                        !noSpacesBefore.Contains(realNextType) &&
-                        !noSpacesAround.Contains(realNextType))
-                    {
-                        toStringMethod.Body.Add("ret += \" \";");
-                    }
-                }
-                else if(alwaysSpacesAfter.Contains(InstanceFields[i].Type))
-                {
-                    toStringMethod.Body.Add("ret += \" \";");
                 }
             }
             toStringMethod.Body.Add("return ret;");

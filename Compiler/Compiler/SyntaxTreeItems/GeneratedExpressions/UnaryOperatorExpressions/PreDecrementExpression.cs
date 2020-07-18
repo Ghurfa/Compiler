@@ -8,19 +8,20 @@ namespace Compiler.SyntaxTreeItems
     public class PreDecrementExpression : UnaryExpression
     {
         public DecrementToken PreDecrement { get; private set; }
-        public UnaryExpression Expression { get; private set; }
+        private UnaryExpression baseExpr;
+        public UnaryExpression BaseExpression { get => baseExpr; set { if (value is IAssignableExpression) baseExpr = value; else throw new InvalidIncrDecrOperand(value); } }
 
         public PreDecrementExpression(TokenCollection tokens)
         {
             PreDecrement = tokens.PopToken<DecrementToken>();
-            Expression = UnaryExpression.ReadUnaryExpression(tokens);
+            BaseExpression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 
         public override string ToString()
         {
             string ret = "";
             ret += PreDecrement.ToString();
-            ret += Expression.ToString();
+            ret += BaseExpression.ToString();
             return ret;
         }
     }

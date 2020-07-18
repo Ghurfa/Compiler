@@ -8,19 +8,19 @@ namespace Compiler.SyntaxTreeItems
     public class DereferenceExpression : UnaryExpression, IAssignableExpression
     {
         public AsteriskToken Dereference { get; private set; }
-        public UnaryExpression Expression { get; private set; }
+        public UnaryExpression BaseExpression { get; private set; }
 
         public DereferenceExpression(TokenCollection tokens)
         {
             Dereference = tokens.PopToken<AsteriskToken>();
-            Expression = UnaryExpression.ReadUnaryExpression(tokens);
+            BaseExpression = UnaryExpression.ReadUnaryExpression(tokens);
         }
 
         public override string ToString()
         {
             string ret = "";
             ret += Dereference.ToString();
-            ret += Expression.ToString();
+            ret += BaseExpression.ToString();
             return ret;
         }
     }
