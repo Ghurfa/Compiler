@@ -1,0 +1,10 @@
+Type
+{
+    | ArrayType = NonArrayType:BaseType ArrayBrackets+:Brackets
+    | NonArrayType
+    {
+        | BuiltInType = <PrimitiveType>
+        | QualifiedIdentifierType = QualifiedIdentifier
+        | TupleType = (TypeWithComma+:NonLastTypes Type)
+    }
+}

@@ -1,3 +1,36 @@
+cache
+
+bool TryParse(ParsingStack ps, out E13 e13)
+{
+    if(ps.CheckCache(out E13 cached))
+    {
+        e13 = cached;
+        return true;
+    }
+    ps.Save();
+    if (IfExpression.TryParse(ps, out ifExpression))
+    {
+        e13 = ifExpression;
+        ps.CacheAndPop<E13>(ifExpression);
+        return true;
+    }
+    else if(E12.TryParse(ps, out E12))
+    {
+        e13 = e12;
+        ps.CacheAndPop<E12>(E12);
+        return true;
+    }
+    else
+    {
+        e13 = null;
+        ps.Pop();
+        return false;
+    }
+}
+
+
+
+
 out parameter
 semicolons ?
 tuples
