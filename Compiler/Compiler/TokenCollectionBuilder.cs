@@ -105,6 +105,7 @@ namespace Compiler
                 case TokenType.CharLiteral: return new CharLiteralToken(text, index);
                 case TokenType.TrueKeyword: return new TrueKeywordToken(text, index);
                 case TokenType.FalseKeyword: return new FalseKeywordToken(text, index);
+                case TokenType.NullKeyword: return new NullKeywordToken(text, index);
                 default: throw new NotImplementedException();
             }
         }

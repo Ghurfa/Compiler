@@ -26,9 +26,7 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Expression.ToString();
-            ret += " ";
             ret += AsKeyword.ToString();
-            ret += " ";
             ret += CastTo.ToString();
             return ret;
         }

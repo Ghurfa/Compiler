@@ -21,7 +21,6 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += BaseExpression.ToString();
-            ret += " ";
             ret += Increment.ToString();
             return ret;
         }

@@ -26,13 +26,9 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Name.ToString();
-            ret += " ";
             ret += Modifiers.ToString();
-            ret += " ";
             ret += ReturnType.ToString();
-            ret += " ";
             ret += ParameterList.ToString();
-            ret += " ";
             ret += MethodBody.ToString();
             return ret;
         }

@@ -27,9 +27,7 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += To.ToString();
-            ret += " ";
             ret += BitwiseOrAssign.ToString();
-            ret += " ";
             ret += From.ToString();
             return ret;
         }

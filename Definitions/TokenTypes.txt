@@ -12,6 +12,7 @@ ConstructorKeyword
 Modifier
 PrimitiveType
 ValueKeyword
+DefaultKeyword
 
 //Control keywords
 IfKeyword
@@ -105,3 +106,4 @@ StringLiteral
 CharLiteral
 TrueKeyword
 FalseKeyword
+NullKeyword

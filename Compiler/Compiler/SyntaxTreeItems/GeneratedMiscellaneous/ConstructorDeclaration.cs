@@ -24,11 +24,8 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += ConstructorKeyword.ToString();
-            ret += " ";
             ret += Modifiers.ToString();
-            ret += " ";
             ret += ParameterList.ToString();
-            ret += " ";
             ret += ConstructorBody.ToString();
             return ret;
         }

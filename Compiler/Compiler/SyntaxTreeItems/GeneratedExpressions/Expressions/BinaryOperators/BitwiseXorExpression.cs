@@ -26,9 +26,7 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Left.ToString();
-            ret += " ";
             ret += BitwiseXor.ToString();
-            ret += " ";
             ret += Right.ToString();
             return ret;
         }

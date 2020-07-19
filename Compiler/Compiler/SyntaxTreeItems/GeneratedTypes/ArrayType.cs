@@ -23,7 +23,6 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += BaseType.ToString();
-            ret += " ";
             ret += OpenBracket.ToString();
             ret += CloseBracket.ToString();
             return ret;

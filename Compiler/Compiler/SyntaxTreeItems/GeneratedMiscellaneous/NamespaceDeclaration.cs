@@ -32,16 +32,12 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Name.ToString();
-            ret += " ";
             ret += NamespaceKeyword.ToString();
-            ret += " ";
             ret += OpenCurly.ToString();
-            ret += " ";
             foreach (var item in ClassDeclarations)
             {
                 ret += item.ToString();
             }
-            ret += " ";
             ret += CloseCurly.ToString();
             return ret;
         }

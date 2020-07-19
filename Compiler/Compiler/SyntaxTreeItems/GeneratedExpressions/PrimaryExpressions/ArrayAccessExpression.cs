@@ -24,7 +24,6 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Array.ToString();
-            ret += " ";
             ret += OpenBracket.ToString();
             ret += Index.ToString();
             ret += CloseBracket.ToString();

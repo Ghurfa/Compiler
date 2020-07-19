@@ -32,16 +32,12 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += ForKeyword.ToString();
-            ret += " ";
             ret += OpenPeren.ToString();
             ret += StartStatement.ToString();
-            ret += " ";
             ret += ContinueExpr.ToString();
             ret += SecondSemicolon?.ToString();
-            ret += " ";
             ret += IterateStatement.ToString();
             ret += ClosePeren.ToString();
-            ret += " ";
             ret += Body.ToString();
             return ret;
         }

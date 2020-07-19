@@ -4,7 +4,7 @@ PrecedenceTest namespace
     {
         testMethod void(a:int)
         {
-            a = (a)
+            a = a + b - c * e / f + d
         }
     }
 }

@@ -34,18 +34,13 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Name.ToString();
-            ret += " ";
             ret += Modifiers.ToString();
-            ret += " ";
             ret += ClassKeyword.ToString();
-            ret += " ";
             ret += OpenCurly.ToString();
-            ret += " ";
             foreach (var item in ClassItems)
             {
                 ret += item.ToString();
             }
-            ret += " ";
             ret += CloseCurly.ToString();
             return ret;
         }

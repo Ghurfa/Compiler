@@ -17,6 +17,7 @@ namespace Compiler.TokenTypes
         Modifier,
         PrimitiveType,
         ValueKeyword,
+        DefaultKeyword,
 
         //Control keywords
         IfKeyword,
@@ -108,5 +109,6 @@ namespace Compiler.TokenTypes
         CharLiteral,
         TrueKeyword,
         FalseKeyword,
+        NullKeyword,
     }
 }

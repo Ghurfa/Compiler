@@ -28,12 +28,10 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += OpenCurly.ToString();
-            ret += " ";
             foreach (var item in Statements)
             {
                 ret += item.ToString();
             }
-            ret += " ";
             ret += CloseCurly.ToString();
             return ret;
         }

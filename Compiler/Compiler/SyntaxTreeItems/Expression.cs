@@ -68,8 +68,6 @@ namespace Compiler
 
         private static Expression EnforcePrecedenceRules(Expression expr)
         {
-            //if (expr is UnaryExpression || expr is SyntaxTreeItems.Type) return expr;
-
             bool leftAssoc = expr.Precedence != 12 && expr.Precedence != 13 && expr.Precedence != 14;
 
             if (!ProperPrecedence(expr, expr.RightExpr, !leftAssoc))
@@ -78,7 +76,7 @@ namespace Compiler
             }
             else return expr;
         }
-
+        
         private static Expression RotateLeft(Expression expr)
         {
             bool leftAssoc = expr.Precedence != 12 && expr.Precedence != 13 && expr.Precedence != 14;

@@ -146,10 +146,15 @@ $Expression
         .NewObject
         +ICompleteStatement
         NewKeyword;argument
-        Type
+        Type;argument
         OpenPeren
         ArgumentList:argument
         ClosePeren
+
+        .NewArray
+        +ICompleteStatement
+        NewKeyword;argument
+        Type;argument
 
         .NullCondArrayAccess
         +IAssignableExpression

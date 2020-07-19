@@ -26,9 +26,7 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += NewKeyword.ToString();
-            ret += " ";
             ret += Type.ToString();
-            ret += " ";
             ret += OpenPeren.ToString();
             ret += argument.ToString();
             ret += ClosePeren.ToString();

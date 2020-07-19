@@ -30,13 +30,9 @@ namespace Compiler.SyntaxTreeItems
         {
             string ret = "";
             ret += Condition.ToString();
-            ret += " ";
             ret += QuestionMark.ToString();
-            ret += " ";
             ret += IfTrue.ToString();
-            ret += " ";
             ret += Backslash.ToString();
-            ret += " ";
             ret += IfFalse.ToString();
             return ret;
         }
