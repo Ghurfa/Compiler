@@ -1,10 +1,132 @@
-Type
+Expression
 {
-    | ArrayType = NonArrayType:BaseType ArrayBrackets+:Brackets
-    | NonArrayType
+    Type
     {
-        | BuiltInType = <PrimitiveType>
-        | QualifiedIdentifierType = QualifiedIdentifier
-        | TupleType = (TypeWithComma+:NonLastTypes Type)
+        | ArrayType = NonArrayType:BaseType ArrayBrackets+:Brackets
+        | NonArrayType
+        {
+            | BuiltInType = <PrimitiveType>
+            | QualifiedIdentifierType = QualifiedIdentifier
+            | TupleType = '(' TypeWithComma+:NonLastTypes Type:LastType ')'
+        }
+    }
+    | E14
+    {
+        | AssignExpression = AssignedExpression:Assigned '=' E14:Right
+        | DeclAssignExpression = AssignedExpression:Assigned ':=' E14:Right
+        | PlusAssignExpression = AssignedExpression:Assigned '+=' E14:Right
+        | MinusAssignExpression = AssignedExpression:Assigned '-=' E14:Right
+        | MultiplyAssignExpression = AssignedExpression:Assigned '*=' E14:Right
+        | DivideAssignExpression = AssignedExpression:Assigned '/=' E14:Right
+        | ModuloAssignExpression = AssignedExpression:Assigned '%=' E14:Right
+        | BitwiseAndAssignExpression = AssignedExpression:Assigned '&=' E14:Right
+        | BitwiseOrAssignExpression = AssignedExpression:Assigned '|=' E14:Right
+        | BitwiseXorAssignExpression = AssignedExpression:Assigned '^=' E14:Right
+        | LeftShiftAssignExpression = AssignedExpression:Assigned '<<=' E14:Right
+        | RightShiftAssignExpression = AssignedExpression:Assigned '>>=' E14:Right
+        | NullCoalescingAssignExpression = AssignedExpression:Assigned '??=' E14:Right
+        | E13
+        {
+            | IfExpression = E12:Condition '?' E12:IfTrue '\' E13:IfFalse
+            | E12
+            {
+                | NullCoalescingExpression = E11:Left '??' E12:Right
+                | E11
+                {
+                    | OrExpression = E11:Left '||' E10:Right
+                    | E10
+                    {
+                        | AndExpression = E10:Left '&&' E9:Right
+                        | E9
+                        {
+                            | BitwiseOrExpression = E9:Left '|' E8:Right
+                            | E8
+                            {
+                                | BitwiseXorExpression = E8:Left '^' E7:Right
+                                | E7
+                                {
+                                    | BitwiseAndExpression = E7:Left '&' E6:Right
+                                    | E6
+                                    {
+                                        | EqualsExpression = E6:Left '==' E5:Right
+                                        | NotEqualsExpression = E6:Left '!=' E5:Right
+                                        | E5
+                                        {
+                                            | GreaterThanExpression = E5:Left '>' E4:Right
+                                            | LessThanExpression = E5:Left '<' E4:Right
+                                            | GreaterThanOrEqualToExpression = E5:Left '>=' E4:Right
+                                            | LessThanOrEqualToExpression = E5:Left '<=' E4:Right
+                                            | E4
+                                            {
+                                                | LeftShiftExpression = E4:Left '<<' E3:Right
+                                                | RightShiftExpression = E4:Left '>>' E3:Right
+                                                | E3
+                                                {
+                                                    | PlusExpression = E3:Left '+' E2:Right
+                                                    | MinusExpression = E3:Left '-' E2:Right
+                                                    | E2
+                                                    {
+                                                        | MultiplyExpression = E2:Left '*' E1:Right
+                                                        | DivideExpression = E2:Left '/' E1:Right
+                                                        | E1
+                                                        {
+                                                            | CastExpression = E1:Left 'as' Type
+                                                            | UnaryExpression
+                                                            {
+                                                                | UnaryPlusExpression = '+'UnaryExpression
+                                                                | UnaryMinusExpressoin = '-'UnaryExpression
+                                                                | PreIncrementExpression = '++'UnaryExpression
+                                                                | PreDecrementExpression = '--'UnaryExpression
+                                                                | NotExpression = '!'UnaryExpression
+                                                                | BitwiseNotExpression = '~'UnaryExpression
+                                                                | DereferenceExpression = '*'UnaryExpression
+                                                                | PrimaryExpression
+                                                                {
+                                                                    | PerenthesizedExpression = '(' Expression ')'
+                                                                    | TupleExpression = '(' ExpressionWithComma+:FirstItems Expression:LastItem ')'
+                                                                    | NewObjectExpression = 'new' Type '(' ArgumentList ')'
+                                                                    | DeclarationExpression = Identifier ':' Type
+                                                                    | IdentifierExpression = Identifier
+                                                                    | IntLiteralExpression = <IntLiteral>
+                                                                    | TrueLiteralExpression = <TrueLiteral>
+                                                                    | FalseLiteralExpression = <FalseLiteral>
+                                                                    | StringLiteralExpression = '"' <StringLiteral> '"'
+                                                                    | CharLiteralExpression = <SingleQuote> <CharLiteral> <SingleQuote>
+                                                                    | ValueKeywordExpression = <ValueKeyword>
+                                                                    | PrimitiveTypeExpression = <PrimitiveType>
+                                                                    
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    AssignedExpression
+    {
+        | ArrayAccessAssignedExpression = ArrayAccessExpression
+        | DeclarationAssignedExpression = DeclarationExpression
+        | MemberAccessAssignedExpression = MemberAccessExpression
+        | NullCondArrayAccessAssignedExpression = NullCondArrayAccessExpression
+        | NullCondMemberAccessAssignedExpression = NullCondMemberAccessExpression
+        | IdentifierAssignedExpression = IdentifierExpression
+        | DereferenceAssignedExpression = DereferenceExpression
     }
 }
+ArrayBrackets = '[' ']';
+TypeWithComma = Type ',';
+QualifiedIdentifier = IdentifierWithDot+:QualifyingIdentifiers <Identifier>;
+IdentifierWithDot = <Identifier> '.';
+ExpressionWithComma = Expression ',';
+ArgumentList = ArgumentWithComma+:FirstArguments Argument:LastArgument;
+ArgumentWithComma = Argument ',';
+Argument = Expression;

@@ -95,26 +95,63 @@ namespace LDefParser
             }
             switch (Next())
             {
-                case '[': tokenName = "OpenBracket"; break;
-                case ']': tokenName = "CloseBracket"; break;
-                case '(': tokenName = "OpenPeren"; break;
-                case ')': tokenName = "ClosePeren"; break;
-                case ',': tokenName = "Comma"; break;
                 case '\'':
-                    if (!TryReadEnclosedWord(out string tokenChar, '\'')) throw new InvalidOperationException();
-                    if (tokenChar.Length != 1) throw new InvalidOperationException();
+                    if (!TryReadEnclosedWord(out string tokenCode, '\'')) throw new InvalidOperationException();
 
-                    switch (tokenChar[0])
+                    switch (tokenCode)
                     {
-                        case '|': tokenName = "BitwiseOr"; break;
-                        case '=': tokenName = "Assign"; break;
-                        case '{': tokenName = "OpenCurly"; break;
-                        case '}': tokenName = "CloseCurly"; break;
-                        case '~': tokenName = "BitwiseNot"; break;
-                        case '+': tokenName = "Plus"; break;
-                        case '<': tokenName = "LessThan"; break;
-                        case '>': tokenName = "GreaterThan"; break;
-                        case ':': tokenName = "Colon"; break;
+                        case ".": tokenName = "Dot"; break;
+                        case ",": tokenName = "Comma"; break;
+                        case "(": tokenName = "OpenPeren"; break;
+                        case ")": tokenName = "ClosePeren"; break;
+                        case "[": tokenName = "OpenBracket"; break;
+                        case "]": tokenName = "CloseBracket"; break;
+                        case "{": tokenName = "OpenCurly"; break;
+                        case "}": tokenName = "CloseCurly"; break;
+                        case "?": tokenName = "QuestionMark"; break;
+                        case ":": tokenName = "Colon"; break;
+                        case ";": tokenName = "Semicolon"; break;
+                        case "\\": tokenName = "Backslash"; break;
+                        case "?.": tokenName = "NullCondDot"; break;
+                        case "?[": tokenName = "NullCondOpenBracket"; break;
+                        case "+": tokenName = "Plus"; break;
+                        case "-": tokenName = "Minus"; break;
+                        case "*": tokenName = "Asterisk"; break;
+                        case "/": tokenName = "Divide"; break;
+                        case "%": tokenName = "Modulo"; break;
+                        case "&": tokenName = "BitwiseAnd"; break;
+                        case "|": tokenName = "BitwiseOr"; break;
+                        case "^": tokenName = "BitwiseXor"; break;
+                        case "<<": tokenName = "LeftShift"; break;
+                        case ">>": tokenName = "RightShift"; break;
+                        case "??": tokenName = "NullCoalescing"; break;
+                        case "=": tokenName = "Assign"; break;
+                        case ":=": tokenName = "DeclAssign"; break;
+                        case "+=": tokenName = "PlusAssign"; break;
+                        case "-=": tokenName = "MinusAssign"; break;
+                        case "*=": tokenName = "MultiplyAssign"; break;
+                        case "/=": tokenName = "DivideAssign"; break;
+                        case "%=": tokenName = "ModuloAssign"; break;
+                        case "&=": tokenName = "BitwiseAndAssign"; break;
+                        case "|=": tokenName = "BitwiseOrAssign"; break;
+                        case "^=": tokenName = "BitwiseXorAssign"; break;
+                        case "<<=": tokenName = "LeftShiftAssign"; break;
+                        case ">>=": tokenName = "RightShiftAssign"; break;
+                        case "??=": tokenName = "NullCoalescingAssign"; break;
+                        case "++": tokenName = "Increment"; break;
+                        case "--": tokenName = "Decrement"; break;
+                        case "!": tokenName = "Not"; break;
+                        case "~": tokenName = "BitwiseNot"; break;
+                        case "==": tokenName = "Equals"; break;
+                        case "!=": tokenName = "NotEquals"; break;
+                        case "<": tokenName = "LessThan"; break;
+                        case ">": tokenName = "GreaterThan"; break;
+                        case "<=": tokenName = "LessThanOrEqualTo"; break;
+                        case ">=": tokenName = "GreaterThanOrEqualTo"; break;
+                        case "&&": tokenName = "And"; break;
+                        case "||": tokenName = "Or"; break;
+                        case "as": tokenName = "AsKeyword"; break;
+                        case "new": tokenName = "NewKeyword"; break;
                         default: throw new NotImplementedException();
                     }
                     break;
@@ -129,6 +166,7 @@ namespace LDefParser
                 case '~':
                 case '+':
                 case ':':
+                case ';':
                     i--;
                     tokenName = null;
                     return false;

@@ -26,7 +26,7 @@ namespace Compiler.LDefGenerated
             
             ps.Save();
             if (NonArrayType.TryParse(ps, out NonArrayType baseType)
-                && TryParseBrackets(out ArrayBrackets[] brackets))
+                && TryParseBrackets(ps, out ArrayBrackets[] brackets))
             {
                 arrayType = new ArrayType(baseType, brackets);
                 ps.CacheAndPop(arrayType);
@@ -42,10 +42,10 @@ namespace Compiler.LDefGenerated
     
         private static bool TryParseBrackets(ParseStack ps, out ArrayBrackets[] brackets)
         {
-            List<ArrayBrackets> items = new List<ArrayBrackets
-            while (ArrayBrackets.TryParse(ps, out ArrayBrackets arrayBrackets)
+            List<ArrayBrackets> items = new List<ArrayBrackets>();
+            while (ArrayBrackets.TryParse(ps, out ArrayBrackets arrayBrackets))
             {
-            items.Add(arrayBrackets);
+                items.Add(arrayBrackets);
             }
             brackets = items.ToArray();
             return true;

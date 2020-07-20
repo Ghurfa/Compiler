@@ -14,7 +14,7 @@ namespace LDefParser
             List<Definition> definitions = new List<Definition>();
             while (!sb.ReachedEnd())
             {
-                if (Definition.TryReadDefinition(sb, out Definition def))
+                if (Definition.TryReadDefinition(sb, out Definition def, null, true))
                 {
                     definitions.Add(def);
                 }

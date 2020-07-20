@@ -5,32 +5,32 @@ using System.Text;
 
 namespace Compiler.LDefGenerated
 {
-    public abstract class Type
+    public abstract class E1 : E2
     {
-        public static bool TryParse(ParseStack ps, out Type type)
+        public static bool TryParse(ParseStack ps, out E1 e1)
         {
-            if (ps.CheckCache(out Type cached))
+            if (ps.CheckCache(out E1 cached))
             {
-                type = cached;
+                e1 = cached;
                 return true;
             }
             
             ps.Save();
-            if (ArrayType.TryParse(ps, out ArrayType arrayType))
+            if (CastExpression.TryParse(ps, out CastExpression castExpression))
             {
-                type = arrayType;
+                e1 = castExpression;
                 ps.Pop();
                 return true;
             }
-            else if (NonArrayType.TryParse(ps, out NonArrayType nonArrayType))
+            else if (UnaryExpression.TryParse(ps, out UnaryExpression unaryExpression))
             {
-                type = nonArrayType;
+                e1 = unaryExpression;
                 ps.Pop();
                 return true;
             }
             else
             {
-                type = null;
+                e1 = null;
                 ps.Restore();
                 return false;
             }

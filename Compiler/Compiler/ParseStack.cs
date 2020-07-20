@@ -9,10 +9,12 @@ namespace Compiler
         private struct CacheItem
         {
             public int StartIndex;
+            public int EndIndex;
             public object Item;
-            public CacheItem(int pointer, object item)
+            public CacheItem(int startIndex, int endIndex, object item)
             {
-                StartIndex = pointer;
+                StartIndex = startIndex;
+                StartIndex = endIndex;
                 Item = item;
             }
         }
@@ -58,8 +60,9 @@ namespace Compiler
         public void Pop() => savePoints.Pop();
         public void CacheAndPop(object item)
         {
-            cache.Add(new CacheItem(pointer, item));
-            savePoints.Pop();
+            int endIndex = pointer;
+            int startIndex = savePoints.Pop();
+            cache.Add(new CacheItem(startIndex, endIndex, item));
         }
         public bool CheckCache<T>(out T item)
         {
@@ -68,6 +71,7 @@ namespace Compiler
                 if(cacheItem.StartIndex == pointer && cacheItem.Item is T tItem)
                 {
                     item = tItem;
+                    pointer = cacheItem.EndIndex;
                     return true;
                 }
             }

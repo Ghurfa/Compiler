@@ -30,7 +30,7 @@ namespace Compiler.LDefGenerated
             
             ps.Save();
             if (ps.TryParse(out OpenPerenToken openPeren)
-                && TryParseNonLastTypes(out TypeWithComma[] nonLastTypes)
+                && TryParseNonLastTypes(ps, out TypeWithComma[] nonLastTypes)
                 && Type.TryParse(ps, out Type type)
                 && ps.TryParse(out ClosePerenToken closePeren))
             {
@@ -48,10 +48,10 @@ namespace Compiler.LDefGenerated
     
         private static bool TryParseNonLastTypes(ParseStack ps, out TypeWithComma[] nonLastTypes)
         {
-            List<TypeWithComma> items = new List<TypeWithComma
-            while (TypeWithComma.TryParse(ps, out TypeWithComma typeWithComma)
+            List<TypeWithComma> items = new List<TypeWithComma>();
+            while (TypeWithComma.TryParse(ps, out TypeWithComma typeWithComma))
             {
-            items.Add(typeWithComma);
+                items.Add(typeWithComma);
             }
             nonLastTypes = items.ToArray();
             return true;

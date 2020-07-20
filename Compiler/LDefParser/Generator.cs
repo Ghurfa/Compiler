@@ -13,7 +13,24 @@ namespace LDefParser
         public static void Generate(string definitionPath, string destinationDirectory)
         {
             ClassInfo[] classes = Parser.Parse(definitionPath);
-            Directory.CreateDirectory(destinationDirectory);
+
+            if (Directory.Exists(destinationDirectory))
+            {
+                DirectoryInfo dir = new DirectoryInfo(destinationDirectory);
+                foreach (FileInfo file in dir.EnumerateFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo innerDir in dir.EnumerateDirectories())
+                {
+                    innerDir.Delete(true);
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(destinationDirectory);
+            }
+
             foreach (ClassInfo classInfo in classes)
             {
                 List<string> text = new List<string>()
@@ -66,10 +83,10 @@ namespace LDefParser
                 string prodRet = prod.InnerDefinition.LowerCaseName;
                 if (isFirstProd)
                 {
-                    yield return $"        if ({prodType}.TryParse(ps, out {prodType} {prodRet})";
+                    yield return $"        if ({prodType}.TryParse(ps, out {prodType} {prodRet}))";
                     isFirstProd = false;
                 }
-                else yield return $"        else if ({prodType}.TryParse(ps, out {prodType} {prodRet})";
+                else yield return $"        else if ({prodType}.TryParse(ps, out {prodType} {prodRet}))";
                 yield return "        {";
                 yield return $"            {ret} = {prodRet};";
                 yield return $"            ps.Pop();";
@@ -137,7 +154,7 @@ namespace LDefParser
                         condition = $"ps.TryParse(out {tokenItem.Type} {tokenItem.LowerCaseName})";
                         break;
                     case RepeatedProductionItem repeatedItem:
-                        condition = $"TryParse{repeatedItem.Name}(out {repeatedItem.Type} {repeatedItem.LowerCaseName})";
+                        condition = $"TryParse{repeatedItem.Name}(ps, out {repeatedItem.Type} {repeatedItem.LowerCaseName})";
                         break;
                     default: throw new InvalidOperationException();
                 }
@@ -179,10 +196,10 @@ namespace LDefParser
                     yield return "";
                     yield return $"    private static bool TryParse{repeatedItem.Name}(ParseStack ps, out {repeatedItem.Type} {repeatedItem.LowerCaseName})";
                     yield return "    {";
-                    yield return $"        List<{innerType}> items = new List<{innerType}";
-                    yield return $"        while ({innerType}.TryParse(ps, out {innerType} {repeatedItem.Inner.LowerCaseName})";
+                    yield return $"        List<{innerType}> items = new List<{innerType}>();";
+                    yield return $"        while ({innerType}.TryParse(ps, out {innerType} {repeatedItem.Inner.LowerCaseName}))";
                     yield return "        {";
-                    yield return $"        items.Add({repeatedItem.Inner.LowerCaseName});";
+                    yield return $"            items.Add({repeatedItem.Inner.LowerCaseName});";
                     yield return "        }";
                     yield return $"        {repeatedItem.LowerCaseName} = items.ToArray();";
                     yield return "        return true;";

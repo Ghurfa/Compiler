@@ -13,7 +13,7 @@ namespace TestProgram
     {
         static void Main(string[] args)
         {
-            var text = File.ReadAllText(@"..\..\..\..\..\FizzBuzz.txt");
+            var text = File.ReadAllText(@"..\..\..\..\..\PrecedenceTest.txt");
             var tokens = Tokenizer.Tokenize(text);
             try
             {
