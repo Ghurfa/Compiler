@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using TypeChecker;
 
 namespace TestProgram
 {
@@ -15,9 +16,10 @@ namespace TestProgram
         {
             var text = File.ReadAllText(@"..\..\..\..\..\FizzBuzz.txt");
             var tokens = Tokenizer.Tokenize(text);
+            NamespaceDeclaration namespaceDecl;
             try
             {
-                NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);
+                namespaceDecl = new NamespaceDeclaration(tokens);
                 VisualizationOptions options = 0
                     //| VisualizationOptions.PrintNames
                     | VisualizationOptions.PrintNullFieldNames
@@ -25,7 +27,8 @@ namespace TestProgram
                     //| VisualizationOptions.LineFeedAfterType
                     ;
                 DepthWriteStyle style = DepthWriteStyle.ColorPipes;
-                Visualizer.PrintObject(namespaceDecl, "Namespace", style, options);
+                //Visualizer.PrintObject(namespaceDecl, "Namespace", style, options);
+                TypeChecker.TypeChecker.CheckNamespace(namespaceDecl);
             }
             catch (SyntaxTreeBuildingException ex)
             {
@@ -36,6 +39,7 @@ namespace TestProgram
                 if (ex is InvalidTokenException invToken)
                     Visualizer.PrintContext(tokens, invToken.Token, 10, 10);
             }
+
             Console.ReadLine();
         }
     }
