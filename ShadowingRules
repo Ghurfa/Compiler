@@ -1,0 +1,42 @@
+# = Not implemented
+Class
+    # May not shadow ancestor classes
+
+Fields
+    # May not shadow ancestor static fields
+
+Methods
+    May not have the same signature as any method in parent class
+    Must have the same type as any sister method of the same name
+    # May not have the same signature as any static method in ancestor classes
+
+Locals/params
+    May not shadow outer locals/params
+    May not shadow parent fields
+    # May not shadow ancestor static fields
+
+namespace
+{
+    class
+    {
+        innerClass
+        {
+            innerField
+        }
+        field
+        method
+        {
+            innerMethod
+            {
+                innerLocal
+            }
+            local
+
+            scope    
+            {
+
+            }
+        }
+    }
+}
+

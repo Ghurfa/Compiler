@@ -18,7 +18,7 @@ namespace TypeChecker
             Children = new List<SymbolNode>();
         }
 
-        public void AddChild(SymbolNode child)
+        public virtual void AddChild(SymbolNode child)
         {
             Children.Add(child);
         }

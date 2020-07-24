@@ -22,76 +22,84 @@ namespace TypeChecker
 
         public static void CheckNamespace(NamespaceDeclaration namespaceDecl)
         {
-            SymbolsTree table = new SymbolsTree();
+            SymbolsTree tree = new SymbolsTree();
             var inferredFields = new List<(InferredFieldNode, InferredFieldDeclaration)>();
-            var classItems = new List<(ClassItemNode, ClassItemDeclaration)>();
+            var simpleDefaultedFields = new List<(FieldNode, SimpleFieldDeclaration)>();
+            List<ClassNode> classes = new List<ClassNode>();
 
-            //Built symbols table
-            SymbolNode namespaceNode = table.AddNamespace(namespaceDecl);
+            //Built symbols tree
+            SymbolNode namespaceNode = tree.AddNamespace(namespaceDecl);
             foreach (ClassDeclaration classDecl in namespaceDecl.ClassDeclarations)
             {
-                ClassNode classNode = table.AddClassNode(classDecl, namespaceNode);
+                ClassNode classNode = tree.AddClass(classDecl, namespaceNode);
                 foreach (ClassItemDeclaration classItem in classDecl.ClassItems)
                 {
                     switch (classItem)
                     {
                         case InferredFieldDeclaration iFieldDecl:
-                            inferredFields.Add((table.AddInferredFieldNode(iFieldDecl, classNode), iFieldDecl));
+                            {
+                                var newNode = new InferredFieldNode(iFieldDecl, classNode);
+                                inferredFields.Add((newNode, iFieldDecl));
+                                classNode.AddFieldChild(newNode);
+                            }
                             break;
                         case SimpleFieldDeclaration sFieldDecl:
-                            classItems.Add((table.AddSimpleFieldNode(sFieldDecl, classNode), sFieldDecl));
+                            {
+                                var newNode = new FieldNode(sFieldDecl, classNode);
+                                if (sFieldDecl.DefaultValue != null) simpleDefaultedFields.Add((newNode, sFieldDecl));
+                                classNode.AddFieldChild(newNode);
+                            }
                             break;
                         case MethodDeclaration methodDecl:
-                            classItems.Add((table.AddMethodNode(methodDecl, classNode), methodDecl));
+                            classNode.AddMethodChild(new MethodNode(methodDecl, classNode));
                             break;
                         case ConstructorDeclaration ctorDecl:
-                            classItems.Add((table.AddConstructorNode(ctorDecl, classNode), ctorDecl));
+                            classNode.AddConstructorChild(new ConstructorNode(ctorDecl, classNode));
                             break;
                         default: throw new NotImplementedException();
                     }
                 }
+                classes.Add(classNode);
             }
 
             //Resolve inferred field types
+            var inferredCheckOptions = CheckExpressionOptions.DisallowInferredFields & CheckExpressionOptions.RequireStatic & CheckExpressionOptions.DisallowDeclarations;
             foreach ((InferredFieldNode node, InferredFieldDeclaration decl) in inferredFields)
             {
-                var options = CheckExpressionOptions.DisallowInferredFields & CheckExpressionOptions.RequireStatic & CheckExpressionOptions.DisallowDeclarations;
-                ValueTypeInfo defaultType = CheckExpression(decl.DefaultValue, node, null, options);
+                ValueTypeInfo defaultType = CheckExpression(decl.DefaultValue, node, null, inferredCheckOptions);
                 node.Type = defaultType;
             }
 
-            //Validate other class items
-            foreach ((ClassItemNode node, ClassItemDeclaration decl) in classItems)
+            //Validate simple defaulted fields
+            var simpleCheckOptions = CheckExpressionOptions.RequireStatic & CheckExpressionOptions.DisallowDeclarations;
+            foreach ((FieldNode node, SimpleFieldDeclaration decl) in simpleDefaultedFields)
             {
-                switch (decl)
-                {
-                    case SimpleFieldDeclaration sField:
-                        if (sField.DefaultValue != null)
-                        {
-                            var options = CheckExpressionOptions.RequireStatic & CheckExpressionOptions.DisallowDeclarations;
-                            ValueTypeInfo defaultType = CheckExpression(sField.DefaultValue, node, null, options);
-                            if (defaultType != ((FieldNode)node).Type) throw new TypeMismatchException();
-                        }
-                        break;
-                    case MethodDeclaration method:
-                        {
-                            //VerifyFunction(method.ParameterList, method.MethodBody, )
-                        }
-                        break;
-                    case ConstructorDeclaration ctor:
-                        {
+                ValueTypeInfo defaultType = CheckExpression(decl.DefaultValue, node, null, simpleCheckOptions);
+                if (defaultType != node.Type) throw new TypeMismatchException();
+            }
 
-                        }
-                        break;
-                    default: throw new NotImplementedException();
-                }
+            //Validate methods and constructors
+            foreach (ClassNode node in classes)
+            {
+                if (node.Methods.Count == 0 && node.Constructors.Count == 0) continue;
+
+                var table = node.GetSymbolsTable();
             }
             ;
         }
 
-        private static void VerifyFunction(ParameterListDeclaration parameters, MethodBodyDeclaration body, ValueTypeInfo returnType)
+        private static void VerifyFunction(ClassNode parent, ParameterListDeclaration parameters, MethodBodyDeclaration body, ValueTypeInfo returnType)
         {
+            var locals = new Dictionary<string, ValueTypeInfo>();
+            foreach(ParameterDeclaration param in parameters.Parameters)
+            {
+                locals.Add(param.Identifier.Text, new ValueTypeInfo(param.Type.ToString()));
+                
+            }
+        }
 
+        private static void VerifyScope(MethodNode node, Statement[] statements, Dictionary<string, ValueTypeInfo> locals)
+        {
         }
 
         private static ValueTypeInfo CheckExpression(Expression expr, SymbolNode node, Dictionary<string, ValueTypeInfo> locals, CheckExpressionOptions options)
