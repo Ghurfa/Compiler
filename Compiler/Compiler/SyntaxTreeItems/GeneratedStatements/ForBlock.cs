@@ -9,10 +9,10 @@ namespace Compiler.SyntaxTreeItems
     {
         public ForKeywordToken ForKeyword { get; private set; }
         public OpenPerenToken OpenPeren { get; private set; }
-        public Statement StartStatement { get; private set; }
+        public ExpressionStatement StartStatement { get; private set; }
         public Expression ContinueExpr { get; private set; }
         public SemicolonToken? SecondSemicolon { get; private set; }
-        public Statement IterateStatement { get; private set; }
+        public ExpressionStatement IterateStatement { get; private set; }
         public ClosePerenToken ClosePeren { get; private set; }
         public Statement Body { get; private set; }
 
@@ -20,10 +20,10 @@ namespace Compiler.SyntaxTreeItems
         {
             ForKeyword = tokens.PopToken<ForKeywordToken>();
             OpenPeren = tokens.PopToken<OpenPerenToken>();
-            StartStatement = Statement.ReadStatement(tokens);
+            StartStatement = new ExpressionStatement(tokens);
             ContinueExpr = Expression.ReadExpression(tokens);
             SecondSemicolon = tokens.EnsureValidStatementEnding();
-            IterateStatement = Statement.ReadStatement(tokens);
+            IterateStatement = new ExpressionStatement(tokens);
             ClosePeren = tokens.PopToken<ClosePerenToken>();
             Body = Statement.ReadStatement(tokens);
         }

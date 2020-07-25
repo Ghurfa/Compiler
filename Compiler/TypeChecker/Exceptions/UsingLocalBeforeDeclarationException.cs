@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TypeChecker.Exceptions
 {
-    class DuplicateLocalException : InvalidOperationException
+    class UsingLocalBeforeDeclarationException : InvalidOperationException
     {
     }
 }

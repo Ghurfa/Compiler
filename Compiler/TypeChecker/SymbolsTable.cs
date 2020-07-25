@@ -1,42 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using TypeChecker.Exceptions;
+using TypeChecker.SymbolNodes;
 using TypeChecker.TypeInfos;
 
 namespace TypeChecker
 {
     class SymbolsTable
     {
-        private Stack<Dictionary<string, TypeInfo>> stack;
-
-        public SymbolsTable(Dictionary<string, TypeInfo> firstDict)
+        private class ScopeInfo
         {
-            stack = new Stack<Dictionary<string, TypeInfo>>();
-            stack.Push(new Dictionary<string, TypeInfo>(firstDict));
+            public int IndexInParent { get; set; }
+            public Dictionary<string, (TypeInfos.TypeInfo type, int index)> Locals { get; set; }
+            public ScopeInfo(int index)
+            {
+                IndexInParent = index;
+                Locals = new Dictionary<string, (TypeInfos.TypeInfo, int)>();
+            }
+            public ScopeInfo(Dictionary<string, (TypeInfos.TypeInfo, int)> firstDict)
+            {
+                Locals = firstDict;
+            }
         }
 
-        public void EnterScope()
+        private Stack<ScopeInfo> stack;
+        private ClassNode classNode;
+
+        public SymbolsTable(Dictionary<string, TypeInfos.TypeInfo> firstDict, ClassNode node)
         {
-            stack.Push(new Dictionary<string, TypeInfo>());
+            stack = new Stack<ScopeInfo>();
+
+            var newDict = new Dictionary<string, (TypeInfos.TypeInfo, int)>();
+            foreach(KeyValuePair<string, TypeInfos.TypeInfo> pair in firstDict)
+            {
+                newDict.Add(pair.Key, (pair.Value, 0));
+            }
+            stack.Push(new ScopeInfo(newDict));
+
+            classNode = node;
+        }
+
+        public void EnterScope(int indexInParent)
+        {
+            stack.Push(new ScopeInfo(indexInParent));
         }
 
         public void ExitScope() => stack.Pop();
 
-        public void AddSymbol(string name, TypeInfo type)
+        public void AddSymbol(string name, TypeInfos.TypeInfo type, int index)
         {
-            foreach (Dictionary<string, TypeInfo> dict in stack)
+            bool isFirst = true;
+            foreach (ScopeInfo scope in stack)
             {
-                if (dict.ContainsKey(name)) throw new DuplicateLocalException();
+                if (scope.Locals.ContainsKey(name))
+                {
+                    if (isFirst) throw new AlreadyDefinedInScopeException();
+                    else throw new DefinedInEnclosingScopeException();
+                }
+                isFirst = false;
             }
-            stack.Peek().Add(name, type);
+            stack.Peek().Locals.Add(name, (type, index + 1));
         }
 
-        public TypeInfo GetSymbol(string name)
+        public TypeInfos.TypeInfo GetSymbol(string name, int index)
         {
-            foreach (Dictionary<string, TypeInfo> dict in stack)
+            foreach (ScopeInfo scope in stack)
             {
-                if (dict.TryGetValue(name, out TypeInfo ret)) return ret;
+                if (scope.Locals.TryGetValue(name, out (TypeInfos.TypeInfo type, int index) ret))
+                {
+                    if (ret.index > index) throw new UsingLocalBeforeDeclarationException();
+                    return ret.type;
+                }
+                else index = scope.IndexInParent;
             }
             throw new InvalidSymbolException();
         }

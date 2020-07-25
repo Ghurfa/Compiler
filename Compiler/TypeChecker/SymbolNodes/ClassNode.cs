@@ -97,7 +97,7 @@ namespace TypeChecker.SymbolNodes
                 {
                     fieldsDict.Add(field.Key, field.Value.Type);
                 }
-                table = new SymbolsTable(fieldsDict);
+                table = new SymbolsTable(fieldsDict, this);
             }
             return table;
         }

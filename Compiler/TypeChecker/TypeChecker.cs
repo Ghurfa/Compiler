@@ -10,16 +10,8 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker
 {
-    public static class TypeChecker
+    public static partial class TypeChecker
     {
-        [Flags]
-        private enum CheckExpressionOptions
-        {
-            RequireStatic,
-            DisallowFieldReferences,
-            DisallowDeclarations
-        }
-
         public static void CheckNamespace(NamespaceDeclaration namespaceDecl)
         {
             SymbolsTree tree = new SymbolsTree();
@@ -62,85 +54,69 @@ namespace TypeChecker
                 classes.Add(classNode);
             }
 
-            var inferredCheckOptions = CheckExpressionOptions.DisallowFieldReferences &
-                                       CheckExpressionOptions.RequireStatic &
-                                       CheckExpressionOptions.DisallowDeclarations;
+            var inferredCheckOptions = VerifyConstraints.DisallowReferences |
+                                       VerifyConstraints.RequireStatic |
+                                       VerifyConstraints.DisallowDeclarations;
 
             //Resolve inferred field types
             foreach ((InferredFieldNode node, InferredFieldDeclaration decl) in inferredFields)
             {
-                TypeInfo defaultType = VerifyExpression(null, node, decl.DefaultValue, inferredCheckOptions);
+                TypeInfo defaultType = VerifyExpression(null, 0, decl.DefaultValue, inferredCheckOptions);
                 node.Type = defaultType;
             }
 
-
-            var simpleCheckOptions = CheckExpressionOptions.RequireStatic &
-                                     CheckExpressionOptions.DisallowDeclarations;
+            var simpleCheckOptions = VerifyConstraints.RequireStatic |
+                                     VerifyConstraints.DisallowDeclarations;
 
             //Validate methods and constructors
             foreach (ClassNode node in classes)
             {
-                if (node.Methods.Count == 0 && node.Constructors.Count == 0) continue;
-
                 var table = node.GetSymbolsTable();
                 foreach (FieldNode field in node.SimpleDefaultedFields)
                 {
                     SimpleFieldDeclaration sFieldDecl = (SimpleFieldDeclaration)field.Declaration;
-                    VerifyExpressionRequireType(table, node, sFieldDecl.DefaultValue, simpleCheckOptions, field.Type);
+                    VerifyExpressionRequireType(table, 0, sFieldDecl.DefaultValue, simpleCheckOptions, field.Type);
                 }
-                foreach (MethodNode method in node.Methods) VerifyMethod(table, node, method);
-                foreach (ConstructorNode ctor in node.Constructors) VerifyConstructor(table, node, ctor);
+                foreach (MethodNode method in node.Methods) VerifyMethod(table, method);
+                foreach (ConstructorNode ctor in node.Constructors) VerifyConstructor(table, ctor);
             }
             ;
         }
 
-        private static void VerifyMethod(SymbolsTable table, ClassNode parent, MethodNode method)
+        private static void VerifyMethod(SymbolsTable table, MethodNode method)
         {
             foreach (ParameterDeclaration param in method.Declaration.ParameterList.Parameters)
             {
-                table.AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(param.Type));
+                table.AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(param.Type), 0);
             }
-            CheckExpressionOptions options = method.Modifiers.IsStatic ? CheckExpressionOptions.RequireStatic : 0;
-            VerifyScope(table, method, method.Declaration.Body.Statements, method.Type.ReturnType, options);
+            VerifyConstraints options = method.Modifiers.IsStatic ? VerifyConstraints.RequireStatic : 0;
+            var scope = new NormalScopeInfo(method.Declaration.Body.Statements, 1);
+            scope.Verify(table, method.Type.ReturnType, options);
         }
 
-        private static void VerifyConstructor(SymbolsTable table, ClassNode parent, ConstructorNode ctor)
+        private static void VerifyConstructor(SymbolsTable table, ConstructorNode ctor)
         {
             foreach (ParameterDeclaration param in ctor.Declaration.ParameterList.Parameters)
             {
-                table.AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(param.Type));
+                table.AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(param.Type), 0);
             }
-            VerifyScope(table, ctor, ctor.Declaration.Body.Statements, VoidTypeInfo.Get(), 0);
+            var scope = new NormalScopeInfo(ctor.Declaration.Body.Statements, 1);
+            scope.Verify(table, VoidTypeInfo.Get(), 0);
         }
 
-        private static void VerifyScope(SymbolsTable table, SymbolNode node, Statement[] statements, TypeInfo returnType, CheckExpressionOptions exprOptions, bool enterScope = true)
-        {
-            if (enterScope) table.EnterScope();
-
-            foreach (Statement statement in statements) VerifyStatement(table, node, statement, returnType, exprOptions);
-
-            table.ExitScope();
-        }
-
-        private static void VerifyStatement(SymbolsTable table, SymbolNode node, Statement statement, TypeInfo returnType, CheckExpressionOptions exprOptions)
+        private static void VerifyStatement(SymbolsTable table, int indexInParent, List<IScopeInfo> scopes, Statement statement, TypeInfo returnType, VerifyConstraints constraints)
         {
             switch (statement)
             {
-                case CodeBlock codeBlock: VerifyScope(table, node, codeBlock.Statements, returnType, exprOptions); break;
+                case CodeBlock codeBlock: scopes.Add(new NormalScopeInfo(codeBlock.Statements, indexInParent)); break;
                 case EmptyStatement _: break;
-                case ExpressionStatement exprStatement: VerifyExpression(table, node, exprStatement.Expression, exprOptions); break;
-                case ForBlock forBlock:
-                    table.EnterScope();
-                    VerifyStatement(table, node, forBlock.StartStatement, returnType, exprOptions);
-                    VerifyExpressionRequireType(table, node, forBlock.ContinueExpr, exprOptions, ValueTypeInfo.Get("bool"));
-                    VerifyStatement(table, node, forBlock.IterateStatement, returnType, exprOptions);
-                    VerifyStatement(table, node, forBlock.Body, returnType, exprOptions);
-                    break;
+                case ExpressionStatement exprStatement: VerifyExpression(table, indexInParent, exprStatement.Expression, constraints); break;
+                case ForBlock forBlock: scopes.Add(new ForScopeInfo(forBlock, indexInParent)); break;
                 case ReturnStatement retStatement:
                     {
                         if (returnType is VoidTypeInfo) throw new UnexpectedReturnValueException();
-                        var retType = VerifyExpression(table, node, retStatement.Expression, exprOptions);
-                        if (retType != returnType)  throw new InvalidReturnTypeException();
+                        var retType = VerifyExpression(table, indexInParent, retStatement.Expression, constraints);
+                        if (retType != returnType) throw new InvalidReturnTypeException();
                     }
                     break;
                 case ExitStatement _:
@@ -150,7 +126,7 @@ namespace TypeChecker
             }
         }
 
-        private static TypeInfo VerifyExpression(SymbolsTable table, SymbolNode node, Expression expr, CheckExpressionOptions options)
+        private static TypeInfo VerifyExpression(SymbolsTable table, int index, Expression expr, VerifyConstraints options)
         {
             ValueTypeInfo IntType = ValueTypeInfo.Get("int");
             ValueTypeInfo BoolType = ValueTypeInfo.Get("bool");
@@ -167,28 +143,28 @@ namespace TypeChecker
 
                 //Primary expressions
                 case IdentifierExpression identifier:
-                    if (options.HasFlag(CheckExpressionOptions.DisallowFieldReferences)) throw new ReferencingFieldException();
-                    else return table.GetSymbol(identifier.Identifier.Text);
+                    if (options.HasFlag(VerifyConstraints.DisallowReferences)) throw new ReferencingFieldException();
+                    else return table.GetSymbol(identifier.Identifier.Text, index);
                 case DeclarationExpression declaration:
-                    if (options.HasFlag(CheckExpressionOptions.DisallowDeclarations)) throw new VariablesInFieldDeclarationException();
+                    if (options.HasFlag(VerifyConstraints.DisallowDeclarations)) throw new InvalidDeclarationException();
                     else
                     {
                         TypeInfo type = ValueTypeInfo.Get(declaration.Type);
-                        table.AddSymbol(declaration.Identifier.Text, type);
+                        table.AddSymbol(declaration.Identifier.Text, type, index);
                         return type;
                     }
                 case PerenthesizedExpression perenthesized:
-                    return VerifyExpressionRequireType(table, node, perenthesized.Expression, options);
+                    return VerifyExpression(table, index, perenthesized.Expression, options);
                 case PostIncrementExpression postIncr:
-                    return VerifyExpressionRequireType(table, node, postIncr.BaseExpression, options, IntType);
+                    return VerifyExpressionRequireType(table, index, postIncr.BaseExpression, options, IntType);
                 case PostDecrementExpression postDecr:
-                    return VerifyExpressionRequireType(table, node, postDecr.BaseExpression, options, IntType);
+                    return VerifyExpressionRequireType(table, index, postDecr.BaseExpression, options, IntType);
                 case TupleExpression tupleExpr:
                     {
                         ValueTypeInfo[] subTypes = new ValueTypeInfo[tupleExpr.Values.Items.Length];
                         for (int i = 0; i < subTypes.Length; i++)
                         {
-                            TypeInfo type = VerifyExpression(table, node, tupleExpr.Values.Items[i].Expression, options);
+                            TypeInfo type = VerifyExpression(table, index, tupleExpr.Values.Items[i].Expression, options);
                             if (type is ValueTypeInfo valType)
                             {
                                 subTypes[i] = valType;
@@ -200,33 +176,33 @@ namespace TypeChecker
 
                 //Unary expressions
                 case BitwiseNotExpression bitwiseNot:
-                    return VerifyExpressionRequireType(table, node, bitwiseNot.BaseExpression, options, IntType);
+                    return VerifyExpressionRequireType(table, index, bitwiseNot.BaseExpression, options, IntType);
                 case DereferenceExpression _:
                     throw new NotImplementedException();
                 case LogicalNotExpression logicalNot:
-                    return VerifyExpressionRequireType(table, node, logicalNot.BaseExpression, options, BoolType);
+                    return VerifyExpressionRequireType(table, index, logicalNot.BaseExpression, options, BoolType);
                 case PreIncrementExpression preIncr:
-                    return VerifyExpressionRequireType(table, node, preIncr.BaseExpression, options, IntType);
+                    return VerifyExpressionRequireType(table, index, preIncr.BaseExpression, options, IntType);
                 case PreDecrementExpression preDecr:
-                    return VerifyExpressionRequireType(table, node, preDecr.BaseExpression, options, IntType);
+                    return VerifyExpressionRequireType(table, index, preDecr.BaseExpression, options, IntType);
                 case UnaryPlusExpression unaryPlus:
-                    return VerifyExpressionRequireType(table, node, unaryPlus.BaseExpression, options, IntType);
+                    return VerifyExpressionRequireType(table, index, unaryPlus.BaseExpression, options, IntType);
                 case UnaryMinusExpression unaryMinus:
-                    return VerifyExpressionRequireType(table, node, unaryMinus.BaseExpression, options, IntType);
+                    return VerifyExpressionRequireType(table, index, unaryMinus.BaseExpression, options, IntType);
 
                 case NullCoalescingExpression _:
                 //Assign expressions
                 case AssignExpression _:
                 case NullCoalescingAssignExpression _:
-                    return VerifySameTypeExprs(table, node, expr.LeftExpr, expr.RightExpr, options);
+                    return VerifySameTypeExprs(table, index, expr.LeftExpr, expr.RightExpr, options);
 
                 case DeclAssignExpression declAssign:
-                    if (options.HasFlag(CheckExpressionOptions.DisallowDeclarations)) throw new VariablesInFieldDeclarationException();
+                    if (options.HasFlag(VerifyConstraints.DisallowDeclarations)) throw new InvalidDeclarationException();
                     else
                     {
                         string name = declAssign.To.ToString();
-                        TypeInfo type = VerifyExpression(table, node, declAssign.From, options);
-                        table.AddSymbol(name, type);
+                        TypeInfo type = VerifyExpression(table, index, declAssign.From, options);
+                        table.AddSymbol(name, type, index);
                         return type;
                     }
 
@@ -246,59 +222,59 @@ namespace TypeChecker
                 case ModuloExpression _:
                 case LeftShiftExpression _:
                 case RightShiftExpression _:
-                    return VerifySameRequiredTypeExprs(table, node, expr.LeftExpr, expr.RightExpr, options, IntType);
+                    return VerifySameRequiredTypeExprs(table, index, expr.LeftExpr, expr.RightExpr, options, IntType);
 
                 //Comparison operators
                 case LessThanExpression _:
                 case GreaterThanExpression _:
                 case LessThanOrEqualToExpression _:
                 case GreaterThanOrEqualToExpression _:
-                    VerifySameRequiredTypeExprs(table, node, expr.LeftExpr, expr.RightExpr, options, IntType);
+                    VerifySameRequiredTypeExprs(table, index, expr.LeftExpr, expr.RightExpr, options, IntType);
                     return BoolType;
                 case EqualsExpression _:
                 case NotEqualsExpression _:
-                    VerifySameTypeExprs(table, node, expr.LeftExpr, expr.RightExpr, options);
+                    VerifySameTypeExprs(table, index, expr.LeftExpr, expr.RightExpr, options);
                     return BoolType;
 
                 case BitwiseAndExpression _:
                 case BitwiseOrExpression _:
                 case BitwiseXorExpression _:
-                    return VerifySameRequiredTypeExprs(table, node, expr.LeftExpr, expr.RightExpr, options, IntType, BoolType);
+                    return VerifySameRequiredTypeExprs(table, index, expr.LeftExpr, expr.RightExpr, options, IntType, BoolType);
 
                 case AndExpression _:
                 case OrExpression _:
-                    return VerifySameRequiredTypeExprs(table, node, expr.LeftExpr, expr.RightExpr, options, BoolType);
+                    return VerifySameRequiredTypeExprs(table, index, expr.LeftExpr, expr.RightExpr, options, BoolType);
 
                 case PlusAssignExpression _:
                 case PlusExpression _:
-                    return VerifySameRequiredTypeExprs(table, node, expr.LeftExpr, expr.RightExpr, options, IntType, StringType, CharType);
+                    return VerifySameRequiredTypeExprs(table, index, expr.LeftExpr, expr.RightExpr, options, IntType, StringType, CharType);
 
                 case IfExpression ifExpr:
                     {
-                        VerifyExpressionRequireType(table, node, ifExpr.Condition, options, BoolType);
-                        return VerifySameTypeExprs(table, node, ifExpr.IfTrue, ifExpr.IfFalse, options);
+                        VerifyExpressionRequireType(table, index, ifExpr.Condition, options, BoolType);
+                        return VerifySameTypeExprs(table, index, ifExpr.IfTrue, ifExpr.IfFalse, options);
                     }
                 default: throw new NotImplementedException();
             }
         }
 
-        private static TypeInfo VerifySameTypeExprs(SymbolsTable table, SymbolNode node, Expression leftExpr, Expression rightExpr, CheckExpressionOptions options)
+        private static TypeInfo VerifySameTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options)
         {
-            var leftType = VerifyExpression(table, node, leftExpr, options);
-            VerifyExpressionRequireType(table, node, rightExpr, options, leftType);
+            var leftType = VerifyExpression(table, index, leftExpr, options);
+            VerifyExpressionRequireType(table, index, rightExpr, options, leftType);
             return leftType;
         }
 
-        private static TypeInfo VerifySameRequiredTypeExprs(SymbolsTable table, SymbolNode node, Expression leftExpr, Expression rightExpr, CheckExpressionOptions options, params TypeInfo[] allowedTypes)
+        private static TypeInfo VerifySameRequiredTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options, params TypeInfo[] allowedTypes)
         {
-            var leftType = VerifyExpressionRequireType(table, node, leftExpr, options, allowedTypes);
-            VerifyExpressionRequireType(table, node, rightExpr, options, leftType);
+            var leftType = VerifyExpressionRequireType(table, index, leftExpr, options, allowedTypes);
+            VerifyExpressionRequireType(table, index, rightExpr, options, leftType);
             return leftType;
         }
 
-        private static TypeInfo VerifyExpressionRequireType(SymbolsTable table, SymbolNode node, Expression expr, CheckExpressionOptions options, params TypeInfo[] allowedTypes)
+        private static TypeInfo VerifyExpressionRequireType(SymbolsTable table, int index, Expression expr, VerifyConstraints options, params TypeInfo[] allowedTypes)
         {
-            var type = VerifyExpression(table, node, expr, options);
+            var type = VerifyExpression(table, index, expr, options);
             if (!allowedTypes.Contains(type)) throw new TypeMismatchException();
             return type;
         }

@@ -20,10 +20,10 @@
     .ForBlock
     ForKeyword
     OpenPeren
-    Statement:StartStatement
+    ExpressionStatement:StartStatement
     Expression:ContinueExpr
     Semicolon:SecondSemicolon;ensurevalidstatementending
-    Statement:IterateStatement
+    ExpressionStatement:IterateStatement
     ClosePeren
     Statement:Body
 }

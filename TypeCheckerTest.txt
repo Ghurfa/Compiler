@@ -2,11 +2,16 @@ TypeCheckerTest namespace
 {
     TypeCheckerTest class
     {
-        a:int
-
         Main public static void()
         {
-           // a:int
+            {
+                for(a := 2; a < 100; a++)
+                {
+                    
+                }
+            }
+            //a:int = (b:int = 2) + b
+            //a:int = b + (b:int = 2)
         }
     }
 }

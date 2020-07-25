@@ -14,7 +14,7 @@ namespace TestProgram
     {
         static void Main(string[] args)
         {
-            var text = File.ReadAllText(@"..\..\..\..\..\TypeCheckerTest.txt");
+            var text = File.ReadAllText(@"..\..\..\..\..\FizzBuzz.txt");
             var tokens = Tokenizer.Tokenize(text);
             NamespaceDeclaration namespaceDecl;
             try
@@ -40,6 +40,7 @@ namespace TestProgram
                     Visualizer.PrintContext(tokens, invToken.Token, 10, 10);
             }
 
+            Console.WriteLine("Finished");
             Console.ReadLine();
         }
     }
