@@ -27,6 +27,7 @@ namespace Compiler.TokenTypes
         ForeachKeyword,
         SwitchKeyword,
         ReturnKeyword,
+        ExitKeyword,
         BreakKeyword,
         ContinueKeyword,
         ThrowKeyword,

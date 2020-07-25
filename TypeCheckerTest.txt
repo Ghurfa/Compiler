@@ -1,0 +1,12 @@
+TypeCheckerTest namespace
+{
+    TypeCheckerTest class
+    {
+        a:int
+
+        Main public static void()
+        {
+           // a:int
+        }
+    }
+}

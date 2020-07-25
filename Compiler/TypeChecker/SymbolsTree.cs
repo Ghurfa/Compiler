@@ -19,6 +19,10 @@ namespace TypeChecker
         public SymbolsTree()
         {
             globalNode = new GlobalNode();
+            globalNode.AddChild(new ClassNode("int", globalNode, Modifiers.Public));
+            globalNode.AddChild(new ClassNode("bool", globalNode, Modifiers.Public));
+            globalNode.AddChild(new ClassNode("string", globalNode, Modifiers.Public));
+            globalNode.AddChild(new ClassNode("char", globalNode, Modifiers.Public));
         }
 
         public NamespaceSymbolNode AddNamespace(NamespaceDeclaration namespaceDecl)

@@ -20,20 +20,34 @@ namespace TypeChecker
 
         public Modifiers(ModifierList modifiers)
         {
-            if (modifiers == null) return;
-
-            IsStatic = false;
-            foreach (ModifierToken modifier in modifiers.Modifiers)
+            if (modifiers == null)
             {
-                switch(modifier.Text)
+                AccessModifier = AccessModifier.PrivateModifier;
+                IsStatic = false;
+            }
+            else
+            {
+                IsStatic = false;
+                foreach (ModifierToken modifier in modifiers.Modifiers)
                 {
-                    case "public": AccessModifier = AccessModifier.PublicModifier; break;
-                    case "private": AccessModifier = AccessModifier.PrivateModifier; break;
-                    case "protected": AccessModifier = AccessModifier.ProtectedModifier; break;
-                    case "static": IsStatic = true; break;
-                    default: throw new NotImplementedException();
+                    switch (modifier.Text)
+                    {
+                        case "public": AccessModifier = AccessModifier.PublicModifier; break;
+                        case "private": AccessModifier = AccessModifier.PrivateModifier; break;
+                        case "protected": AccessModifier = AccessModifier.ProtectedModifier; break;
+                        case "static": IsStatic = true; break;
+                        default: throw new NotImplementedException();
+                    }
                 }
             }
         }
+
+        private Modifiers(AccessModifier accessModifier, bool isStatic)
+        {
+            AccessModifier = accessModifier;
+            IsStatic = isStatic;
+        }
+
+        public static Modifiers Public => new Modifiers(AccessModifier.PublicModifier, false);
     }
 }

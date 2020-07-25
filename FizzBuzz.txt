@@ -3,10 +3,10 @@ FizzBuzz namespace
     FizzBuzz class
     {
         b := 5
-        c:int = b
+        c:bool = b < 10
         FizzBuzz public static void(start:int, end:int)
         {
-            c:(a:int, b:int) = (2, 3)
+            m:(a:int, b:int) = (2, 3)
             for(i := start; i < end; i++)
             {
                 boolean:bool = c ?? false

@@ -14,6 +14,7 @@ namespace Compiler.SyntaxTreeItems
                 case IfKeywordToken _: return new IfBlock(tokens);
                 case WhileKeywordToken _: return new WhileBlock(tokens);
                 case ForKeywordToken _: return new ForBlock(tokens);
+                case ExitKeywordToken _: return new ExitStatement(tokens);
                 case ReturnKeywordToken _: return new ReturnStatement(tokens);
                 case ForeachKeywordToken _:
                 case SwitchKeywordToken _:

@@ -344,6 +344,7 @@ namespace Compiler
                 case "foreach": tokenType = TokenType.ForeachKeyword; return true;
                 case "switch": tokenType = TokenType.SwitchKeyword; return true;
                 case "return": tokenType = TokenType.ReturnKeyword; return true;
+                case "exit": tokenType = TokenType.ExitKeyword; return true;
                 case "break": tokenType = TokenType.BreakKeyword; return true;
                 case "continue": tokenType = TokenType.ContinueKeyword; return true;
                 case "throw": tokenType = TokenType.ThrowKeyword; return true;

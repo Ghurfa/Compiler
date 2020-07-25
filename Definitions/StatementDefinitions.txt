@@ -9,6 +9,10 @@
     .EmptyStatement
     Semicolon
 
+    .ExitStatement
+    ExitKeyword
+    Semicolon;ensurevalidstatementending
+
     .ExpressionStatement
     Expression
     Semicolon;ensurevalidstatementending
@@ -22,11 +26,4 @@
     Statement:IterateStatement
     ClosePeren
     Statement:Body
-
-    .ReturnStatement
-    ReturnKeyword
-    OpenPeren
-    Expression
-    ClosePeren
-
 }

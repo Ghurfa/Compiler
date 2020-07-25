@@ -8,25 +8,22 @@ namespace Compiler.SyntaxTreeItems
     public class ReturnStatement : Statement
     {
         public ReturnKeywordToken ReturnKeyword { get; private set; }
-        public OpenPerenToken OpenPeren { get; private set; }
         public Expression Expression { get; private set; }
-        public ClosePerenToken ClosePeren { get; private set; }
+        public SemicolonToken? Semicolon { get; private set; }
 
         public ReturnStatement(TokenCollection tokens)
         {
             ReturnKeyword = tokens.PopToken<ReturnKeywordToken>();
-            OpenPeren = tokens.PopToken<OpenPerenToken>();
             Expression = Expression.ReadExpression(tokens);
-            ClosePeren = tokens.PopToken<ClosePerenToken>();
+            Semicolon = tokens.EnsureValidStatementEnding();
         }
 
         public override string ToString()
         {
             string ret = "";
             ret += ReturnKeyword.ToString();
-            ret += OpenPeren.ToString();
             ret += Expression.ToString();
-            ret += ClosePeren.ToString();
+            ret += Semicolon?.ToString();
             return ret;
         }
     }

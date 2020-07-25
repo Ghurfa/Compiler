@@ -32,6 +32,7 @@ namespace Compiler
                 case TokenType.Modifier: return new ModifierToken(text, index);
                 case TokenType.PrimitiveType: return new PrimitiveTypeToken(text, index);
                 case TokenType.ValueKeyword: return new ValueKeywordToken(text, index);
+                case TokenType.DefaultKeyword: return new DefaultKeywordToken(text, index);
                 case TokenType.IfKeyword: return new IfKeywordToken(text, index);
                 case TokenType.ElseKeyword: return new ElseKeywordToken(text, index);
                 case TokenType.WhileKeyword: return new WhileKeywordToken(text, index);
@@ -39,6 +40,7 @@ namespace Compiler
                 case TokenType.ForeachKeyword: return new ForeachKeywordToken(text, index);
                 case TokenType.SwitchKeyword: return new SwitchKeywordToken(text, index);
                 case TokenType.ReturnKeyword: return new ReturnKeywordToken(text, index);
+                case TokenType.ExitKeyword: return new ExitKeywordToken(text, index);
                 case TokenType.BreakKeyword: return new BreakKeywordToken(text, index);
                 case TokenType.ContinueKeyword: return new ContinueKeywordToken(text, index);
                 case TokenType.ThrowKeyword: return new ThrowKeywordToken(text, index);

@@ -21,14 +21,14 @@
             ConstructorKeyword;argument
             ModifierList:Modifiers
             ParameterListDeclaration:ParameterList
-            MethodBodyDeclaration:ConstructorBody
+            MethodBodyDeclaration:Body
         
         .MethodDeclaration
             Identifier:Name;argument
             ModifierList:Modifiers
             Type:ReturnType
             ParameterListDeclaration:ParameterList
-            MethodBodyDeclaration:MethodBody
+            MethodBodyDeclaration:Body
     }
 
     .MethodBodyDeclaration

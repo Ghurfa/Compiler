@@ -146,7 +146,7 @@ $Expression
         .NewObject
         +ICompleteStatement
         NewKeyword;argument
-        Type;argument
+        Type
         OpenPeren
         ArgumentList:argument
         ClosePeren

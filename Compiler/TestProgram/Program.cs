@@ -14,7 +14,7 @@ namespace TestProgram
     {
         static void Main(string[] args)
         {
-            var text = File.ReadAllText(@"..\..\..\..\..\FizzBuzz.txt");
+            var text = File.ReadAllText(@"..\..\..\..\..\TypeCheckerTest.txt");
             var tokens = Tokenizer.Tokenize(text);
             NamespaceDeclaration namespaceDecl;
             try

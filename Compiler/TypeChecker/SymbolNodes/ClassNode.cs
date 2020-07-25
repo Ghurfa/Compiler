@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Compiler.SyntaxTreeItems.ClassItemDeclarations;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TypeChecker.Exceptions;
 using TypeChecker.TypeInfos;
@@ -10,14 +12,17 @@ namespace TypeChecker.SymbolNodes
     {
         public Modifiers Modifiers { get; set; }
         public Dictionary<string, FieldNode> Fields { get; set; }
+        public List<FieldNode> SimpleDefaultedFields { get; set; }
         public List<MethodNode> Methods { get; set; }
         public List<ConstructorNode> Constructors { get; set; }
+        private SymbolsTable table;
 
         public ClassNode(string name, SymbolNode parent, Modifiers modifiers)
             : base(name, parent)
         {
             Modifiers = modifiers;
             Fields = new Dictionary<string, FieldNode>();
+            SimpleDefaultedFields = new List<FieldNode>();
             Methods = new List<MethodNode>();
             Constructors = new List<ConstructorNode>();
         }
@@ -46,6 +51,10 @@ namespace TypeChecker.SymbolNodes
 
             Fields.Add(node.Name, node);
             Children.Add(node);
+            if(node.Declaration is SimpleFieldDeclaration sFieldDecl && sFieldDecl.DefaultValue != null)
+            {
+                SimpleDefaultedFields.Add(node);
+            }
         }
 
         public void AddMethodChild(MethodNode node)
@@ -57,7 +66,7 @@ namespace TypeChecker.SymbolNodes
                     if (other is MethodNode method && method.Name == node.Name)
                     {
                         if (method.Type.ReturnType != node.Type.ReturnType) throw new DifferentTypeMethodsException();
-                        if (HasSameParams(method.Type.Parameters, node.Type.Parameters)) throw new DuplicateMethodException();
+                        if (Enumerable.SequenceEqual(method.Type.Parameters, node.Type.Parameters)) throw new DuplicateMethodException();
                     }
                     else throw new DuplicateMemberException();
                 }
@@ -72,32 +81,25 @@ namespace TypeChecker.SymbolNodes
             {
                 if (child is ConstructorNode ctor)
                 {
-                    if (HasSameParams(node.ParamTypes, ctor.ParamTypes)) throw new DuplicateConstructorException();
+                    if (Enumerable.SequenceEqual(node.ParamTypes, ctor.ParamTypes)) throw new DuplicateConstructorException();
                 }
             }
             Constructors.Add(node);
             Children.Add(node);
         }
 
-        public Dictionary<string, TypeInfo> GetSymbolsTable()
+        public SymbolsTable GetSymbolsTable()
         {
-            Dictionary<string, TypeInfo> ret = new Dictionary<string, TypeInfo>();
-            foreach(KeyValuePair<string, FieldNode> field in Fields)
+            if(table == null)
             {
-                ret.Add(field.Key, field.Value.Type);
+                Dictionary<string, TypeInfo> fieldsDict = new Dictionary<string, TypeInfo>();
+                foreach (KeyValuePair<string, FieldNode> field in Fields)
+                {
+                    fieldsDict.Add(field.Key, field.Value.Type);
+                }
+                table = new SymbolsTable(fieldsDict);
             }
-            return ret;
-        }
-
-        private bool HasSameParams(TypeInfo[] left, TypeInfo[] right)
-        {
-            if (left.Length != right.Length) return false;
-
-            for(int i = 0; i < left.Length; i++)
-            {
-                if (left[i] != right[i]) return false;
-            }
-            return true;
+            return table;
         }
     }
 }

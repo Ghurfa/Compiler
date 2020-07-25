@@ -9,24 +9,20 @@ namespace TypeChecker.SymbolNodes
     class MethodNode : ClassItemNode
     {
         public FunctionTypeInfo Type { get; set; }
-
-        public MethodNode(string name, SymbolNode parent, FunctionTypeInfo type, Modifiers modifiers)
-            : base(name, parent, modifiers)
-        {
-            Type = type;
-        }
+        public MethodDeclaration Declaration { get; set; }
 
         public MethodNode(MethodDeclaration methodDecl, ClassNode parent)
-            :base(methodDecl.Name.Text, parent, new Modifiers(methodDecl.Modifiers))
+            : base(methodDecl.Name.Text, parent, new Modifiers(methodDecl.Modifiers))
         {
-            ValueTypeInfo retType = new ValueTypeInfo(methodDecl.ReturnType.ToString());
+            ValueTypeInfo retType = ValueTypeInfo.Get(methodDecl.ReturnType);
             ValueTypeInfo[] paramTypes = new ValueTypeInfo[methodDecl.ParameterList.Parameters.Length];
             for (int i = 0; i < paramTypes.Length; i++)
             {
-                paramTypes[i] = new ValueTypeInfo(methodDecl.ParameterList.Parameters[i].Type.ToString());
+                paramTypes[i] = ValueTypeInfo.Get(methodDecl.ParameterList.Parameters[i].Type);
             }
 
+            Declaration = methodDecl;
             Type = new FunctionTypeInfo(retType, paramTypes);
         }
-    }   
+    }
 }

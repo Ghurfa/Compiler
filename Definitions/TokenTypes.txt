@@ -22,6 +22,7 @@ ForKeyword
 ForeachKeyword
 SwitchKeyword
 ReturnKeyword
+ExitKeyword
 BreakKeyword
 ContinueKeyword
 ThrowKeyword

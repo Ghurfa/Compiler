@@ -6,9 +6,9 @@ namespace TypeChecker.TypeInfos
 {
     class FunctionTypeInfo : TypeInfo
     {
-        public ValueTypeInfo ReturnType { get; set; }
+        public TypeInfo ReturnType { get; set; }
         public ValueTypeInfo[] Parameters { get; set; }
-        public FunctionTypeInfo(ValueTypeInfo retType, ValueTypeInfo[] parameters)
+        public FunctionTypeInfo(TypeInfo retType, ValueTypeInfo[] parameters)
         {
             ReturnType = retType;
             Parameters = parameters;
