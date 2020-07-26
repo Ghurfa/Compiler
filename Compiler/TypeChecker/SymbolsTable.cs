@@ -11,16 +11,29 @@ namespace TypeChecker
 {
     partial class SymbolsTable
     {
+        private struct LocalInfo
+        {
+            public ValueTypeInfo Type { get; set; }
+            public int Index { get; set; }
+            public bool IsInstanceField { get; set; }
+            public LocalInfo(ValueTypeInfo type, int index, bool isInstanceField)
+            {
+                Type = type;
+                Index = index;
+                IsInstanceField = isInstanceField;
+            }
+        }
+
         private class ScopeInfo
         {
             public int IndexInParent { get; set; }
-            public Dictionary<string, (TypeInfos.TypeInfo type, int index)> Locals { get; set; }
+            public Dictionary<string, LocalInfo> Locals { get; set; }
             public ScopeInfo(int index)
             {
                 IndexInParent = index;
-                Locals = new Dictionary<string, (TypeInfos.TypeInfo, int)>();
+                Locals = new Dictionary<string, LocalInfo>();
             }
-            public ScopeInfo(Dictionary<string, (TypeInfos.TypeInfo, int)> firstDict)
+            public ScopeInfo(Dictionary<string, LocalInfo> firstDict)
             {
                 Locals = firstDict;
             }
@@ -42,7 +55,7 @@ namespace TypeChecker
             EnterScope(1);
             foreach (ParameterDeclaration param in parameters.Parameters)
             {
-                AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(this, param.Type), -1);
+                AddLocal(param.Identifier.Text, ValueTypeInfo.Get(this, param.Type), -1);
             }
         }
 
@@ -55,7 +68,7 @@ namespace TypeChecker
 
         public void ExitScope() => classStack.Pop();
 
-        public void AddSymbol(string name, TypeInfos.TypeInfo type, int index)
+        public void AddLocal(string name, ValueTypeInfo type, int index)
         {
             bool isFirst = true;
             foreach (ScopeInfo scope in classStack)
@@ -67,26 +80,59 @@ namespace TypeChecker
                 }
                 isFirst = false;
             }
-            classStack.Peek().Locals.Add(name, (type, index + 1));
+            classStack.Peek().Locals.Add(name, new LocalInfo(type, index + 1, false));
         }
 
-        public TypeInfos.TypeInfo GetSymbol(string name, int statementIndex)
+        public bool TryGetSymbol(string name, int statementIndex, out ValueTypeInfo type, bool requireStatic)
         {
             foreach (ScopeInfo scope in classStack)
             {
-                if (scope.Locals.TryGetValue(name, out (TypeInfos.TypeInfo type, int index) ret))
+                if (scope.Locals.TryGetValue(name, out LocalInfo ret))
                 {
-                    if (ret.index > statementIndex) throw new UsingLocalBeforeDeclarationException();
-                    return ret.type;
+                    if (ret.Index > statementIndex) throw new UsingLocalBeforeDeclarationException();
+                    if (requireStatic && ret.IsInstanceField) throw new InvalidInstanceReferenceException();
+                    type = ret.Type;
+                    return true;
                 }
                 else statementIndex = scope.IndexInParent;
             }
-            throw new InvalidOperationException();
+            type = null;
+            return false;
+        }
+
+        public ValueTypeInfo GetFieldType(string baseIdentifier, string fieldName, int statementIndex)
+        {
+            if (TryGetSymbol(baseIdentifier, statementIndex, out ValueTypeInfo localType, false))
+            {
+                return GetInstanceFieldType(localType, fieldName);
+            }
+            else
+            {
+                ClassNode firstClass = GetClass(baseIdentifier);
+                if (firstClass.Fields.TryGetValue(fieldName, out FieldNode field))
+                {
+                    if (!field.Modifiers.IsStatic)
+                        throw new ObjectReferenceRequiredException();
+                    else return field.Type;
+                }
+                else throw new NoSuchMemberException();
+            }
+        }
+
+        public ValueTypeInfo GetInstanceFieldType(ValueTypeInfo baseType, string fieldName)
+        {
+            if (baseType.Class.Fields.TryGetValue(fieldName, out FieldNode ret))
+            {
+                if (ret.Modifiers.IsStatic)
+                    throw new InvalidStaticReferenceException();
+                else return ret.Type;
+            }
+            else throw new NoSuchMemberException();
         }
 
         public BuiltInClassNode GetBuiltInClass(string name)
         {
-            if(globalNode.TryGetChild(name, out SymbolNode child))
+            if (globalNode.TryGetChild(name, out SymbolNode child))
             {
                 return (BuiltInClassNode)child;
             }
@@ -106,7 +152,7 @@ namespace TypeChecker
                     {
                         if (child is ClassNode ret)
                         {
-                            classNode.CachedClasses.Add(name, ret);
+                            current.CachedClasses.Add(name, ret);
                             return ret;
                         }
                         else if (child is NamespaceNode _) throw new NamespaceUsedAsTypeException();

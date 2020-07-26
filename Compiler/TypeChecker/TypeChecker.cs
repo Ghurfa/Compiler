@@ -4,6 +4,7 @@ using Compiler.SyntaxTreeItems.ClassItemDeclarations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using TypeChecker.Exceptions;
 using TypeChecker.SymbolNodes;
 using TypeChecker.TypeInfos;
@@ -98,15 +99,30 @@ namespace TypeChecker
 
                 //Primary expressions
                 case IdentifierExpression identifier:
-                    if (options.HasFlag(VerifyConstraints.DisallowReferences)) throw new ReferencingFieldException();
-                    else throw new NotImplementedException();
+                    if (options.HasFlag(VerifyConstraints.DisallowReferences))
+                        throw new ReferencingFieldException();
+                    else
+                    {
+                        var requireStatic = options.HasFlag(VerifyConstraints.RequireStatic);
+                        if (table.TryGetSymbol(identifier.Identifier.Text, index, out ValueTypeInfo type, requireStatic))
+                            return type;
+                        else throw new LocalNotFoundException();
+                    }
                 case DeclarationExpression declaration:
                     if (options.HasFlag(VerifyConstraints.DisallowDeclarations)) throw new InvalidDeclarationException();
                     else
                     {
                         ValueTypeInfo type = ValueTypeInfo.Get(table, declaration.Type);
-                        table.AddSymbol(declaration.Identifier.Text, type, index);
+                        table.AddLocal(declaration.Identifier.Text, type, index);
                         return type;
+                    }
+                case MemberAccessExpression memberAccess:
+                    if (memberAccess.BaseExpression is IdentifierExpression baseIdentifier)
+                        return table.GetFieldType(baseIdentifier.Identifier.Text, memberAccess.Item.Text, index);
+                    else
+                    {
+                        ValueTypeInfo baseType = VerifyExpression(table, index, memberAccess.BaseExpression, options);
+                        return table.GetInstanceFieldType(baseType, memberAccess.Item.Text);
                     }
                 case PerenthesizedExpression perenthesized:
                     return VerifyExpression(table, index, perenthesized.Expression, options);
@@ -157,7 +173,7 @@ namespace TypeChecker
                     {
                         string name = declAssign.To.ToString();
                         ValueTypeInfo type = VerifyExpression(table, index, declAssign.From, options);
-                        table.AddSymbol(name, type, index);
+                        table.AddLocal(name, type, index);
                         return type;
                     }
 

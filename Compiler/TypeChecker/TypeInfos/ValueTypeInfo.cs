@@ -56,10 +56,10 @@ namespace TypeChecker.TypeInfos
             add("char");
         }
 
-        public ClassNode Type { get; set; }
+        public ClassNode Class { get; set; }
         protected ValueTypeInfo() {}
-        private ValueTypeInfo(ClassNode type) { Type = type; }
+        private ValueTypeInfo(ClassNode type) { Class = type; }
 
-        public override string ToString() => Type.Name;
+        public override string ToString() => Class.Name;
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TypeChecker.SymbolNodes;
+using TypeChecker.TypeInfos;
 
 namespace TypeChecker
 {
@@ -56,10 +57,10 @@ namespace TypeChecker
             if (initClassStack)
             {
                 classStack = new Stack<ScopeInfo>();
-                var newDict = new Dictionary<string, (TypeInfos.TypeInfo, int)>();
+                var newDict = new Dictionary<string, LocalInfo>();
                 foreach (KeyValuePair<string, FieldNode> field in classNode.Fields)
                 {
-                    newDict.Add(field.Key, (field.Value.Type, 0));
+                    newDict.Add(field.Key, new LocalInfo(field.Value.Type, 0, !field.Value.Modifiers.IsStatic));
                 }
                 classStack.Push(new ScopeInfo(newDict));
             }
