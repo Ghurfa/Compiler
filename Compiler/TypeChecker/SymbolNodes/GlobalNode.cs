@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TypeChecker.SymbolNodes
 {
-    class GlobalNode : SymbolNode
+    class GlobalNode : NamespaceNode
     {
         public GlobalNode()
             :base("$global", null)

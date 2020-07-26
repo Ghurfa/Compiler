@@ -14,45 +14,9 @@ namespace TypeChecker
     {
         public static void CheckNamespace(NamespaceDeclaration namespaceDecl)
         {
-            SymbolsTree tree = new SymbolsTree();
-            var inferredFields = new List<(InferredFieldNode, InferredFieldDeclaration)>();
-            var simpleDefaultedFields = new List<(FieldNode, SimpleFieldDeclaration)>();
-            List<ClassNode> classes = new List<ClassNode>();
+            SymbolsTable table = new SymbolsTable();
 
-            //Built symbols tree
-            SymbolNode namespaceNode = tree.AddNamespace(namespaceDecl);
-            foreach (ClassDeclaration classDecl in namespaceDecl.ClassDeclarations)
-            {
-                ClassNode classNode = tree.AddClass(classDecl, namespaceNode);
-                foreach (ClassItemDeclaration classItem in classDecl.ClassItems)
-                {
-                    switch (classItem)
-                    {
-                        case InferredFieldDeclaration iFieldDecl:
-                            {
-                                var newNode = new InferredFieldNode(iFieldDecl, classNode);
-                                inferredFields.Add((newNode, iFieldDecl));
-                                classNode.AddFieldChild(newNode);
-                            }
-                            break;
-                        case SimpleFieldDeclaration sFieldDecl:
-                            {
-                                var newNode = new FieldNode(sFieldDecl, classNode);
-                                if (sFieldDecl.DefaultValue != null) simpleDefaultedFields.Add((newNode, sFieldDecl));
-                                classNode.AddFieldChild(newNode);
-                            }
-                            break;
-                        case MethodDeclaration methodDecl:
-                            classNode.AddMethodChild(new MethodNode(methodDecl, classNode));
-                            break;
-                        case ConstructorDeclaration ctorDecl:
-                            classNode.AddConstructorChild(new ConstructorNode(ctorDecl, classNode));
-                            break;
-                        default: throw new NotImplementedException();
-                    }
-                }
-                classes.Add(classNode);
-            }
+            table.BuildTree(namespaceDecl.AsEnumerable(), out List<(InferredFieldNode, InferredFieldDeclaration)> inferredFields);
 
             var inferredCheckOptions = VerifyConstraints.DisallowReferences |
                                        VerifyConstraints.RequireStatic |
@@ -69,9 +33,8 @@ namespace TypeChecker
                                      VerifyConstraints.DisallowDeclarations;
 
             //Validate methods and constructors
-            foreach (ClassNode node in classes)
+            foreach (ClassNode node in table.Iterate)
             {
-                var table = node.GetSymbolsTable();
                 foreach (FieldNode field in node.SimpleDefaultedFields)
                 {
                     SimpleFieldDeclaration sFieldDecl = (SimpleFieldDeclaration)field.Declaration;
@@ -85,22 +48,14 @@ namespace TypeChecker
 
         private static void VerifyMethod(SymbolsTable table, MethodNode method)
         {
-            foreach (ParameterDeclaration param in method.Declaration.ParameterList.Parameters)
-            {
-                table.AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(param.Type), 0);
-            }
             VerifyConstraints options = method.Modifiers.IsStatic ? VerifyConstraints.RequireStatic : 0;
-            var scope = new NormalScopeInfo(method.Declaration.Body.Statements, 1);
+            var scope = new FunctionScopeInfo(method.Declaration.ParameterList, method.Declaration.Body.Statements);
             scope.Verify(table, method.Type.ReturnType, options);
         }
 
         private static void VerifyConstructor(SymbolsTable table, ConstructorNode ctor)
         {
-            foreach (ParameterDeclaration param in ctor.Declaration.ParameterList.Parameters)
-            {
-                table.AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(param.Type), 0);
-            }
-            var scope = new NormalScopeInfo(ctor.Declaration.Body.Statements, 1);
+            var scope = new FunctionScopeInfo(ctor.Declaration.ParameterList, ctor.Declaration.Body.Statements);
             scope.Verify(table, VoidTypeInfo.Get(), 0);
         }
 

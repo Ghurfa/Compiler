@@ -7,9 +7,9 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker
 {
-    class NamespaceSymbolNode : SymbolNode
+    class NamespaceNode : SymbolNode
     {
-        public NamespaceSymbolNode(string name, SymbolNode parent)
+        public NamespaceNode(string name, SymbolNode parent)
             :base(name, parent)
         {
 

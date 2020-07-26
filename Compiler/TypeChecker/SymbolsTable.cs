@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiler.SyntaxTreeItems;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -8,7 +9,7 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker
 {
-    class SymbolsTable
+    partial class SymbolsTable
     {
         private class ScopeInfo
         {
@@ -24,35 +25,45 @@ namespace TypeChecker
                 Locals = firstDict;
             }
         }
+        private GlobalNode globalNode;
+        private Stack<Dictionary<string, ClassNode>> namespaceStack;
+        private Stack<ScopeInfo> classStack;
 
-        private Stack<ScopeInfo> stack;
-        private ClassNode classNode;
-
-        public SymbolsTable(Dictionary<string, TypeInfos.TypeInfo> firstDict, ClassNode node)
+        public SymbolsTable()
         {
-            stack = new Stack<ScopeInfo>();
+            globalNode = new GlobalNode();
+            globalNode.AddChild(new ClassNode("int", globalNode, Modifiers.Public));
+            globalNode.AddChild(new ClassNode("bool", globalNode, Modifiers.Public));
+            globalNode.AddChild(new ClassNode("string", globalNode, Modifiers.Public));
+            globalNode.AddChild(new ClassNode("char", globalNode, Modifiers.Public));
 
-            var newDict = new Dictionary<string, (TypeInfos.TypeInfo, int)>();
-            foreach(KeyValuePair<string, TypeInfos.TypeInfo> pair in firstDict)
-            {
-                newDict.Add(pair.Key, (pair.Value, 0));
-            }
-            stack.Push(new ScopeInfo(newDict));
-
-            classNode = node;
+            namespaceStack = new Stack<Dictionary<string, ClassNode>>();
+            EnterNamespace(globalNode);
+            classStack = new Stack<ScopeInfo>();
         }
+
+        public void EnterMethod(ParameterListDeclaration parameters)
+        {
+            EnterScope(1);
+            foreach (ParameterDeclaration param in parameters.Parameters)
+            {
+                AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(param.Type), -1);
+            }
+        }
+
+        public void ExitMethod() => ExitScope();
 
         public void EnterScope(int indexInParent)
         {
-            stack.Push(new ScopeInfo(indexInParent));
+            classStack.Push(new ScopeInfo(indexInParent));
         }
 
-        public void ExitScope() => stack.Pop();
+        public void ExitScope() => classStack.Pop();
 
         public void AddSymbol(string name, TypeInfos.TypeInfo type, int index)
         {
             bool isFirst = true;
-            foreach (ScopeInfo scope in stack)
+            foreach (ScopeInfo scope in classStack)
             {
                 if (scope.Locals.ContainsKey(name))
                 {
@@ -61,21 +72,21 @@ namespace TypeChecker
                 }
                 isFirst = false;
             }
-            stack.Peek().Locals.Add(name, (type, index + 1));
+            classStack.Peek().Locals.Add(name, (type, index + 1));
         }
 
-        public TypeInfos.TypeInfo GetSymbol(string name, int index)
+        public TypeInfos.TypeInfo GetSymbol(string name, int statementIndex)
         {
-            foreach (ScopeInfo scope in stack)
+            foreach (ScopeInfo scope in classStack)
             {
                 if (scope.Locals.TryGetValue(name, out (TypeInfos.TypeInfo type, int index) ret))
                 {
-                    if (ret.index > index) throw new UsingLocalBeforeDeclarationException();
+                    if (ret.index > statementIndex) throw new UsingLocalBeforeDeclarationException();
                     return ret.type;
                 }
-                else index = scope.IndexInParent;
+                else statementIndex = scope.IndexInParent;
             }
-            throw new InvalidSymbolException();
+            throw new InvalidOperationException();
         }
     }
 }

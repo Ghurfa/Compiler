@@ -15,7 +15,6 @@ namespace TypeChecker.SymbolNodes
         public List<FieldNode> SimpleDefaultedFields { get; set; }
         public List<MethodNode> Methods { get; set; }
         public List<ConstructorNode> Constructors { get; set; }
-        private SymbolsTable table;
 
         public ClassNode(string name, SymbolNode parent, Modifiers modifiers)
             : base(name, parent)
@@ -86,20 +85,6 @@ namespace TypeChecker.SymbolNodes
             }
             Constructors.Add(node);
             Children.Add(node);
-        }
-
-        public SymbolsTable GetSymbolsTable()
-        {
-            if(table == null)
-            {
-                Dictionary<string, TypeInfo> fieldsDict = new Dictionary<string, TypeInfo>();
-                foreach (KeyValuePair<string, FieldNode> field in Fields)
-                {
-                    fieldsDict.Add(field.Key, field.Value.Type);
-                }
-                table = new SymbolsTable(fieldsDict, this);
-            }
-            return table;
         }
     }
 }
