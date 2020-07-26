@@ -2,27 +2,9 @@ myNamespace namespace
 {
     Program class
     {
-        //Single line comment//still the same comment
-        /*  Multi
-            Line
-            Comment */
-        myInt := 2: public static 
-        myDouble:double
-        myInt2: public int = 12
-        
-        ctor(myFloat:float)
+        Main static void(args:string[])
         {
-            myDouble:double = myFloat
-        }
-
-        Average static int(a:int, b:int)
-        {
-            return((a + b) / 2)
-            thing:int = a++ * b + c / d  as int
-        }
-        Main static void(args:string[]) //b
-        {
-            number:int = Random.RandInt(0, 64)
+            number:int = 50//Random.RandInt(0, 64)
             guess:int = -1
             
             end := false
@@ -34,7 +16,6 @@ myNamespace namespace
                     if (guess < number)
                     {
                         Console.PrintLine("Too low")
-                        if (Average(guess, number) - guess > 10) Console.PrintLine("Very off")
                     } 
                     else if(guess > number) 
                     {

@@ -41,7 +41,8 @@ namespace TypeChecker
         }
 
         private GlobalNode globalNode;
-        private ObjectClassNode objectNode;
+        private BuiltInClassNode objectNode;
+        public BuiltInClassNode ArrayNode { get; private set; }
         private Stack<Dictionary<string, ClassNode>> namespaceStack;
         private Stack<ScopeInfo> classStack;
         private Dictionary<string, ClassNode> defaultCachedClasses;

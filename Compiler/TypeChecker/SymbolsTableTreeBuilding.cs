@@ -60,22 +60,25 @@ namespace TypeChecker
 
         private void InitializeTree()
         {
-            globalNode = new GlobalNode();
-            objectNode = new ObjectClassNode(globalNode);
-
-            defaultCachedClasses.Clear();
             void add(string name)
             {
                 var newNode = new BuiltInClassNode(name, objectNode, globalNode);
                 globalNode.AddChild(newNode);
                 defaultCachedClasses.Add(name, newNode);
             }
-            add("int");
-            add("bool");
-            add("string");
-            add("char");
 
-            ValueTypeInfo.Initialize(this);
+            globalNode = new GlobalNode();
+            objectNode = new BuiltInClassNode("object", null, globalNode);
+            ArrayNode = new BuiltInClassNode("array", objectNode, globalNode);
+
+            defaultCachedClasses.Clear();
+
+            string[] primitiveTypes = new[] { "int", "bool", "string", "char", "float", "double" };
+
+            foreach (string primType in primitiveTypes)
+                add(primType);
+
+            ValueTypeInfo.Initialize(this, primitiveTypes);
 
             ValueTypeInfo stringType = ValueTypeInfo.PrimitiveTypes["string"];
             objectNode.AddMethodChild(new MethodNode("ToString", new FunctionTypeInfo(stringType, new ValueTypeInfo[] { }), objectNode, Modifiers.Public));

@@ -2,18 +2,10 @@ FizzBuzz namespace
 {
     FizzBuzz class
     {
-        b := 5 : static
-        c : static bool = b < 10
         FizzBuzz public static void(start:int, end:int)
         {
-            a:string
-            m:(a:int, b:int) = (2, 3)
             for(i := start; i < end; i++)
             {
-                boolean:bool = c ?? false
-                i++
-                //--i is not valid
-                i--
                 fizz := i % 3 == 0
                 buzz := i % 5 == 0
                 fizzStr := "fizz"

@@ -28,6 +28,7 @@ namespace TypeChecker.TypeInfos
         {
             switch (type)
             {
+                case ArrayType arrType: return new ArrayTypeInfo(table, Get(table, arrType.BaseType));
                 case PrimitiveType primType: return PrimitiveTypes[primType.TypeKeyword.Text];
                 case TupleType tupleType:
                     {
@@ -42,7 +43,7 @@ namespace TypeChecker.TypeInfos
             }
         }
 
-        public static void Initialize(SymbolsTable table)
+        public static void Initialize(SymbolsTable table, string[] primitiveTypes)
         {
             void add(string name)
             {
@@ -51,16 +52,29 @@ namespace TypeChecker.TypeInfos
                 PrimitiveTypes.Add(name, type);
                 types.Add(node, type);
             }
-            add("int");
-            add("bool");
-            add("string");
-            add("char");
+            foreach (string type in primitiveTypes)
+                add(type);
         }
 
         public ClassNode Class { get; set; }
         protected ValueTypeInfo() { }
-        private ValueTypeInfo(ClassNode type) { Class = type; }
+        protected ValueTypeInfo(ClassNode type) { Class = type; }
 
         public override string ToString() => Class.Name;
+
+        public override bool IsConvertibleTo(TypeInfo other)
+        {
+            if (other is ValueTypeInfo otherValType)
+            {
+                ValueTypeInfo ancestor = this;
+                while (ancestor != null)
+                {
+                    if (ancestor == otherValType) return true;
+                    ancestor = Get(ancestor.Class.ParentClass);
+                }
+                return false;
+            }
+            else return false;
+        }
     }
 }

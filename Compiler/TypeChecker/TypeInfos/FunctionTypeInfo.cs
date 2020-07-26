@@ -13,5 +13,7 @@ namespace TypeChecker.TypeInfos
             ReturnType = retType;
             Parameters = parameters;
         }
+
+        public override bool IsConvertibleTo(TypeInfo other) => throw new NotImplementedException();
     }
 }

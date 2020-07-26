@@ -8,5 +8,7 @@ namespace TypeChecker.TypeInfos
     {
         private static VoidTypeInfo instance = new VoidTypeInfo();
         public static VoidTypeInfo Get() => instance;
+
+        public override bool IsConvertibleTo(TypeInfo other) => true;
     }
 }

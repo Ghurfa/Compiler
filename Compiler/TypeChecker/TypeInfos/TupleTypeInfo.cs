@@ -29,5 +29,18 @@ namespace TypeChecker.TypeInfos
         {
             Types = types;
         }
+
+        public override bool IsConvertibleTo(TypeInfo other)
+        {
+            if (other is TupleTypeInfo otherType && otherType.Types.Length == Types.Length)
+            {
+                for(int i = 0; i < Types.Length; i++)
+                {
+                    if (!Types[i].IsConvertibleTo(otherType.Types[i])) return false;
+                }
+                return true;
+            }
+            else return false;
+        }
     }
 }
