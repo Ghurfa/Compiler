@@ -11,14 +11,17 @@ namespace TypeChecker.SymbolNodes
         public FunctionTypeInfo Type { get; set; }
         public MethodDeclaration Declaration { get; set; }
 
-        public MethodNode(MethodDeclaration methodDecl, ClassNode parent)
+        public MethodNode(SymbolsTable table, MethodDeclaration methodDecl, ClassNode parent)
             : base(methodDecl.Name.Text, parent, new Modifiers(methodDecl.Modifiers))
         {
-            ValueTypeInfo retType = ValueTypeInfo.Get(methodDecl.ReturnType);
+            TypeInfo retType;
+            if (methodDecl.ReturnType is VoidType) retType = VoidTypeInfo.Get();
+            else retType = ValueTypeInfo.Get(table, methodDecl.ReturnType);
+
             ValueTypeInfo[] paramTypes = new ValueTypeInfo[methodDecl.ParameterList.Parameters.Length];
             for (int i = 0; i < paramTypes.Length; i++)
             {
-                paramTypes[i] = ValueTypeInfo.Get(methodDecl.ParameterList.Parameters[i].Type);
+                paramTypes[i] = ValueTypeInfo.Get(table, methodDecl.ParameterList.Parameters[i].Type);
             }
 
             Declaration = methodDecl;

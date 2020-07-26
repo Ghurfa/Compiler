@@ -9,20 +9,20 @@ namespace TypeChecker.SymbolNodes
 {
     class FieldNode : ClassItemNode
     {
-        public TypeInfo Type { get; set; }
+        public ValueTypeInfo Type { get; set; }
         public FieldDeclaration Declaration { get; set; }
 
-        protected FieldNode(string name, SymbolNode parent, TypeInfo type, Modifiers modifiers, FieldDeclaration declaration)
+        protected FieldNode(SymbolsTable table, string name, SymbolNode parent, Modifiers modifiers, FieldDeclaration declaration)
             : base(name, parent, modifiers)
         {
-            Type = type;
+            Type = null;
             Declaration = declaration;
         }
 
-        public FieldNode(SimpleFieldDeclaration sFieldDecl, ClassNode parent)
+        public FieldNode(SymbolsTable table, SimpleFieldDeclaration sFieldDecl, ClassNode parent)
             : base(sFieldDecl.Name.Text, parent, new Modifiers(sFieldDecl.Modifiers))
         {
-            Type = ValueTypeInfo.Get(sFieldDecl.Type);
+            Type = ValueTypeInfo.Get(table, sFieldDecl.Type);
             Declaration = sFieldDecl;
         }
     }

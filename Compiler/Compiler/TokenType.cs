@@ -15,9 +15,12 @@ namespace Compiler.TokenTypes
 
         //Todo: break down into more specific types
         Modifier,
-        PrimitiveType,
         ValueKeyword,
         DefaultKeyword,
+
+        //Primitive types
+        PrimitiveType,
+        VoidKeyword,
 
         //Control keywords
         IfKeyword,

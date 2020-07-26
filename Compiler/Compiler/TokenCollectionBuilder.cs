@@ -30,9 +30,10 @@ namespace Compiler
                 case TokenType.ClassKeyword: return new ClassKeywordToken(text, index);
                 case TokenType.ConstructorKeyword: return new ConstructorKeywordToken(text, index);
                 case TokenType.Modifier: return new ModifierToken(text, index);
-                case TokenType.PrimitiveType: return new PrimitiveTypeToken(text, index);
                 case TokenType.ValueKeyword: return new ValueKeywordToken(text, index);
                 case TokenType.DefaultKeyword: return new DefaultKeywordToken(text, index);
+                case TokenType.PrimitiveType: return new PrimitiveTypeToken(text, index);
+                case TokenType.VoidKeyword: return new VoidKeywordToken(text, index);
                 case TokenType.IfKeyword: return new IfKeywordToken(text, index);
                 case TokenType.ElseKeyword: return new ElseKeywordToken(text, index);
                 case TokenType.WhileKeyword: return new WhileKeywordToken(text, index);

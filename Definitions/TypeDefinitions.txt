@@ -10,6 +10,9 @@ $Type
     .Primitive
     PrimitiveTypeToken:TypeKeyword
 
+    .Void
+    VoidKeyword
+
     .QualifiedIdentifier
     QualifiedIdentifier:Identifier;argument
 

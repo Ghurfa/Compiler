@@ -103,7 +103,7 @@ namespace TypeChecker
 
                 table.EnterScope(IndexInParent);
                 VerifyStatement(table, 0, null, forBlock.StartStatement, returnType, constraints);
-                VerifyExpressionRequireType(table, 1, forBlock.ContinueExpr, constraints | VerifyConstraints.DisallowDeclarations, ValueTypeInfo.Get("bool"));
+                VerifyExpressionRequireType(table, 1, forBlock.ContinueExpr, constraints | VerifyConstraints.DisallowDeclarations, ValueTypeInfo.PrimitiveTypes["bool"]);
                 VerifyStatement(table, 2, null, forBlock.IterateStatement, returnType, constraints | VerifyConstraints.DisallowDeclarations);
 
                 var bodyScopes = new List<IScopeInfo>();

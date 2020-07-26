@@ -349,6 +349,7 @@ namespace Compiler
                 case "continue": tokenType = TokenType.ContinueKeyword; return true;
                 case "throw": tokenType = TokenType.ThrowKeyword; return true;
                 case "default": tokenType = TokenType.DefaultKeyword; return true;
+                case "void": tokenType = TokenType.VoidKeyword; return true;
                 default:
                     if (modifierKeywords.Contains(word))
                     {

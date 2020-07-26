@@ -7,9 +7,8 @@ namespace TypeChecker.SymbolNodes
 {
     class InferredFieldNode : FieldNode
     {
-
-        public InferredFieldNode(InferredFieldDeclaration iFieldDecl, ClassNode parent)
-            : base(iFieldDecl.Name.Text, parent, null, new Modifiers(iFieldDecl.Modifiers), iFieldDecl)
+        public InferredFieldNode(SymbolsTable table, InferredFieldDeclaration iFieldDecl, ClassNode parent)
+            : base(table, iFieldDecl.Name.Text, parent, new Modifiers(iFieldDecl.Modifiers), iFieldDecl)
         {
         }
     }

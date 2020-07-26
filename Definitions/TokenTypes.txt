@@ -10,9 +10,12 @@ ClassKeyword
 ConstructorKeyword
 
 Modifier
-PrimitiveType
 ValueKeyword
 DefaultKeyword
+
+//Primitive types
+PrimitiveType
+VoidKeyword
 
 //Control keywords
 IfKeyword

@@ -25,7 +25,7 @@ namespace TypeChecker
             //Resolve inferred field types
             foreach ((InferredFieldNode node, InferredFieldDeclaration decl) in inferredFields)
             {
-                TypeInfo defaultType = VerifyExpression(null, 0, decl.DefaultValue, inferredCheckOptions);
+                ValueTypeInfo defaultType = VerifyExpression(null, 0, decl.DefaultValue, inferredCheckOptions);
                 node.Type = defaultType;
             }
 
@@ -81,12 +81,12 @@ namespace TypeChecker
             }
         }
 
-        private static TypeInfo VerifyExpression(SymbolsTable table, int index, Expression expr, VerifyConstraints options)
+        private static ValueTypeInfo VerifyExpression(SymbolsTable table, int index, Expression expr, VerifyConstraints options)
         {
-            ValueTypeInfo IntType = ValueTypeInfo.Get("int");
-            ValueTypeInfo BoolType = ValueTypeInfo.Get("bool");
-            ValueTypeInfo CharType = ValueTypeInfo.Get("char");
-            ValueTypeInfo StringType = ValueTypeInfo.Get("string");
+            ValueTypeInfo IntType = ValueTypeInfo.PrimitiveTypes["int"];
+            ValueTypeInfo BoolType = ValueTypeInfo.PrimitiveTypes["bool"];
+            ValueTypeInfo CharType = ValueTypeInfo.PrimitiveTypes["char"];
+            ValueTypeInfo StringType = ValueTypeInfo.PrimitiveTypes["string"];
             switch (expr)
             {
                 //Literals
@@ -99,12 +99,12 @@ namespace TypeChecker
                 //Primary expressions
                 case IdentifierExpression identifier:
                     if (options.HasFlag(VerifyConstraints.DisallowReferences)) throw new ReferencingFieldException();
-                    else return table.GetSymbol(identifier.Identifier.Text, index);
+                    else throw new NotImplementedException();
                 case DeclarationExpression declaration:
                     if (options.HasFlag(VerifyConstraints.DisallowDeclarations)) throw new InvalidDeclarationException();
                     else
                     {
-                        TypeInfo type = ValueTypeInfo.Get(declaration.Type);
+                        ValueTypeInfo type = ValueTypeInfo.Get(table, declaration.Type);
                         table.AddSymbol(declaration.Identifier.Text, type, index);
                         return type;
                     }
@@ -156,7 +156,7 @@ namespace TypeChecker
                     else
                     {
                         string name = declAssign.To.ToString();
-                        TypeInfo type = VerifyExpression(table, index, declAssign.From, options);
+                        ValueTypeInfo type = VerifyExpression(table, index, declAssign.From, options);
                         table.AddSymbol(name, type, index);
                         return type;
                     }
@@ -213,21 +213,21 @@ namespace TypeChecker
             }
         }
 
-        private static TypeInfo VerifySameTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options)
+        private static ValueTypeInfo VerifySameTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options)
         {
             var leftType = VerifyExpression(table, index, leftExpr, options);
             VerifyExpressionRequireType(table, index, rightExpr, options, leftType);
             return leftType;
         }
 
-        private static TypeInfo VerifySameRequiredTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options, params TypeInfo[] allowedTypes)
+        private static ValueTypeInfo VerifySameRequiredTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options, params TypeInfo[] allowedTypes)
         {
             var leftType = VerifyExpressionRequireType(table, index, leftExpr, options, allowedTypes);
             VerifyExpressionRequireType(table, index, rightExpr, options, leftType);
             return leftType;
         }
 
-        private static TypeInfo VerifyExpressionRequireType(SymbolsTable table, int index, Expression expr, VerifyConstraints options, params TypeInfo[] allowedTypes)
+        private static ValueTypeInfo VerifyExpressionRequireType(SymbolsTable table, int index, Expression expr, VerifyConstraints options, params TypeInfo[] allowedTypes)
         {
             var type = VerifyExpression(table, index, expr, options);
             if (!allowedTypes.Contains(type)) throw new TypeMismatchException();

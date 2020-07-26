@@ -1,4 +1,5 @@
-﻿using Compiler.SyntaxTreeItems.ClassItemDeclarations;
+﻿using Compiler.SyntaxTreeItems;
+using Compiler.SyntaxTreeItems.ClassItemDeclarations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,10 @@ namespace TypeChecker.SymbolNodes
         public List<FieldNode> SimpleDefaultedFields { get; set; }
         public List<MethodNode> Methods { get; set; }
         public List<ConstructorNode> Constructors { get; set; }
+        public Dictionary<string, ClassNode> CachedClasses { get; set; }
+        public ClassDeclaration Declaration { get; set; }
 
-        public ClassNode(string name, SymbolNode parent, Modifiers modifiers)
+        public ClassNode(string name, ClassDeclaration classDecl, SymbolNode parent, Modifiers modifiers, Dictionary<string, ClassNode> defaultCached)
             : base(name, parent)
         {
             Modifiers = modifiers;
@@ -24,6 +27,10 @@ namespace TypeChecker.SymbolNodes
             SimpleDefaultedFields = new List<FieldNode>();
             Methods = new List<MethodNode>();
             Constructors = new List<ConstructorNode>();
+
+            if (defaultCached == null) CachedClasses = null;
+            else CachedClasses = new Dictionary<string, ClassNode>(defaultCached);
+            Declaration = classDecl;
         }
 
         public override void AddChild(SymbolNode child)

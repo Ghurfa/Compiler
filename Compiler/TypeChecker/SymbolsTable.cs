@@ -28,18 +28,13 @@ namespace TypeChecker
         private GlobalNode globalNode;
         private Stack<Dictionary<string, ClassNode>> namespaceStack;
         private Stack<ScopeInfo> classStack;
+        private Dictionary<string, ClassNode> defaultCachedClasses;
 
         public SymbolsTable()
         {
-            globalNode = new GlobalNode();
-            globalNode.AddChild(new ClassNode("int", globalNode, Modifiers.Public));
-            globalNode.AddChild(new ClassNode("bool", globalNode, Modifiers.Public));
-            globalNode.AddChild(new ClassNode("string", globalNode, Modifiers.Public));
-            globalNode.AddChild(new ClassNode("char", globalNode, Modifiers.Public));
-
             namespaceStack = new Stack<Dictionary<string, ClassNode>>();
-            EnterNamespace(globalNode);
             classStack = new Stack<ScopeInfo>();
+            defaultCachedClasses = new Dictionary<string, ClassNode>();
         }
 
         public void EnterMethod(ParameterListDeclaration parameters)
@@ -47,7 +42,7 @@ namespace TypeChecker
             EnterScope(1);
             foreach (ParameterDeclaration param in parameters.Parameters)
             {
-                AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(param.Type), -1);
+                AddSymbol(param.Identifier.Text, ValueTypeInfo.Get(this, param.Type), -1);
             }
         }
 
@@ -87,6 +82,40 @@ namespace TypeChecker
                 else statementIndex = scope.IndexInParent;
             }
             throw new InvalidOperationException();
+        }
+
+        public BuiltInClassNode GetBuiltInClass(string name)
+        {
+            if(globalNode.TryGetChild(name, out SymbolNode child))
+            {
+                return (BuiltInClassNode)child;
+            }
+            throw new ClassNotFoundException();
+        }
+
+        public ClassNode GetClass(string name)
+        {
+            if (current.CachedClasses.TryGetValue(name, out ClassNode classNode))
+                return classNode;
+            else
+            {
+                NamespaceNode parent = (NamespaceNode)current.Parent;
+                while (parent != null)
+                {
+                    if (parent.TryGetChild(name, out SymbolNode child))
+                    {
+                        if (child is ClassNode ret)
+                        {
+                            classNode.CachedClasses.Add(name, ret);
+                            return ret;
+                        }
+                        else if (child is NamespaceNode _) throw new NamespaceUsedAsTypeException();
+                        else throw new InvalidOperationException();
+                    }
+                    parent = (NamespaceNode)parent.Parent;
+                }
+                throw new ClassNotFoundException();
+            }
         }
     }
 }

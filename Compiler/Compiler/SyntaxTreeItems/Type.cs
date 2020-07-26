@@ -13,7 +13,7 @@ namespace Compiler.SyntaxTreeItems
         public static Type ReadType(TokenCollection tokens)
         {
             IToken peek = tokens.PeekToken();
-            if(peek is OpenPerenToken)
+            if (peek is OpenPerenToken)
             {
                 return new TupleType(tokens);
             }
@@ -21,18 +21,16 @@ namespace Compiler.SyntaxTreeItems
             Type baseType;
 
 
-            if(peek is PrimitiveTypeToken)
-            {
+            if (peek is PrimitiveTypeToken)
                 baseType = new PrimitiveType(tokens);
-            }
+            else if (peek is VoidKeywordToken)
+                baseType = new VoidType(tokens);
             else
-            {
                 baseType = new QualifiedIdentifierType(tokens, new QualifiedIdentifier(tokens));
-            }
 
             Type typeSoFar = baseType;
             bool finished = false;
-            while(!finished)
+            while (!finished)
             {
                 if (tokens.PeekToken() is OpenBracketToken)
                 {
