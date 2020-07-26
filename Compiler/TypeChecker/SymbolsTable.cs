@@ -1,6 +1,7 @@
 ﻿using Compiler.SyntaxTreeItems;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using TypeChecker.Exceptions;
@@ -38,7 +39,9 @@ namespace TypeChecker
                 Locals = firstDict;
             }
         }
+
         private GlobalNode globalNode;
+        private ObjectClassNode objectNode;
         private Stack<Dictionary<string, ClassNode>> namespaceStack;
         private Stack<ScopeInfo> classStack;
         private Dictionary<string, ClassNode> defaultCachedClasses;
@@ -100,7 +103,7 @@ namespace TypeChecker
             return false;
         }
 
-        public ValueTypeInfo GetFieldType(string baseIdentifier, string fieldName, int statementIndex)
+        public TypeInfos.TypeInfo GetFieldType(string baseIdentifier, string fieldName, int statementIndex)
         {
             if (TryGetSymbol(baseIdentifier, statementIndex, out ValueTypeInfo localType, false))
             {
@@ -119,7 +122,7 @@ namespace TypeChecker
             }
         }
 
-        public ValueTypeInfo GetInstanceFieldType(ValueTypeInfo baseType, string fieldName)
+        public TypeInfos.TypeInfo GetInstanceFieldType(ValueTypeInfo baseType, string fieldName)
         {
             if (baseType.Class.Fields.TryGetValue(fieldName, out FieldNode ret))
             {
@@ -128,6 +131,31 @@ namespace TypeChecker
                 else return ret.Type;
             }
             else throw new NoSuchMemberException();
+        }
+
+        public bool TryGetMethodType(string methodName, IEnumerable<ValueTypeInfo> paramTypes, out TypeInfos.TypeInfo type)
+            => TryGetMethodType(current, methodName, paramTypes, out type);
+
+        public bool TryGetMethodType(ClassNode classNode, string methodName, IEnumerable<ValueTypeInfo> paramTypes, out TypeInfos.TypeInfo type)
+        {
+            ClassNode current = classNode;
+            while (current != null)
+            {
+                foreach (MethodNode method in current.Methods)
+                {
+                    if (method.Name == methodName)
+                    {
+                        if (Enumerable.SequenceEqual(method.Type.Parameters, paramTypes))
+                        {
+                            type = method.Type.ReturnType;
+                            return true;
+                        }
+                    }
+                }
+                current = current.ParentClass;
+            }
+            type = null;
+            return false;
         }
 
         public BuiltInClassNode GetBuiltInClass(string name)

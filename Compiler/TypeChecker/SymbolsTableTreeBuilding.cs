@@ -61,10 +61,12 @@ namespace TypeChecker
         private void InitializeTree()
         {
             globalNode = new GlobalNode();
+            objectNode = new ObjectClassNode(globalNode);
+
             defaultCachedClasses.Clear();
             void add(string name)
             {
-                var newNode = new BuiltInClassNode(name, globalNode);
+                var newNode = new BuiltInClassNode(name, objectNode, globalNode);
                 globalNode.AddChild(newNode);
                 defaultCachedClasses.Add(name, newNode);
             }
@@ -74,6 +76,9 @@ namespace TypeChecker
             add("char");
 
             ValueTypeInfo.Initialize(this);
+
+            ValueTypeInfo stringType = ValueTypeInfo.PrimitiveTypes["string"];
+            objectNode.AddMethodChild(new MethodNode("ToString", new FunctionTypeInfo(stringType, new ValueTypeInfo[] { }), objectNode, Modifiers.Public));
         }
 
         private NamespaceNode AddNamespace(NamespaceDeclaration namespaceDecl)
@@ -115,7 +120,7 @@ namespace TypeChecker
             }
             else
             {
-                var newChild = new ClassNode(name, classDecl, parent, new Modifiers(classDecl.Modifiers), defaultCachedClasses);
+                var newChild = new ClassNode(name, classDecl, objectNode, parent, new Modifiers(classDecl.Modifiers), defaultCachedClasses);
                 parent.AddChild(newChild);
                 return newChild;
             }

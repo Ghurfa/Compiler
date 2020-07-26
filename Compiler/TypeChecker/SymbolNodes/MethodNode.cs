@@ -27,5 +27,11 @@ namespace TypeChecker.SymbolNodes
             Declaration = methodDecl;
             Type = new FunctionTypeInfo(retType, paramTypes);
         }
+
+        public MethodNode(string name, FunctionTypeInfo type, ClassNode parent, Modifiers modifiers)
+            :base(name, parent, modifiers)
+        {
+            Type = type;
+        }
     }
 }

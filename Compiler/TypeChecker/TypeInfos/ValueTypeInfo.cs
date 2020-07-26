@@ -11,9 +11,8 @@ namespace TypeChecker.TypeInfos
         private static Dictionary<ClassNode, ValueTypeInfo> types = new Dictionary<ClassNode, ValueTypeInfo>();
         public static Dictionary<string, ValueTypeInfo> PrimitiveTypes = new Dictionary<string, ValueTypeInfo>();
 
-        public static ValueTypeInfo Get(SymbolsTable table, string name)
+        public static ValueTypeInfo Get(ClassNode classNode)
         {
-            ClassNode classNode = table.GetClass(name);
             if (types.TryGetValue(classNode, out ValueTypeInfo existing)) return existing;
             else
             {
@@ -23,6 +22,8 @@ namespace TypeChecker.TypeInfos
             }
         }
 
+        public static ValueTypeInfo Get(SymbolsTable table, string name) => Get(table.GetClass(name));
+
         public static ValueTypeInfo Get(SymbolsTable table, Compiler.SyntaxTreeItems.Type type)
         {
             switch (type)
@@ -31,7 +32,7 @@ namespace TypeChecker.TypeInfos
                 case TupleType tupleType:
                     {
                         var subTypes = new ValueTypeInfo[tupleType.Items.Length];
-                        for(int i = 0; i < subTypes.Length; i++)
+                        for (int i = 0; i < subTypes.Length; i++)
                         {
                             subTypes[i] = Get(table, tupleType.Items[i].Type);
                         }
@@ -57,7 +58,7 @@ namespace TypeChecker.TypeInfos
         }
 
         public ClassNode Class { get; set; }
-        protected ValueTypeInfo() {}
+        protected ValueTypeInfo() { }
         private ValueTypeInfo(ClassNode type) { Class = type; }
 
         public override string ToString() => Class.Name;

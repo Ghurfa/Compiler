@@ -26,8 +26,12 @@ namespace TypeChecker
             //Resolve inferred field types
             foreach ((InferredFieldNode node, InferredFieldDeclaration decl) in inferredFields)
             {
-                ValueTypeInfo defaultType = VerifyExpression(null, 0, decl.DefaultValue, inferredCheckOptions);
-                node.Type = defaultType;
+                TypeInfo defaultType = VerifyExpression(null, 0, decl.DefaultValue, inferredCheckOptions);
+                if (defaultType is VoidTypeInfo)
+                    throw new VoidInferredFieldException();
+                else if (defaultType is ValueTypeInfo valTypeInfo)
+                    node.Type = valTypeInfo;
+                else throw new InvalidOperationException();
             }
 
             var simpleCheckOptions = VerifyConstraints.RequireStatic |
@@ -82,7 +86,7 @@ namespace TypeChecker
             }
         }
 
-        private static ValueTypeInfo VerifyExpression(SymbolsTable table, int index, Expression expr, VerifyConstraints options)
+        private static TypeInfo VerifyExpression(SymbolsTable table, int index, Expression expr, VerifyConstraints options)
         {
             ValueTypeInfo IntType = ValueTypeInfo.PrimitiveTypes["int"];
             ValueTypeInfo BoolType = ValueTypeInfo.PrimitiveTypes["bool"];
@@ -121,8 +125,49 @@ namespace TypeChecker
                         return table.GetFieldType(baseIdentifier.Identifier.Text, memberAccess.Item.Text, index);
                     else
                     {
-                        ValueTypeInfo baseType = VerifyExpression(table, index, memberAccess.BaseExpression, options);
-                        return table.GetInstanceFieldType(baseType, memberAccess.Item.Text);
+                        TypeInfo baseType = VerifyExpression(table, index, memberAccess.BaseExpression, options);
+
+                        if (baseType is VoidTypeInfo) throw new VoidMemberAccessException();
+                        else if (baseType is ValueTypeInfo valueTypeInfo)
+                            return table.GetInstanceFieldType(valueTypeInfo, memberAccess.Item.Text);
+                        else throw new InvalidOperationException();
+                    }
+                case MethodCallExpression methodCall:
+                    {
+                        ValueTypeInfo[] argTypes = new ValueTypeInfo[methodCall.Arguments.Arguments.Length];
+                        if (methodCall.Method is IdentifierExpression identifierExpr)
+                        {
+                            if (table.TryGetMethodType(identifierExpr.Identifier.Text, argTypes, out TypeInfo type))
+                                return type;
+                            else throw new NoSuchMemberException();
+                        }
+                        else if (methodCall.Method is MemberAccessExpression memberAccess)
+                        {
+                            TypeInfo baseType = VerifyExpression(table, index, memberAccess.BaseExpression, options);
+
+                            if (baseType is VoidTypeInfo) throw new VoidMemberAccessException();
+                            else if (baseType is ValueTypeInfo valueTypeInfo)
+                            {
+                                if (table.TryGetMethodType(valueTypeInfo.Class, memberAccess.Item.Text, argTypes, out TypeInfo type))
+                                    return type;
+                                else throw new NoSuchMemberException();
+                            }
+                            else throw new InvalidOperationException();
+                        }
+                        else if (methodCall.Method is NullCondMemberAccessExpression nullCondMemberAccess)
+                        {
+                            TypeInfo baseType = VerifyExpression(table, index, nullCondMemberAccess.BaseExpression, options);
+
+                            if (baseType is VoidTypeInfo) throw new VoidMemberAccessException();
+                            else if (baseType is ValueTypeInfo valueTypeInfo)
+                            {
+                                if (table.TryGetMethodType(valueTypeInfo.Class, nullCondMemberAccess.Item.Text, argTypes, out TypeInfo type))
+                                    return type;
+                                else throw new NoSuchMemberException();
+                            }
+                            else throw new InvalidOperationException();
+                        }
+                        else throw new InvalidOperationException();
                     }
                 case PerenthesizedExpression perenthesized:
                     return VerifyExpression(table, index, perenthesized.Expression, options);
@@ -172,8 +217,11 @@ namespace TypeChecker
                     else
                     {
                         string name = declAssign.To.ToString();
-                        ValueTypeInfo type = VerifyExpression(table, index, declAssign.From, options);
-                        table.AddLocal(name, type, index);
+                        TypeInfo type = VerifyExpression(table, index, declAssign.From, options);
+                        if (type is VoidTypeInfo) throw new VoidVariableDeclarationException();
+                        else if (type is ValueTypeInfo valTypeInfo)
+                            table.AddLocal(name, valTypeInfo, index);
+                        else throw new InvalidOperationException();
                         return type;
                     }
 
@@ -229,25 +277,31 @@ namespace TypeChecker
             }
         }
 
-        private static ValueTypeInfo VerifySameTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options)
+        private static TypeInfo VerifySameTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options)
         {
             var leftType = VerifyExpression(table, index, leftExpr, options);
             VerifyExpressionRequireType(table, index, rightExpr, options, leftType);
             return leftType;
         }
 
-        private static ValueTypeInfo VerifySameRequiredTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options, params TypeInfo[] allowedTypes)
+        private static TypeInfo VerifySameRequiredTypeExprs(SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints options, params TypeInfo[] allowedTypes)
         {
             var leftType = VerifyExpressionRequireType(table, index, leftExpr, options, allowedTypes);
             VerifyExpressionRequireType(table, index, rightExpr, options, leftType);
             return leftType;
         }
 
-        private static ValueTypeInfo VerifyExpressionRequireType(SymbolsTable table, int index, Expression expr, VerifyConstraints options, params TypeInfo[] allowedTypes)
+        private static TypeInfo VerifyExpressionRequireType(SymbolsTable table, int index, Expression expr, VerifyConstraints options, params TypeInfo[] allowedTypes)
         {
             var type = VerifyExpression(table, index, expr, options);
-            if (!allowedTypes.Contains(type)) throw new TypeMismatchException();
-            return type;
+            foreach(TypeInfo allowedType in allowedTypes)
+            {
+                if(type.IsConvertibleTo(allowedType))
+                {
+                    return type;
+                }
+            }
+            throw new TypeMismatchException();
         }
     }
 }

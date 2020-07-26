@@ -140,7 +140,7 @@ $Expression
         +ICompleteStatement
         PrimaryExpression:Method;argument
         OpenPeren
-        ArgumentList:argument
+        ArgumentList:Arguments
         ClosePeren
 
         .NewObject

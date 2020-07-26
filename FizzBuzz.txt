@@ -2,10 +2,11 @@ FizzBuzz namespace
 {
     FizzBuzz class
     {
-        b := 5
-        c: static bool = b < 10
+        b := 5 : static
+        c : static bool = b < 10
         FizzBuzz public static void(start:int, end:int)
         {
+            a:string
             m:(a:int, b:int) = (2, 3)
             for(i := start; i < end; i++)
             {

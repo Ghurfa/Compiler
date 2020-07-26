@@ -18,8 +18,9 @@ namespace TypeChecker.SymbolNodes
         public List<ConstructorNode> Constructors { get; set; }
         public Dictionary<string, ClassNode> CachedClasses { get; set; }
         public ClassDeclaration Declaration { get; set; }
+        public ClassNode ParentClass { get; set; }
 
-        public ClassNode(string name, ClassDeclaration classDecl, SymbolNode parent, Modifiers modifiers, Dictionary<string, ClassNode> defaultCached)
+        public ClassNode(string name, ClassDeclaration classDecl, ClassNode parentClass, SymbolNode parent, Modifiers modifiers, Dictionary<string, ClassNode> defaultCached)
             : base(name, parent)
         {
             Modifiers = modifiers;
@@ -31,6 +32,7 @@ namespace TypeChecker.SymbolNodes
             if (defaultCached == null) CachedClasses = null;
             else CachedClasses = new Dictionary<string, ClassNode>(defaultCached);
             Declaration = classDecl;
+            ParentClass = parentClass;
         }
 
         public override void AddChild(SymbolNode child)

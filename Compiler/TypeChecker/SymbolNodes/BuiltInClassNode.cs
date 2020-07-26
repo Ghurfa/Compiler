@@ -6,8 +6,8 @@ namespace TypeChecker.SymbolNodes
 {
     class BuiltInClassNode : ClassNode
     {
-        public BuiltInClassNode(string name, GlobalNode parent)
-            :base(name, null, parent, Modifiers.Public, null)
+        public BuiltInClassNode(string name, ClassNode parentClass, GlobalNode parent)
+            :base(name, null, parentClass, parent, Modifiers.Public, null)
         {
         }
     }

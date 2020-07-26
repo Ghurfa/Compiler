@@ -9,14 +9,14 @@ namespace Compiler.SyntaxTreeItems
     {
         public PrimaryExpression Method { get; private set; }
         public OpenPerenToken OpenPeren { get; private set; }
-        public ArgumentList argument { get; private set; }
+        public ArgumentList Arguments { get; private set; }
         public ClosePerenToken ClosePeren { get; private set; }
 
         public MethodCallExpression(TokenCollection tokens, PrimaryExpression method)
         {
             Method = method;
             OpenPeren = tokens.PopToken<OpenPerenToken>();
-            argument = new ArgumentList(tokens);
+            Arguments = new ArgumentList(tokens);
             ClosePeren = tokens.PopToken<ClosePerenToken>();
         }
 
@@ -25,7 +25,7 @@ namespace Compiler.SyntaxTreeItems
             string ret = "";
             ret += Method.ToString();
             ret += OpenPeren.ToString();
-            ret += argument.ToString();
+            ret += Arguments.ToString();
             ret += ClosePeren.ToString();
             return ret;
         }
