@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TypeChecker
+namespace SymbolsTable
 {
     public enum AccessModifier
     {

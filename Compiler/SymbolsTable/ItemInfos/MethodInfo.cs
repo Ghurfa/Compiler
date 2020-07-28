@@ -2,17 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TypeChecker.TypeInfos;
+using SymbolsTable.TypeInfos;
 
-namespace TypeChecker.SymbolNodes
+namespace SymbolsTable
 {
-    public class MethodNode : ClassItemNode
+    public class MethodInfo : ClassMemberInfo
     {
-        public FunctionTypeInfo Type { get; set; }
-        public MethodDeclaration Declaration { get; set; }
+        public FunctionTypeInfo Type { get; private set; }
+        public MethodDeclaration Declaration { get; private set; }
 
-        public MethodNode(SymbolsTable table, MethodDeclaration methodDecl, ClassNode parent)
-            : base(methodDecl.Name.Text, parent, new Modifiers(methodDecl.Modifiers))
+        public MethodInfo(SymbolsTable table, MethodDeclaration methodDecl)
+            : base(methodDecl.Name.Text, new Modifiers(methodDecl.Modifiers))
         {
             TypeInfo retType;
             if (methodDecl.ReturnType is VoidType) retType = VoidTypeInfo.Get();
@@ -28,8 +28,8 @@ namespace TypeChecker.SymbolNodes
             Type = new FunctionTypeInfo(retType, paramTypes);
         }
 
-        internal MethodNode(string name, FunctionTypeInfo type, ClassNode parent, Modifiers modifiers)
-            :base(name, parent, modifiers)
+        internal MethodInfo(string name, FunctionTypeInfo type, Modifiers modifiers)
+            :base(name, modifiers)
         {
             Type = type;
         }

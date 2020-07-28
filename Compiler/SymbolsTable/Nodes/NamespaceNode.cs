@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TypeChecker.TypeInfos;
+using SymbolsTable.TypeInfos;
 
-namespace TypeChecker
+namespace SymbolsTable
 {
     public class NamespaceNode : SymbolNode
     {

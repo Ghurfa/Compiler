@@ -4,15 +4,14 @@ using Compiler.SyntaxTreeItems.ClassItemDeclarations;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TypeChecker.Exceptions;
-using TypeChecker.SymbolNodes;
-using TypeChecker.TypeInfos;
+using SymbolsTable.Nodes;
+using SymbolsTable.TypeInfos;
 
-namespace TypeChecker
+namespace SymbolsTable
 {
-    public partial class SymbolsTable
+    public class SymbolsTableBuilder : SymbolsTable
     {
-        public void BuildTree(IEnumerable<NamespaceDeclaration> namespaces, out List<(InferredFieldNode, InferredFieldDeclaration)> inferredFields)
+        public void BuildTree(IEnumerable<NamespaceDeclaration> namespaces, out List<(InferredFieldInfo, InferredFieldDeclaration)> inferredFields)
         {
             InitializeTree();
 
@@ -25,9 +24,9 @@ namespace TypeChecker
                 }
             }
 
-            inferredFields = new List<(InferredFieldNode, InferredFieldDeclaration)>();
+            inferredFields = new List<(InferredFieldInfo, InferredFieldDeclaration)>();
 
-            foreach (ClassNode classNode in IterateIgnoreFields)
+            foreach (ClassNode classNode in IterateFirstPass)
             {
                 foreach (ClassItemDeclaration classItem in classNode.Declaration.ClassItems)
                 {
@@ -35,22 +34,22 @@ namespace TypeChecker
                     {
                         case InferredFieldDeclaration iFieldDecl:
                             {
-                                var newNode = new InferredFieldNode(this, iFieldDecl, classNode);
+                                var newNode = new InferredFieldInfo(iFieldDecl);
                                 inferredFields.Add((newNode, iFieldDecl));
-                                classNode.AddFieldChild(newNode);
+                                classNode.AddField(newNode);
                             }
                             break;
                         case SimpleFieldDeclaration sFieldDecl:
                             {
-                                var newNode = new FieldNode(this, sFieldDecl, classNode);
-                                classNode.AddFieldChild(newNode);
+                                var newNode = new SimpleFieldInfo(this, sFieldDecl);
+                                classNode.AddField(newNode);
                             }
                             break;
                         case MethodDeclaration methodDecl:
-                            classNode.AddMethodChild(new MethodNode(this, methodDecl, classNode));
+                            classNode.AddMethod(new MethodInfo(this, methodDecl));
                             break;
                         case ConstructorDeclaration ctorDecl:
-                            classNode.AddConstructorChild(new ConstructorNode(this, ctorDecl, classNode));
+                            classNode.AddConstructor(new ConstructorInfo(this, ctorDecl));
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -81,7 +80,7 @@ namespace TypeChecker
             ValueTypeInfo.Initialize(this, primitiveTypes);
 
             ValueTypeInfo stringType = ValueTypeInfo.PrimitiveTypes["string"];
-            objectNode.AddMethodChild(new MethodNode("ToString", new FunctionTypeInfo(stringType, new ValueTypeInfo[] { }), objectNode, Modifiers.Public));
+            objectNode.AddMethod(new MethodInfo("ToString", new FunctionTypeInfo(stringType, new ValueTypeInfo[] { }), Modifiers.Public));
         }
 
         private NamespaceNode AddNamespace(NamespaceDeclaration namespaceDecl)
@@ -114,18 +113,16 @@ namespace TypeChecker
             return (NamespaceNode)currentNode;
         }
 
-        private ClassNode AddClass(ClassDeclaration classDecl, SymbolNode parent)
+        private Result AddClass(ClassDeclaration classDecl, SymbolNode parent)
         {
             string name = classDecl.Name.Text;
-            if (parent.TryGetChild(name, out SymbolNode classNode))
-            {
-                throw new DuplicateClassException();
-            }
+            if (parent.TryGetChild(name, out SymbolNode _))
+                return Result.DuplicateClass;
             else
             {
                 var newChild = new ClassNode(name, classDecl, objectNode, parent, new Modifiers(classDecl.Modifiers), defaultCachedClasses);
                 parent.AddChild(newChild);
-                return newChild;
+                return Result.Success;
             }
         }
     }

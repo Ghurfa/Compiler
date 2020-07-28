@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Compiler\Compiler.csproj" />
-    <ProjectReference Include="..\SymbolsTable\SymbolsTable.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TypeChecker.SymbolNodes;
+using SymbolsTable.Nodes;
 
-namespace TypeChecker.TypeInfos
+namespace SymbolsTable.TypeInfos
 {
     public class ValueTypeInfo : TypeInfo
     {
@@ -21,8 +21,6 @@ namespace TypeChecker.TypeInfos
                 return ret;
             }
         }
-
-        public static ValueTypeInfo Get(SymbolsTable table, string name) => Get(table.GetClass(name));
 
         public static ValueTypeInfo Get(SymbolsTable table, Compiler.SyntaxTreeItems.Type type)
         {

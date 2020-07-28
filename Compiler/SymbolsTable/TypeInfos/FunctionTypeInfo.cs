@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TypeChecker.TypeInfos
+namespace SymbolsTable.TypeInfos
 {
     public class FunctionTypeInfo : TypeInfo
     {

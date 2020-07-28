@@ -2,17 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TypeChecker.TypeInfos;
+using SymbolsTable.TypeInfos;
 
-namespace TypeChecker.SymbolNodes
+namespace SymbolsTable
 {
-    public class ConstructorNode : ClassItemNode
+    public class ConstructorInfo : ClassMemberInfo
     {
-        public ValueTypeInfo[] ParamTypes { get; set; }
-        public ConstructorDeclaration Declaration { get; set; }
+        public ValueTypeInfo[] ParamTypes { get; private set; }
+        public ConstructorDeclaration Declaration { get; private set; }
 
-        public ConstructorNode(SymbolsTable table, ConstructorDeclaration ctorDecl, ClassNode parent)
-            : base("$ctor", parent, new Modifiers(ctorDecl.Modifiers))
+        public ConstructorInfo(SymbolsTable table, ConstructorDeclaration ctorDecl)
+            : base("$ctor", new Modifiers(ctorDecl.Modifiers))
         {
             Declaration = ctorDecl;
             ParamTypes = new ValueTypeInfo[ctorDecl.ParameterList.Parameters.Length];

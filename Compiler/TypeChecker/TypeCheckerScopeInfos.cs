@@ -1,8 +1,8 @@
 ﻿using Compiler.SyntaxTreeItems;
+using SymbolsTable.TypeInfos;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TypeChecker.TypeInfos;
 
 namespace TypeChecker
 {
@@ -20,7 +20,7 @@ namespace TypeChecker
         private interface IScopeInfo
         {
             int IndexInParent { get; }
-            void Verify(SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints);
+            void Verify(SymbolsTable.SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints);
         }
 
         private struct FunctionScopeInfo : IScopeInfo
@@ -36,7 +36,7 @@ namespace TypeChecker
                 IndexInParent = 1;
             }
 
-            public void Verify(SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints)
+            public void Verify(SymbolsTable.SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints)
             {
                 table.EnterMethod(parameterList);
 
@@ -66,7 +66,7 @@ namespace TypeChecker
                 IndexInParent = index;
             }
 
-            public void Verify(SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints)
+            public void Verify(SymbolsTable.SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints)
             {
                 table.EnterScope(IndexInParent);
 
@@ -96,7 +96,7 @@ namespace TypeChecker
                 IndexInParent = index;
             }
 
-            public void Verify(SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints)
+            public void Verify(SymbolsTable.SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints)
             {
                 VerifyConstraints startConstraints = constraints | VerifyConstraints.DisallowScoping;
                 VerifyConstraints otherConstraints = constraints | VerifyConstraints.DisallowScoping | VerifyConstraints.DisallowDeclarations;

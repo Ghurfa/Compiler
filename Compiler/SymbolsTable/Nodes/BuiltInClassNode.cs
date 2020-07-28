@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TypeChecker.SymbolNodes
+namespace SymbolsTable.Nodes
 {
     public class BuiltInClassNode : ClassNode
     {

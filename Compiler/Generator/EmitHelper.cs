@@ -10,7 +10,7 @@ namespace Generator
 {
     static class EmitHelper
     {
-        public static void EmitScope(ILGenerator generator, Expression expr)
+        public static void EmitScope(ILGenerator generator, ClassBuildingInfo classInfo, Expression expr)
         {
         }
 
