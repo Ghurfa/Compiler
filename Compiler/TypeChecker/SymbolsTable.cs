@@ -10,7 +10,7 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker
 {
-    partial class SymbolsTable
+    public partial class SymbolsTable
     {
         private struct LocalInfo
         {
@@ -54,25 +54,7 @@ namespace TypeChecker
             defaultCachedClasses = new Dictionary<string, ClassNode>();
         }
 
-        public void EnterMethod(ParameterListDeclaration parameters)
-        {
-            EnterScope(1);
-            foreach (ParameterDeclaration param in parameters.Parameters)
-            {
-                AddLocal(param.Identifier.Text, ValueTypeInfo.Get(this, param.Type), -1);
-            }
-        }
-
-        public void ExitMethod() => ExitScope();
-
-        public void EnterScope(int indexInParent)
-        {
-            classStack.Push(new ScopeInfo(indexInParent));
-        }
-
-        public void ExitScope() => classStack.Pop();
-
-        public void AddLocal(string name, ValueTypeInfo type, int index)
+        internal void AddLocal(string name, ValueTypeInfo type, int index)
         {
             bool isFirst = true;
             foreach (ScopeInfo scope in classStack)
@@ -87,7 +69,7 @@ namespace TypeChecker
             classStack.Peek().Locals.Add(name, new LocalInfo(type, index + 1, false));
         }
 
-        public bool TryGetSymbol(string name, int statementIndex, out ValueTypeInfo type, bool requireStatic)
+        internal bool TryResolveLocalOrField(string name, int statementIndex, out ValueTypeInfo type, bool requireStatic)
         {
             foreach (ScopeInfo scope in classStack)
             {
@@ -104,11 +86,11 @@ namespace TypeChecker
             return false;
         }
 
-        public TypeInfos.TypeInfo GetFieldType(string baseIdentifier, string fieldName, int statementIndex)
+        internal TypeInfos.TypeInfo ResolveField(string baseIdentifier, string fieldName, int statementIndex)
         {
-            if (TryGetSymbol(baseIdentifier, statementIndex, out ValueTypeInfo localType, false))
+            if (TryResolveLocalOrField(baseIdentifier, statementIndex, out ValueTypeInfo localType, false))
             {
-                return GetInstanceFieldType(localType, fieldName);
+                return ResolveInstanceField(localType, fieldName);
             }
             else
             {
@@ -123,7 +105,7 @@ namespace TypeChecker
             }
         }
 
-        public TypeInfos.TypeInfo GetInstanceFieldType(ValueTypeInfo baseType, string fieldName)
+        internal TypeInfos.TypeInfo ResolveInstanceField(ValueTypeInfo baseType, string fieldName)
         {
             if (baseType.Class.Fields.TryGetValue(fieldName, out FieldNode ret))
             {
@@ -134,10 +116,10 @@ namespace TypeChecker
             else throw new NoSuchMemberException();
         }
 
-        public bool TryGetMethodType(string methodName, IEnumerable<ValueTypeInfo> paramTypes, out TypeInfos.TypeInfo type)
-            => TryGetMethodType(current, methodName, paramTypes, out type);
+        internal bool TryResolveMethod(string methodName, IEnumerable<ValueTypeInfo> paramTypes, out TypeInfos.TypeInfo type)
+            => TryResolveMethod(current, methodName, paramTypes, out type);
 
-        public bool TryGetMethodType(ClassNode classNode, string methodName, IEnumerable<ValueTypeInfo> paramTypes, out TypeInfos.TypeInfo type)
+        internal bool TryResolveMethod(ClassNode classNode, string methodName, IEnumerable<ValueTypeInfo> paramTypes, out TypeInfos.TypeInfo type)
         {
             ClassNode current = classNode;
             while (current != null)

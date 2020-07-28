@@ -6,7 +6,7 @@ using TypeChecker.SymbolNodes;
 
 namespace TypeChecker.TypeInfos
 {
-    class ValueTypeInfo : TypeInfo
+    public class ValueTypeInfo : TypeInfo
     {
         private static Dictionary<ClassNode, ValueTypeInfo> types = new Dictionary<ClassNode, ValueTypeInfo>();
         public static Dictionary<string, ValueTypeInfo> PrimitiveTypes = new Dictionary<string, ValueTypeInfo>();

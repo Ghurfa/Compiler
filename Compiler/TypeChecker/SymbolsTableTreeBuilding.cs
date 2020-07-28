@@ -10,7 +10,7 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker
 {
-    partial class SymbolsTable
+    public partial class SymbolsTable
     {
         public void BuildTree(IEnumerable<NamespaceDeclaration> namespaces, out List<(InferredFieldNode, InferredFieldDeclaration)> inferredFields)
         {

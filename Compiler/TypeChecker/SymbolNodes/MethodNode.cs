@@ -6,7 +6,7 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker.SymbolNodes
 {
-    class MethodNode : ClassItemNode
+    public class MethodNode : ClassItemNode
     {
         public FunctionTypeInfo Type { get; set; }
         public MethodDeclaration Declaration { get; set; }
@@ -28,7 +28,7 @@ namespace TypeChecker.SymbolNodes
             Type = new FunctionTypeInfo(retType, paramTypes);
         }
 
-        public MethodNode(string name, FunctionTypeInfo type, ClassNode parent, Modifiers modifiers)
+        internal MethodNode(string name, FunctionTypeInfo type, ClassNode parent, Modifiers modifiers)
             :base(name, parent, modifiers)
         {
             Type = type;

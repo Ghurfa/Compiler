@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TypeChecker.SymbolNodes
 {
-    class ClassItemNode : SymbolNode
+    public class ClassItemNode : SymbolNode
     {
         public Modifiers Modifiers { get; set; }
 

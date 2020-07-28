@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TypeChecker.TypeInfos
 {
-    class VoidTypeInfo : TypeInfo
+    public class VoidTypeInfo : TypeInfo
     {
         private static VoidTypeInfo instance = new VoidTypeInfo();
         public static VoidTypeInfo Get() => instance;

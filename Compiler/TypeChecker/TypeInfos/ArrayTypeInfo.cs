@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TypeChecker.TypeInfos
 {
-    class ArrayTypeInfo : ValueTypeInfo
+    public class ArrayTypeInfo : ValueTypeInfo
     {
         public ValueTypeInfo BaseType { get; set; }
 

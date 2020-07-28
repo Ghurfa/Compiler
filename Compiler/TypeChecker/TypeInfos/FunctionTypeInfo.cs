@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TypeChecker.TypeInfos
 {
-    class FunctionTypeInfo : TypeInfo
+    public class FunctionTypeInfo : TypeInfo
     {
         public TypeInfo ReturnType { get; set; }
         public ValueTypeInfo[] Parameters { get; set; }

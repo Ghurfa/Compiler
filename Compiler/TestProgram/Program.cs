@@ -42,6 +42,8 @@ namespace TestProgram
 
             Console.WriteLine("Finished");
             Console.ReadLine();
+            //ILDASM
+            //PEVerify
         }
     }
 }

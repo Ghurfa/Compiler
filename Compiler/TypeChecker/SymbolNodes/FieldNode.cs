@@ -7,7 +7,7 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker.SymbolNodes
 {
-    class FieldNode : ClassItemNode
+    public class FieldNode : ClassItemNode
     {
         public ValueTypeInfo Type { get; set; }
         public FieldDeclaration Declaration { get; set; }

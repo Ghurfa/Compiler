@@ -5,27 +5,27 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker
 {
-    class SymbolNode
+    public abstract class SymbolNode
     {
         public string Name { get; set; }
         public SymbolNode Parent { get; set; }
-        public List<SymbolNode> Children { get; set; }
+        private List<SymbolNode> children;
 
-        public SymbolNode(string name, SymbolNode parent)
+        protected SymbolNode(string name, SymbolNode parent)
         {
             Name = name;
             Parent = parent;
-            Children = new List<SymbolNode>();
+            children = new List<SymbolNode>();
         }
 
         public virtual void AddChild(SymbolNode child)
         {
-            Children.Add(child);
+            children.Add(child);
         }
 
         public bool TryGetChild(string name, out SymbolNode child)
         {
-            foreach (SymbolNode childIter in Children)
+            foreach (SymbolNode childIter in children)
             {
                 if (childIter.Name == name)
                 {
@@ -35,6 +35,17 @@ namespace TypeChecker
             }
             child = null;
             return false;
+        }
+
+        public virtual IEnumerable<SymbolNode> Children
+        {
+            get
+            {
+                foreach (SymbolNode child in children)
+                {
+                    yield return child;
+                }
+            }
         }
     }
 }

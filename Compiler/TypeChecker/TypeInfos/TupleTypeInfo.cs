@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TypeChecker.TypeInfos
 {
-    class TupleTypeInfo : ValueTypeInfo
+    public class TupleTypeInfo : ValueTypeInfo
     {
         private static List<TupleTypeInfo> types = new List<TupleTypeInfo>();
 

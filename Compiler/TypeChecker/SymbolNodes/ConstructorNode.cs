@@ -6,7 +6,7 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker.SymbolNodes
 {
-    class ConstructorNode : ClassItemNode
+    public class ConstructorNode : ClassItemNode
     {
         public ValueTypeInfo[] ParamTypes { get; set; }
         public ConstructorDeclaration Declaration { get; set; }

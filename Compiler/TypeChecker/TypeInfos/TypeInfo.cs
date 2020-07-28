@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TypeChecker.TypeInfos
 {
-    abstract class TypeInfo
+    public abstract class TypeInfo
     {
         public abstract bool IsConvertibleTo(TypeInfo other);
     }

@@ -9,8 +9,9 @@ using TypeChecker.TypeInfos;
 
 namespace TypeChecker.SymbolNodes
 {
-    class ClassNode : SymbolNode
+    public class ClassNode : SymbolNode
     {
+        public string FullName;
         public Modifiers Modifiers { get; set; }
         public Dictionary<string, FieldNode> Fields { get; set; }
         public List<FieldNode> SimpleDefaultedFields { get; set; }
@@ -33,6 +34,8 @@ namespace TypeChecker.SymbolNodes
             else CachedClasses = new Dictionary<string, ClassNode>(defaultCached);
             Declaration = classDecl;
             ParentClass = parentClass;
+
+            FullName = GetFullName();
         }
 
         public override void AddChild(SymbolNode child)
@@ -48,18 +51,19 @@ namespace TypeChecker.SymbolNodes
 
         public void AddFieldChild(FieldNode node)
         {
-            if(Fields.ContainsKey(node.Name)) throw new DuplicateMemberException();
+            if (Modifiers.IsStatic && !node.Modifiers.IsStatic) throw new InstanceMemberInStaticClassException();
+            else if (Fields.ContainsKey(node.Name)) throw new DuplicateMemberException();
             else
             {
-                foreach(MethodNode method in Methods)
+                foreach (MethodNode method in Methods)
                 {
                     if (method.Name == node.Name) throw new DuplicateMemberException();
                 }
             }
 
             Fields.Add(node.Name, node);
-            Children.Add(node);
-            if(node.Declaration is SimpleFieldDeclaration sFieldDecl && sFieldDecl.DefaultValue != null)
+            AddChild(node);
+            if (node.Declaration is SimpleFieldDeclaration sFieldDecl && sFieldDecl.DefaultValue != null)
             {
                 SimpleDefaultedFields.Add(node);
             }
@@ -67,33 +71,42 @@ namespace TypeChecker.SymbolNodes
 
         public void AddMethodChild(MethodNode node)
         {
-            foreach (ClassItemNode child in Children)
+            if (Modifiers.IsStatic && !node.Modifiers.IsStatic) throw new InstanceMemberInStaticClassException();
+            else if (Fields.ContainsKey(node.Name)) throw new DuplicateMemberException();
+
+            foreach (MethodNode method in Methods)
             {
-                if(TryGetChild(node.Name, out SymbolNode other))
+                if (method.Name == node.Name)
                 {
-                    if (other is MethodNode method && method.Name == node.Name)
-                    {
-                        if (method.Type.ReturnType != node.Type.ReturnType) throw new DifferentTypeMethodsException();
-                        if (Enumerable.SequenceEqual(method.Type.Parameters, node.Type.Parameters)) throw new DuplicateMethodException();
-                    }
-                    else throw new DuplicateMemberException();
+                    if (method.Type.ReturnType != node.Type.ReturnType) throw new DifferentTypeMethodsException();
+                    if (Enumerable.SequenceEqual(method.Type.Parameters, node.Type.Parameters)) throw new DuplicateMethodException();
                 }
             }
             Methods.Add(node);
-            Children.Add(node);
+            AddChild(node);
         }
 
         public void AddConstructorChild(ConstructorNode node)
         {
-            foreach (ClassItemNode child in Children)
+            foreach (ConstructorNode ctor in Constructors)
             {
-                if (child is ConstructorNode ctor)
-                {
-                    if (Enumerable.SequenceEqual(node.ParamTypes, ctor.ParamTypes)) throw new DuplicateConstructorException();
-                }
+                if (Enumerable.SequenceEqual(node.ParamTypes, ctor.ParamTypes))
+                    throw new DuplicateConstructorException();
             }
             Constructors.Add(node);
-            Children.Add(node);
+            AddChild(node);
+        }
+
+        private string GetFullName()
+        {
+            SymbolNode ancestor = Parent;
+            string nameSoFar = Name;
+            while(!(Parent is GlobalNode))
+            {
+                nameSoFar = ancestor.Name + "." + nameSoFar;
+                ancestor = ancestor.Parent;
+            }
+            return nameSoFar;
         }
     }
 }

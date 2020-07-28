@@ -6,14 +6,14 @@ using System.Text;
 
 namespace TypeChecker
 {
-    enum AccessModifier
+    public enum AccessModifier
     {
         PublicModifier,
         PrivateModifier,
         ProtectedModifier,
     }
 
-    class Modifiers
+    public class Modifiers
     {
         public AccessModifier AccessModifier { get; set; }
         public bool IsStatic { get; set; }

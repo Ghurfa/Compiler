@@ -13,7 +13,6 @@ namespace CodeGenerator
                                                                                      filePath: @"..\..\..\..\..\Definitions\TypeDefinitions.txt",
                                                                                      namespaceName: "Compiler.SyntaxTreeItems",
                                                                                      TokensGenerator.TokenNames.ToArray());
-            foreach (ClassInfo classInfo in classInfos) classInfo.UsingStatements.Add("using System.Linq;");
             ClassWriter.GenerateFiles(classInfos);
         }
     }

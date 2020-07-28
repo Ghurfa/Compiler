@@ -113,7 +113,7 @@ namespace TypeChecker
                     else
                     {
                         var requireStatic = constraints.HasFlag(VerifyConstraints.RequireStatic);
-                        if (table.TryGetSymbol(identifier.Identifier.Text, index, out ValueTypeInfo type, requireStatic))
+                        if (table.TryResolveLocalOrField(identifier.Identifier.Text, index, out ValueTypeInfo type, requireStatic))
                             return type;
                         else throw new LocalNotFoundException();
                     }
@@ -127,14 +127,14 @@ namespace TypeChecker
                     }
                 case MemberAccessExpression memberAccess:
                     if (memberAccess.BaseExpression is IdentifierExpression baseIdentifier)
-                        return table.GetFieldType(baseIdentifier.Identifier.Text, memberAccess.Item.Text, index);
+                        return table.ResolveField(baseIdentifier.Identifier.Text, memberAccess.Item.Text, index);
                     else
                     {
                         TypeInfo baseType = VerifyExpression(table, index, memberAccess.BaseExpression, constraints);
 
                         if (baseType is VoidTypeInfo) throw new VoidMemberAccessException();
                         else if (baseType is ValueTypeInfo valueTypeInfo)
-                            return table.GetInstanceFieldType(valueTypeInfo, memberAccess.Item.Text);
+                            return table.ResolveInstanceField(valueTypeInfo, memberAccess.Item.Text);
                         else throw new InvalidOperationException();
                     }
                 case MethodCallExpression methodCall:
@@ -142,7 +142,7 @@ namespace TypeChecker
                         ValueTypeInfo[] argTypes = new ValueTypeInfo[methodCall.Arguments.Arguments.Length];
                         if (methodCall.Method is IdentifierExpression identifierExpr)
                         {
-                            if (table.TryGetMethodType(identifierExpr.Identifier.Text, argTypes, out TypeInfo type))
+                            if (table.TryResolveMethod(identifierExpr.Identifier.Text, argTypes, out TypeInfo type))
                                 return type;
                             else throw new NoSuchMemberException();
                         }
@@ -153,7 +153,7 @@ namespace TypeChecker
                             if (baseType is VoidTypeInfo) throw new VoidMemberAccessException();
                             else if (baseType is ValueTypeInfo valueTypeInfo)
                             {
-                                if (table.TryGetMethodType(valueTypeInfo.Class, memberAccess.Item.Text, argTypes, out TypeInfo type))
+                                if (table.TryResolveMethod(valueTypeInfo.Class, memberAccess.Item.Text, argTypes, out TypeInfo type))
                                     return type;
                                 else throw new NoSuchMemberException();
                             }
@@ -166,7 +166,7 @@ namespace TypeChecker
                             if (baseType is VoidTypeInfo) throw new VoidMemberAccessException();
                             else if (baseType is ValueTypeInfo valueTypeInfo)
                             {
-                                if (table.TryGetMethodType(valueTypeInfo.Class, nullCondMemberAccess.Item.Text, argTypes, out TypeInfo type))
+                                if (table.TryResolveMethod(valueTypeInfo.Class, nullCondMemberAccess.Item.Text, argTypes, out TypeInfo type))
                                     return type;
                                 else throw new NoSuchMemberException();
                             }
