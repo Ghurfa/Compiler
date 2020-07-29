@@ -4,6 +4,7 @@ using SymbolsTable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Security.Cryptography.X509Certificates;
@@ -27,28 +28,78 @@ namespace Generator
             generator.Emit(OpCodes.Newobj, objectCtor);
         }
 
-        public static void EmitMethodBody(ILGenerator generator, Mappings types, SymbolsTable.SymbolsTable table, ParameterListDeclaration paramsList, MethodBodyDeclaration body)
+        public static void EmitFunctionBody(ILGenerator generator, Mappings maps, SymbolsTable.SymbolsTable table, Constructor ctor)
         {
-            table.EnterMethod(paramsList);
-            EmitStatementSet(generator, types, table, body.Statements);
-            table.ExitMethod();
+            table.EnterFunction(ctor);
+            Emitter.EmitStatementSet(generator, maps, table, ctor.Declaration.Body.Statements);
+            table.ExitFunction();
         }
 
-        private static void EmitStatementSet(ILGenerator generator, Mappings types, SymbolsTable.SymbolsTable table, Statement[] statements)
+        public static void EmitFunctionBody(ILGenerator generator, Mappings maps, SymbolsTable.SymbolsTable table, Method method)
         {
-            foreach(Statement statement in statements)
+            table.EnterFunction(method);
+            Emitter.EmitStatementSet(generator, maps, table, method.Declaration.Body.Statements);
+            table.ExitFunction();
+        }
+
+        private static void EmitStatementSet(ILGenerator generator, Mappings maps, SymbolsTable.SymbolsTable table, Statement[] statements)
+        {
+            foreach (Statement statement in statements)
             {
-                EmitStatement(generator, types, table, statement);
+                EmitStatement(generator, maps, table, statement);
             }
         }
 
-        private static void EmitStatement(ILGenerator generator, Mappings types, SymbolsTable.SymbolsTable table, Statement statement)
+        private static void EmitStatement(ILGenerator generator, Mappings maps, SymbolsTable.SymbolsTable table, Statement statement)
         {
             switch (statement)
             {
+                case CodeBlock codeBlock:
+                    {
+                        table.EnterScope();
+                        EmitStatementSet(generator, maps, table, codeBlock.Statements);
+                        table.ExitScope();
+                    }
+                    break;
+                case ForBlock forBlock:
+                    {
+                        table.EnterScope();
+
+                        Label bodyStart = generator.DefineLabel();
+                        Label evalContinue = generator.DefineLabel();
+
+                        //Start
+                        EmitStatement(generator, maps, table, forBlock.StartStatement);
+                        generator.Emit(OpCodes.Br, evalContinue);
+
+                        //Body
+                        generator.MarkLabel(bodyStart);
+                        EmitStatement(generator, maps, table, forBlock.Body);
+
+                        //Iterate
+                        EmitStatement(generator, maps, table, forBlock.IterateStatement);
+
+                        //Continue check
+                        generator.MarkLabel(evalContinue);
+                        EmitExpression(generator, forBlock.ContinueExpr);
+                        generator.Emit(OpCodes.Brtrue, bodyStart);
+
+                        table.ExitScope();
+                    }
+                    break;
+                case ExpressionStatement exprStatement:
+                    switch (exprStatement.Expression)
+                    {
+                        case DeclAssignExpression declAssign:
+                            {
+                                string name = ((IdentifierExpression)declAssign.To).Identifier.Text;
+                                //var local = generator.DeclareLocal()
+                            }
+                            break;
+                    }
+                    break;
                 default: throw new NotImplementedException();
             }
-
         }
 
         public static void EmitExpression(ILGenerator generator, Expression expr)

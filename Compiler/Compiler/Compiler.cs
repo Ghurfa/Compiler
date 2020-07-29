@@ -14,7 +14,7 @@ namespace Compiler
             var tokens = Tokenizer.Tokenizer.Tokenize(text);
             NamespaceDeclaration namespaceDecl = new NamespaceDeclaration(tokens);
             TypeChecker.TypeChecker.CheckNamespace(namespaceDecl);
-            Generator.Generator.Generate("program.exe", TypeChecker.TypeChecker.Table);
+            Generator.Generator.Generate("Program.exe", TypeChecker.TypeChecker.Table);
         }
     }
 }

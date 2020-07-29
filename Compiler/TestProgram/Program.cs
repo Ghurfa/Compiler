@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-using Parser;
+﻿using Parser;
 using Parser.SyntaxTreeItems;
 using System;
 using System.Collections.Generic;

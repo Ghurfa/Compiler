@@ -11,7 +11,7 @@ namespace SymbolsTable
     {
         private ClassNode current;
 
-        public IEnumerable<ClassNode> IterateClasses => IterateThroughNamespace(globalNode, true, true);
+        public IEnumerable<ClassNode> IterateWithStack => IterateThroughNamespace(globalNode, true, true);
         public IEnumerable<ClassNode> IterateWithoutStack => IterateThroughNamespace(globalNode, false, false);
         protected IEnumerable<ClassNode> IterateFirstPass => IterateThroughNamespace(globalNode, false, true);
 
@@ -24,7 +24,7 @@ namespace SymbolsTable
                 if (child is BuiltInClassNode _) continue;
                 else if (child is ClassNode classChild)
                 {
-                    EnterClass(classChild, initFields);
+                    EnterClass(classChild);
                     yield return classChild;
                     ExitClass();
                 }
@@ -56,39 +56,37 @@ namespace SymbolsTable
 
         private void ExitNamespace() => namespaceStack.Pop();
 
-        private void EnterClass(ClassNode classNode, bool initFields)
+        private void EnterClass(ClassNode classNode)
         {
-            if (initFields)
-            {
-                scopeStack.Clear();
-            }
             current = classNode;
         }
 
-        private void ExitClass()
+        private void ExitClass() { }
+
+        public void EnterFunction(Method method)
         {
-            if (scopeStack.Count != 0) throw new InvalidOperationException();
+            currentScope = method.FuncScope;
+            currentScope.Begin();
         }
 
-        public void EnterMethod(ParameterListDeclaration parameterListDecl)
+        public void EnterFunction(Constructor ctor)
         {
-            EnterScope(0);
-            parameters.Clear();
-            for (int i = 0; i < parameterListDecl.Parameters.Length; i++)
+            currentScope = ctor.FuncScope;
+            currentScope.Begin();
+        }
+
+        public void ExitFunction() => ExitScope();
+
+        public void EnterScope()
+        {
+            if (currentScope.TryGetNextChild(out Scope child))
             {
-                var param = parameterListDecl.Parameters[i];
-                var paramInfo = new ParamLocal(ValueTypeInfo.Get(this, param.Type), i);
-                parameters.Add(param.Identifier.Text, paramInfo);
+                currentScope = child;
+                currentScope.Begin();
             }
+            else throw new InvalidOperationException();
         }
 
-        public void ExitMethod() => ExitScope();
-
-        public void EnterScope(int indexInParent)
-        {
-            scopeStack.Push(new ScopeInfo(indexInParent));
-        }
-
-        public void ExitScope() => scopeStack.Pop();
+        public void ExitScope() => currentScope = currentScope.ParentScope;
     }
 }

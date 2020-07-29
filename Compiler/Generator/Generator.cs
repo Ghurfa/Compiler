@@ -35,6 +35,8 @@ namespace Generator
                 foreach (Method method in node.Methods) DefineMethod(maps, info, method);
             }
 
+            MethodBuilder entryPoint = null;
+
             foreach (ClassNode node in table.IterateWithoutStack)
             {
                 ClassBuildingInfo info = maps[node];
@@ -43,15 +45,21 @@ namespace Generator
                     ConstructorBuilder builder = maps[ctor];
                     ILGenerator generator = builder.GetILGenerator();
                     Emitter.EmitConstructorStart(generator, info);
-                    Emitter.EmitMethodBody(generator, maps, table, ctor.Declaration.ParameterList, ctor.Declaration.Body);
+
+                    Emitter.EmitFunctionBody(generator, maps, table, ctor);
                 }
                 foreach (Method method in node.Methods)
                 {
                     MethodBuilder builder = maps[method];
-                    Emitter.EmitMethodBody(builder.GetILGenerator(), maps, table, method.Declaration.ParameterList, method.Declaration.Body);
+                    if (method.Name == "Main" && method.Modifiers.IsStatic && method.Type.Parameters.Length == 0)
+                        entryPoint = builder;
+                    Emitter.EmitFunctionBody(builder.GetILGenerator(), maps, table, method);
                 }
                 info.Builder.CreateType();
             }
+
+            assemblyBuilder.SetEntryPoint(entryPoint);
+            assemblyBuilder.Save(fileName);
         }
 
         private static void DefineField(Mappings types, ClassBuildingInfo info, Field node)

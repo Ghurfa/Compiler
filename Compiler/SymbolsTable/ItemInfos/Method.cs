@@ -10,6 +10,7 @@ namespace SymbolsTable
     {
         public FunctionTypeInfo Type { get; private set; }
         public MethodDeclaration Declaration { get; private set; }
+        internal FunctionScope FuncScope { get; set; }
 
         public Method(SymbolsTable table, MethodDeclaration methodDecl)
             : base(methodDecl.Name.Text, new Modifiers(methodDecl.Modifiers))
@@ -26,6 +27,8 @@ namespace SymbolsTable
 
             Declaration = methodDecl;
             Type = new FunctionTypeInfo(retType, paramTypes);
+
+            FuncScope = new FunctionScope(table, methodDecl.ParameterList);
         }
 
         internal Method(string name, FunctionTypeInfo type, Modifiers modifiers)

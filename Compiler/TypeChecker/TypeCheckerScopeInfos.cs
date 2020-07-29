@@ -1,4 +1,5 @@
 ﻿using Parser.SyntaxTreeItems;
+using SymbolsTable;
 using SymbolsTable.TypeInfos;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace TypeChecker
         private interface IScopeInfo
         {
             int IndexInParent { get; }
-            void Verify(SymbolsTable.SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints);
+            void Verify(SymbolsTableBuilder table, TypeInfo returnType, VerifyConstraints constraints);
         }
 
         private struct FunctionScopeInfo : IScopeInfo
@@ -36,9 +37,9 @@ namespace TypeChecker
                 IndexInParent = 1;
             }
 
-            public void Verify(SymbolsTable.SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints)
+            public void Verify(SymbolsTableBuilder table, TypeInfo returnType, VerifyConstraints constraints)
             {
-                table.EnterMethod(parameterList);
+                table.EnterFunction(parameterList);
 
                 List<IScopeInfo> childScopes = new List<IScopeInfo>();
                 for (int i = 0; i < statements.Length; i++)
@@ -51,7 +52,7 @@ namespace TypeChecker
                     childScope.Verify(table, returnType, constraints);
                 }
 
-                table.ExitMethod();
+                table.ExitFunction();
             }
         }
 
@@ -66,9 +67,9 @@ namespace TypeChecker
                 IndexInParent = index;
             }
 
-            public void Verify(SymbolsTable.SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints)
+            public void Verify(SymbolsTableBuilder table, TypeInfo returnType, VerifyConstraints constraints)
             {
-                table.EnterScope(IndexInParent);
+                table.EnterNewScope(IndexInParent);
 
                 List<IScopeInfo> childScopes = new List<IScopeInfo>();
                 for (int i = 0; i < statements.Length; i++)
@@ -96,15 +97,15 @@ namespace TypeChecker
                 IndexInParent = index;
             }
 
-            public void Verify(SymbolsTable.SymbolsTable table, TypeInfo returnType, VerifyConstraints constraints)
+            public void Verify(SymbolsTableBuilder table, TypeInfo returnType, VerifyConstraints constraints)
             {
                 VerifyConstraints startConstraints = constraints | VerifyConstraints.DisallowScoping;
                 VerifyConstraints otherConstraints = constraints | VerifyConstraints.DisallowScoping | VerifyConstraints.DisallowDeclarations;
 
-                table.EnterScope(IndexInParent);
-                VerifyStatement(table, 0, null, forBlock.StartStatement, returnType, constraints);
-                VerifyExpressionRequireType(table, 1, forBlock.ContinueExpr, constraints | VerifyConstraints.DisallowDeclarations, ValueTypeInfo.PrimitiveTypes["bool"]);
-                VerifyStatement(table, 2, null, forBlock.IterateStatement, returnType, constraints | VerifyConstraints.DisallowDeclarations);
+                table.EnterNewScope(IndexInParent);
+                VerifyStatement(table, 0, null, forBlock.StartStatement, returnType, startConstraints);
+                VerifyExpressionRequireType(table, 1, forBlock.ContinueExpr, otherConstraints, ValueTypeInfo.PrimitiveTypes["bool"]);
+                VerifyStatement(table, 2, null, forBlock.IterateStatement, returnType, otherConstraints);
 
                 var bodyScopes = new List<IScopeInfo>();
                 VerifyStatement(table, 3, bodyScopes, forBlock.Body, returnType, constraints);

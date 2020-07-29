@@ -58,6 +58,12 @@ namespace SymbolsTable
             }
         }
 
+        public void EnterNewScope(int statementIndex)
+        {
+            currentScope.Children.Add(new Scope(statementIndex, currentScope));
+            EnterScope();
+        }
+
         private void InitializeTree()
         {
             void add(string name)

@@ -39,17 +39,28 @@ namespace TypeChecker
             var simpleCheckOptions = VerifyConstraints.RequireStatic |
                                      VerifyConstraints.DisallowDeclarations;
 
+            bool hasEntryPoint = false;
             //Validate other class members
-            foreach (ClassNode node in Table.IterateClasses)
+            foreach (ClassNode node in Table.IterateWithStack)
             {
                 foreach (SimpleField field in node.SimpleDefaultedFields)
                 {
                     SimpleFieldDeclaration sFieldDecl = field.Declaration;
                     VerifyExpressionRequireType(Table, 0, sFieldDecl.DefaultValue, simpleCheckOptions, field.Type);
                 }
-                foreach (Method method in node.Methods) VerifyMethod(Table, method);
+                foreach (Method method in node.Methods)
+                {
+                    VerifyMethod(Table, method);
+                    if (method.Name == "Main" && method.Modifiers.IsStatic && method.Type.Parameters.Length == 0)
+                    {
+                        if (hasEntryPoint) throw new MultipleEntryPointsException();
+                        else hasEntryPoint = true;
+                    }    
+                }
                 foreach (Constructor ctor in node.Constructors) VerifyConstructor(Table, ctor);
             }
+
+            if (!hasEntryPoint) throw new MissingEntryPointException();
         }
 
         private static void VerifyMethod(SymbolsTable.SymbolsTable table, Method method)
