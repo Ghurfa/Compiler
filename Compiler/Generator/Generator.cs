@@ -1,6 +1,7 @@
-﻿using Compiler;
-using Compiler.SyntaxTreeItems;
-using Compiler.SyntaxTreeItems.ClassItemDeclarations;
+﻿using Parser.SyntaxTreeItems.ClassItemDeclarations;
+using SymbolsTable;
+using SymbolsTable.Nodes;
+using SymbolsTable.TypeInfos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,58 +9,62 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
-using TypeChecker;
-using TypeChecker.SymbolNodes;
-using TypeChecker.TypeInfos;
 
 namespace Generator
 {
     public static class Generator
     {
-        public static void Generate(string fileName, SymbolsTable table)
+        public static void Generate(string fileName, SymbolsTable.SymbolsTable table)
         {
             var assemblyName = new AssemblyName("Assembly");
-            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Save);
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave);
             var module = assemblyBuilder.DefineDynamicModule("Module", fileName);
 
-            var types = new TypeCollection();
+            var maps = new Mappings();
 
             foreach (ClassNode classNode in table.IterateWithoutStack)
             {
-                types.DefineType(module, classNode);
+                maps.DefineClass(module, classNode);
             }
 
-            foreach ((ClassNode node, ClassBuildingInfo info) in types)
+            foreach (ClassNode node in table.IterateWithoutStack)
             {
-                foreach (FieldNode field in node.Fields.Values) DefineField(types, info, field);
-                foreach (ConstructorNode ctor in node.Constructors) DefineConstructor(types, info, ctor);
-                foreach (MethodNode method in node.Methods) DefineMethod(types, info, method);
+                ClassBuildingInfo info = maps[node];
+                foreach (Field field in node.Fields.Values) DefineField(maps, info, field);
+                foreach (Constructor ctor in node.Constructors) DefineConstructor(maps, info, ctor);
+                foreach (Method method in node.Methods) DefineMethod(maps, info, method);
             }
 
-            foreach ((ClassNode node, ClassBuildingInfo info) in types)
+            foreach (ClassNode node in table.IterateWithoutStack)
             {
-                foreach (ConstructorNode ctor in node.Constructors)
+                ClassBuildingInfo info = maps[node];
+                foreach (Constructor ctor in node.Constructors)
                 {
-
+                    ConstructorBuilder builder = maps[ctor];
+                    ILGenerator generator = builder.GetILGenerator();
+                    Emitter.EmitConstructorStart(generator, info);
+                    Emitter.EmitMethodBody(generator, maps, table, ctor.Declaration.ParameterList, ctor.Declaration.Body);
                 }
-                foreach (MethodBuilder builder in info.Methods.Values)
+                foreach (Method method in node.Methods)
                 {
-
+                    MethodBuilder builder = maps[method];
+                    Emitter.EmitMethodBody(builder.GetILGenerator(), maps, table, method.Declaration.ParameterList, method.Declaration.Body);
                 }
+                info.Builder.CreateType();
             }
         }
 
-        private static void DefineField(TypeCollection types, ClassBuildingInfo info, FieldNode node)
+        private static void DefineField(Mappings types, ClassBuildingInfo info, Field node)
         {
-            FieldBuilder builder = info.Builder.DefineField(node.Name, types[node.Type], GetFieldAttributes(node.Modifiers));
-            info.Fields.Add(node, builder);
-            if (node is InferredFieldNode iField)
+            FieldBuilder builder = info.Builder.DefineField(node.Name, types[node.Type.Class].Builder, GetFieldAttributes(node.Modifiers));
+            types.MapField(node, builder);
+            if (node is InferredField iField)
             {
-                info.DefaultedFields.Add((builder, ((InferredFieldDeclaration)iField.Declaration).DefaultValue));
+                info.DefaultedFields.Add((builder, iField.Declaration.DefaultValue));
             }
             else
             {
-                SimpleFieldDeclaration decl = (SimpleFieldDeclaration)node.Declaration;
+                SimpleFieldDeclaration decl = ((SimpleField)node).Declaration;
                 if (decl.DefaultValue != null)
                 {
                     info.DefaultedFields.Add((builder, decl.DefaultValue));
@@ -67,25 +72,20 @@ namespace Generator
             }
         }
 
-        private static void DefineConstructor(TypeCollection types, ClassBuildingInfo info, ConstructorNode node)
+        private static void DefineConstructor(Mappings types, ClassBuildingInfo info, Constructor node)
         {
             var builder = info.Builder.DefineConstructor(GetMethodAttributes(node.Modifiers),
                                                          CallingConventions.HasThis,
                                                          GetTypes(types, node.ParamTypes));
-            info.Constructors.Add(node, builder);
+            types.MapConstructor(node, builder);
         }
 
-        private static void DefineMethod(TypeCollection types, ClassBuildingInfo info, MethodNode node)
+        private static void DefineMethod(Mappings types, ClassBuildingInfo info, SymbolsTable.Method node)
         {
-            System.Type retType = node.Type.ReturnType is VoidTypeInfo ? typeof(void) : types[(ValueTypeInfo)node.Type.ReturnType];
+            System.Type retType = node.Type.ReturnType is VoidTypeInfo ? typeof(void) : types[((ValueTypeInfo)node.Type.ReturnType).Class].Builder;
             System.Type[] paramTypes = GetTypes(types, node.Type.Parameters);
             MethodBuilder builder = info.Builder.DefineMethod(node.Name, GetMethodAttributes(node.Modifiers), retType, paramTypes);
-            info.Methods.Add(node, builder);
-        }
-
-        private static void DefineFunctionBody(TypeCollection types, ILGenerator generator, MethodBodyDeclaration body)
-        {
-        
+            types.MapMethod(node, builder);
         }
 
         private static FieldAttributes GetFieldAttributes(Modifiers modifiers)
@@ -135,12 +135,12 @@ namespace Generator
             return attr;
         }
 
-        private static TypeBuilder[] GetTypes(TypeCollection collection, ValueTypeInfo[] types)
+        private static TypeBuilder[] GetTypes(Mappings maps, ValueTypeInfo[] types)
         {
             TypeBuilder[] ret = new TypeBuilder[types.Length];
             for (int i = 0; i < ret.Length; i++)
             {
-                ret[i] = collection[types[i]];
+                ret[i] = maps[types[i].Class].Builder;
             }
             return ret;
         }

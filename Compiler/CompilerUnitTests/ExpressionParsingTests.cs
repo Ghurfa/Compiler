@@ -1,9 +1,10 @@
-﻿using Compiler;
-using Compiler.SyntaxTreeItems;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Parser;
+using Parser.SyntaxTreeItems;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Tokenizer;
 using Xunit;
 
 namespace CompilerUnitTests

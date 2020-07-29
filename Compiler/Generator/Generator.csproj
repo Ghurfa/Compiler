@@ -30,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,19 +45,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassBuildingInfo.cs" />
-    <Compile Include="EmitHelper.cs" />
+    <Compile Include="Emitter.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeCollection.cs" />
+    <Compile Include="Mappings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Compiler\Compiler.csproj">
-      <Project>{8d450370-a4ae-4f0b-8472-a8687ab4a865}</Project>
-      <Name>Compiler</Name>
+    <ProjectReference Include="..\Parser\Parser.csproj">
+      <Project>{239E2B6E-0AAA-4229-9FCF-C9211E4665F9}</Project>
+      <Name>Parser</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TypeChecker\TypeChecker.csproj">
-      <Project>{885dceb3-5fa7-4be0-baab-3854b625d82c}</Project>
-      <Name>TypeChecker</Name>
+    <ProjectReference Include="..\SymbolsTable\SymbolsTable.csproj">
+      <Project>{c6f750ad-187e-4041-ba0f-c91d397b336c}</Project>
+      <Name>SymbolsTable</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tokenizer\Tokenizer.csproj">
+      <Project>{E96EBC4F-0F64-49B7-B5F8-070EBEA140DC}</Project>
+      <Name>Tokenizer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

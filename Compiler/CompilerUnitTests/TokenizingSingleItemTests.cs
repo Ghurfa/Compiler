@@ -1,6 +1,6 @@
-using Compiler;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using System;
+using Tokenizer;
 using Xunit;
 
 namespace CompilerUnitTests
@@ -98,7 +98,7 @@ namespace CompilerUnitTests
         [InlineData(">=", typeof(GreaterThanOrEqualToToken))]
         public void ParseSingleTokenTest(string text, Type expectedType)
         {
-            var tokens = Tokenizer.Tokenize(text);
+            var tokens = Tokenizer.Tokenizer.Tokenize(text);
             int count = 0;
             foreach (IToken token in tokens)
             {
@@ -115,7 +115,7 @@ namespace CompilerUnitTests
         {
             void test(string text)
             {
-                var tokens = Tokenizer.Tokenize(text);
+                var tokens = Tokenizer.Tokenizer.Tokenize(text);
                 int count = 0;
                 foreach (IToken token in tokens)
                 {
@@ -134,7 +134,7 @@ namespace CompilerUnitTests
         [Fact]
         public void ParseSingleLineCommentWithLineBreaTestk()
         {
-            var tokens = Tokenizer.Tokenize("//a\r\n");
+            var tokens = Tokenizer.Tokenizer.Tokenize("//a\r\n");
             int count = 0;
             foreach (IToken token in tokens)
             {
@@ -165,7 +165,7 @@ namespace CompilerUnitTests
         [InlineData("multi\nline\nstring")]
         public void ParseStringLiteralTest(string innerText)
         {
-            var tokens = Tokenizer.Tokenize('"' + innerText + '"');
+            var tokens = Tokenizer.Tokenizer.Tokenize('"' + innerText + '"');
 
             int count = 0;
             foreach (IToken token in tokens)
@@ -194,7 +194,7 @@ namespace CompilerUnitTests
         {
             void test(string text, string expected)
             {
-                var tokens = Tokenizer.Tokenize('"' + text + '"');
+                var tokens = Tokenizer.Tokenizer.Tokenize('"' + text + '"');
 
                 int count = 0;
                 foreach (IToken token in tokens)
@@ -232,7 +232,7 @@ namespace CompilerUnitTests
         {
             if (expectedText == null) expectedText = innerText;
 
-            var tokens = Tokenizer.Tokenize('\'' + innerText + '\'');
+            var tokens = Tokenizer.Tokenizer.Tokenize('\'' + innerText + '\'');
 
             int count = 0;
             foreach (IToken token in tokens)
@@ -257,7 +257,7 @@ namespace CompilerUnitTests
         [InlineData("ab")]
         public void ParseInvalidCharLiteralTest(string innerText)
         {
-            Assert.Throws<TokenizingException>(() => Tokenizer.Tokenize('\'' + innerText + '\''));
+            Assert.Throws<TokenizingException>(() => Tokenizer.Tokenizer.Tokenize('\'' + innerText + '\''));
         }
     }
 }

@@ -13,8 +13,8 @@ namespace CodeGenerator
         static void Main(string[] args)
         {
             TokensGenerator.GenerateTokenClasses(tokensDefPath: @"..\..\..\..\..\Definitions\TokenTypes.txt",
-                                                 baseDir: @"..\..\..\..\..\Compiler\Compiler\Tokens\",
-                                                 TCBPath: @"..\..\..\..\..\Compiler\Compiler\TokenCollectionBuilder.cs");
+                                                 baseDir: @"..\..\..\..\..\Compiler\Tokenizer\Tokens\",
+                                                 TCBPath: @"..\..\..\..\..\Compiler\Tokenizer\TokenCollectionBuilder.cs");
 
             ExpressionsGenerator.Generate();
             MiscellaneousGenerator.Generate();

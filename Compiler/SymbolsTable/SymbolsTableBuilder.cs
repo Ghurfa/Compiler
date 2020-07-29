@@ -1,17 +1,18 @@
-﻿using Compiler;
-using Compiler.SyntaxTreeItems;
-using Compiler.SyntaxTreeItems.ClassItemDeclarations;
+﻿using Parser;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using SymbolsTable.Nodes;
 using SymbolsTable.TypeInfos;
+using Parser.SyntaxTreeItems;
+using Parser.SyntaxTreeItems.ClassItemDeclarations;
+using Parser;
 
 namespace SymbolsTable
 {
     public class SymbolsTableBuilder : SymbolsTable
     {
-        public void BuildTree(IEnumerable<NamespaceDeclaration> namespaces, out List<(InferredFieldInfo, InferredFieldDeclaration)> inferredFields)
+        public void BuildTree(IEnumerable<NamespaceDeclaration> namespaces, out List<(InferredField, InferredFieldDeclaration)> inferredFields)
         {
             InitializeTree();
 
@@ -24,7 +25,7 @@ namespace SymbolsTable
                 }
             }
 
-            inferredFields = new List<(InferredFieldInfo, InferredFieldDeclaration)>();
+            inferredFields = new List<(InferredField, InferredFieldDeclaration)>();
 
             foreach (ClassNode classNode in IterateFirstPass)
             {
@@ -34,22 +35,22 @@ namespace SymbolsTable
                     {
                         case InferredFieldDeclaration iFieldDecl:
                             {
-                                var newNode = new InferredFieldInfo(iFieldDecl);
+                                var newNode = new InferredField(iFieldDecl);
                                 inferredFields.Add((newNode, iFieldDecl));
                                 classNode.AddField(newNode);
                             }
                             break;
                         case SimpleFieldDeclaration sFieldDecl:
                             {
-                                var newNode = new SimpleFieldInfo(this, sFieldDecl);
+                                var newNode = new SimpleField(this, sFieldDecl);
                                 classNode.AddField(newNode);
                             }
                             break;
                         case MethodDeclaration methodDecl:
-                            classNode.AddMethod(new MethodInfo(this, methodDecl));
+                            classNode.AddMethod(new Method(this, methodDecl));
                             break;
                         case ConstructorDeclaration ctorDecl:
-                            classNode.AddConstructor(new ConstructorInfo(this, ctorDecl));
+                            classNode.AddConstructor(new Constructor(this, ctorDecl));
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -80,7 +81,7 @@ namespace SymbolsTable
             ValueTypeInfo.Initialize(this, primitiveTypes);
 
             ValueTypeInfo stringType = ValueTypeInfo.PrimitiveTypes["string"];
-            objectNode.AddMethod(new MethodInfo("ToString", new FunctionTypeInfo(stringType, new ValueTypeInfo[] { }), Modifiers.Public));
+            objectNode.AddMethod(new Method("ToString", new FunctionTypeInfo(stringType, new ValueTypeInfo[] { }), Modifiers.Public));
         }
 
         private NamespaceNode AddNamespace(NamespaceDeclaration namespaceDecl)

@@ -1,8 +1,8 @@
-﻿using Compiler;
-using Compiler.SyntaxTreeItems;
+﻿using Parser.SyntaxTreeItems;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Tokenizer;
 
 namespace SymbolsTable
 {

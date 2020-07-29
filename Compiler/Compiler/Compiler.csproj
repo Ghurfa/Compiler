@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Tokens\" />
+    <ProjectReference Include="..\Generator\Generator.csproj" />
+    <ProjectReference Include="..\Parser\Parser.csproj" />
+    <ProjectReference Include="..\SymbolsTable\SymbolsTable.csproj" />
+    <ProjectReference Include="..\Tokenizer\Tokenizer.csproj" />
+    <ProjectReference Include="..\TypeChecker\TypeChecker.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿using Compiler.SyntaxTreeItems;
+﻿using Parser.SyntaxTreeItems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +14,13 @@ namespace SymbolsTable
         protected class ScopeInfo
         {
             public int IndexInParent { get; set; }
-            public Dictionary<string, BodyLocalInfo> Locals { get; set; }
+            public Dictionary<string, BodyLocal> Locals { get; set; }
             public ScopeInfo(int index)
             {
                 IndexInParent = index;
-                Locals = new Dictionary<string, BodyLocalInfo>();
+                Locals = new Dictionary<string, BodyLocal>();
             }
-            public ScopeInfo(Dictionary<string, BodyLocalInfo> firstDict)
+            public ScopeInfo(Dictionary<string, BodyLocal> firstDict)
             {
                 Locals = firstDict;
             }
@@ -30,7 +30,7 @@ namespace SymbolsTable
         protected GlobalNode globalNode;
         protected BuiltInClassNode objectNode;
         protected Stack<Dictionary<string, ClassNode>> namespaceStack;
-        protected Dictionary<string, ParamLocalInfo> parameters;
+        protected Dictionary<string, ParamLocal> parameters;
         protected Stack<ScopeInfo> scopeStack;
         protected Dictionary<string, ClassNode> defaultCachedClasses;
 
@@ -39,7 +39,7 @@ namespace SymbolsTable
             namespaceStack = new Stack<Dictionary<string, ClassNode>>();
             scopeStack = new Stack<ScopeInfo>();
             defaultCachedClasses = new Dictionary<string, ClassNode>();
-            parameters = new Dictionary<string, ParamLocalInfo>();
+            parameters = new Dictionary<string, ParamLocal>();
         }
 
         public Result AddLocal(string name, ValueTypeInfo type, int index)
@@ -58,16 +58,16 @@ namespace SymbolsTable
             if (parameters.ContainsKey(name)) return Result.LocalDefinedInEnclosingScope;
             if (current.Fields.ContainsKey(name)) return Result.LocalShadowsField;
 
-            scopeStack.Peek().Locals.Add(name, new BodyLocalInfo(type, index + 1));
+            scopeStack.Peek().Locals.Add(name, new BodyLocal(type, index + 1));
 
             return Result.Success;
         }
 
-        public Result GetLocal(string name, int statementIndex, out LocalInfo local)
+        public Result GetLocal(string name, int statementIndex, out Local local)
         {
             foreach (ScopeInfo scope in scopeStack)
             {
-                if (scope.Locals.TryGetValue(name, out BodyLocalInfo bodyLocal))
+                if (scope.Locals.TryGetValue(name, out BodyLocal bodyLocal))
                 {
                     if (bodyLocal.Index > statementIndex)
                     {
@@ -80,7 +80,7 @@ namespace SymbolsTable
                 else statementIndex = scope.IndexInParent;
             }
 
-            if (parameters.TryGetValue(name, out ParamLocalInfo paramLocal))
+            if (parameters.TryGetValue(name, out ParamLocal paramLocal))
             {
                 local = paramLocal;
                 return Result.Success;
@@ -90,7 +90,7 @@ namespace SymbolsTable
             return Result.LocalNotFound;
         }
 
-        public Result GetField(string name, bool isStatic, out FieldInfo field)
+        public Result GetField(string name, bool isStatic, out Field field)
         {
             if (current.Fields.TryGetValue(name, out field))
             {
@@ -101,9 +101,9 @@ namespace SymbolsTable
             else return Result.NoSuchMember;
         }
 
-        public Result GetField(string baseIdentifier, string fieldName, int statementIndex, out FieldInfo field)
+        public Result GetField(string baseIdentifier, string fieldName, int statementIndex, out Field field)
         {
-            if (GetLocal(baseIdentifier, statementIndex, out LocalInfo baseLocal) == Result.Success)
+            if (GetLocal(baseIdentifier, statementIndex, out Local baseLocal) == Result.Success)
             {
                 return GetField(baseLocal.Type.Class, fieldName, false, out field);
             }
@@ -120,7 +120,7 @@ namespace SymbolsTable
             }
         }
 
-        public Result GetField(ClassNode classNode, string fieldName, bool isStatic, out FieldInfo field)
+        public Result GetField(ClassNode classNode, string fieldName, bool isStatic, out Field field)
         {
             if (classNode.Fields.TryGetValue(fieldName, out field))
             {
@@ -135,16 +135,16 @@ namespace SymbolsTable
             }
         }
 
-        public Result GetMethod(string methodName, IEnumerable<ValueTypeInfo> paramTypes, out MethodInfo method)
+        public Result GetMethod(string methodName, IEnumerable<ValueTypeInfo> paramTypes, out Method method)
             => GetMethod(current, methodName, paramTypes, out method);
 
-        public Result GetMethod(ClassNode classNode, string methodName, IEnumerable<ValueTypeInfo> paramTypes, out MethodInfo method)
+        public Result GetMethod(ClassNode classNode, string methodName, IEnumerable<ValueTypeInfo> paramTypes, out Method method)
         {
             ClassNode current = classNode;
             bool foundMethodWithName = false;
             while (current != null)
             {
-                foreach (MethodInfo other in current.Methods)
+                foreach (Method other in current.Methods)
                 {
                     if (other.Name == methodName)
                     {

@@ -1,8 +1,8 @@
-﻿using Compiler.SyntaxTreeItems;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using SymbolsTable.Nodes;
+using Parser.SyntaxTreeItems;
 
 namespace SymbolsTable.TypeInfos
 {
@@ -22,7 +22,7 @@ namespace SymbolsTable.TypeInfos
             }
         }
 
-        public static ValueTypeInfo Get(SymbolsTable table, Compiler.SyntaxTreeItems.Type type)
+        public static ValueTypeInfo Get(SymbolsTable table, Parser.SyntaxTreeItems.Type type)
         {
             switch (type)
             {

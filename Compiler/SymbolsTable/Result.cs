@@ -36,19 +36,5 @@ namespace SymbolsTable
         //Local resolution
         UsingLocalBeforeDeclaration,
         LocalNotFound,
-
-        InvalidDeclaration,
-        InvalidExitStatement,
-        InvalidReturnType,
-        InvalidSymbol,
-        InvalidTupleItem,
-        MemberWithClassName,
-        ObjectReferenceRequired,
-        ReferencingField,
-        TypeMismatch,
-        UnexpectedReturnValue,
-        VoidInferredField,
-        VoidMemberAccess,
-        VoidVariableDeclaration
     }
 }

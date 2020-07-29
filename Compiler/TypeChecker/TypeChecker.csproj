@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Compiler\Compiler.csproj" />
+    <ProjectReference Include="..\Parser\Parser.csproj" />
     <ProjectReference Include="..\SymbolsTable\SymbolsTable.csproj" />
   </ItemGroup>
 

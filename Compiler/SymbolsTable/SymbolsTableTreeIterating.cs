@@ -1,9 +1,9 @@
-﻿using Compiler.SyntaxTreeItems;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using SymbolsTable.Nodes;
 using SymbolsTable.TypeInfos;
+using Parser.SyntaxTreeItems;
 
 namespace SymbolsTable
 {
@@ -77,7 +77,7 @@ namespace SymbolsTable
             for (int i = 0; i < parameterListDecl.Parameters.Length; i++)
             {
                 var param = parameterListDecl.Parameters[i];
-                var paramInfo = new ParamLocalInfo(ValueTypeInfo.Get(this, param.Type), i);
+                var paramInfo = new ParamLocal(ValueTypeInfo.Get(this, param.Type), i);
                 parameters.Add(param.Identifier.Text, paramInfo);
             }
         }

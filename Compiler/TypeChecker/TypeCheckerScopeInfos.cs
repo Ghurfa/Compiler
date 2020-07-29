@@ -1,4 +1,4 @@
-﻿using Compiler.SyntaxTreeItems;
+﻿using Parser.SyntaxTreeItems;
 using SymbolsTable.TypeInfos;
 using System;
 using System.Collections.Generic;

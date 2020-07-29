@@ -1,10 +1,10 @@
-﻿using Compiler;
-using Compiler.SyntaxTreeItems;
+﻿using Parser.SyntaxTreeItems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Tokenizer;
 
 namespace TestProgram
 {
@@ -129,7 +129,7 @@ namespace TestProgram
                 Console.ForegroundColor = forceColor ?? ConsoleColor.White;
                 Console.WriteLine(token.Text);
             }
-            else if (token is IdentifierToken || token is StringLiteralExpression || token is CharLiteralExpression || token is IntLiteralExpression)
+            else if (token is IdentifierToken || token is StringLiteralToken || token is CharLiteralToken || token is IntLiteralToken)
             {
                 Console.ForegroundColor = forceColor ?? ConsoleColor.Red;
                 Console.WriteLine(token.Text);

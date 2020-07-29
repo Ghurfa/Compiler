@@ -1,0 +1,42 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Tokenizer;
+
+namespace Parser.SyntaxTreeItems
+{
+    public class TupleType : Type
+    {
+        public OpenPerenToken OpenPeren { get; private set; }
+        public TupleTypeItem[] Items { get; private set; }
+        public ClosePerenToken ClosePeren { get; private set; }
+
+        public TupleType(TokenCollection tokens)
+        {
+            OpenPeren = tokens.PopToken<OpenPerenToken>();
+            LinkedList<TupleTypeItem> itemsList = new LinkedList<TupleTypeItem>();
+            bool lastMissingComma = tokens.PeekToken() is ClosePerenToken;
+            while (!lastMissingComma)
+            {
+                var add = new TupleTypeItem(tokens);
+                itemsList.AddLast(add);
+                lastMissingComma = add.Comma == null;
+            }
+            Items = itemsList.ToArray();
+            ClosePeren = tokens.PopToken<ClosePerenToken>();
+        }
+
+        public override string ToString()
+        {
+            string ret = "";
+            ret += OpenPeren.ToString();
+            foreach (var item in Items)
+            {
+                ret += item.ToString();
+            }
+            ret += ClosePeren.ToString();
+            return ret;
+        }
+    }
+}

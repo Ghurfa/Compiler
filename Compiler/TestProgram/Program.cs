@@ -1,6 +1,6 @@
-﻿using Compiler;
-using Compiler.SyntaxTreeItems;
-using Microsoft.VisualBasic.CompilerServices;
+﻿using Microsoft.VisualBasic.CompilerServices;
+using Parser;
+using Parser.SyntaxTreeItems;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,31 +14,7 @@ namespace TestProgram
     {
         static void Main(string[] args)
         {
-            var text = File.ReadAllText(@"..\..\..\..\..\TestPrograms\guessingGame.txt");
-            var tokens = Tokenizer.Tokenize(text);
-            NamespaceDeclaration namespaceDecl;
-            try
-            {
-                namespaceDecl = new NamespaceDeclaration(tokens);
-                VisualizationOptions options = 0
-                    //| VisualizationOptions.PrintNames
-                    | VisualizationOptions.PrintNullFieldNames
-                    //| VisualizationOptions.PrintTypes
-                    //| VisualizationOptions.LineFeedAfterType
-                    ;
-                DepthWriteStyle style = DepthWriteStyle.ColorPipes;
-                //Visualizer.PrintObject(namespaceDecl, "Namespace", style, options);
-                TypeChecker.TypeChecker.CheckNamespace(namespaceDecl);
-            }
-            catch (SyntaxTreeBuildingException ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write(ex.GetType().Name + ": ");
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine(ex.Message);
-                if (ex is InvalidTokenException invToken)
-                    Visualizer.PrintContext(tokens, invToken.Token, 10, 10);
-            }
+            Compiler.Compiler.Compile(@"..\..\..\..\..\TestPrograms\TypeCheckerTest.txt", null);
 
             Console.WriteLine("Finished");
             Console.ReadLine();
