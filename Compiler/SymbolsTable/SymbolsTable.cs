@@ -15,23 +15,22 @@ namespace SymbolsTable
         protected GlobalNode globalNode;
         protected BuiltInClassNode objectNode;
         protected Stack<Dictionary<string, ClassNode>> namespaceStack;
-        protected Scope currentScope;
-        protected Dictionary<string, ClassNode> defaultCachedClasses;
 
         public SymbolsTable()
         {
             namespaceStack = new Stack<Dictionary<string, ClassNode>>();
-            defaultCachedClasses = new Dictionary<string, ClassNode>();
         }
 
         public Result AddLocal(string name, ValueTypeInfo type, int index)
         {
-            if(currentScope.Locals.ContainsKey(name)) return Result.LocalAlreadyDefinedInScope;
-
-            Scope ancestor = currentScope.ParentScope;
+            Scope ancestor = currentScope;
             while(!(ancestor is FunctionScope))
             {
-                if(ancestor.Locals.ContainsKey(name)) return Result.LocalDefinedInEnclosingScope;
+                if(ancestor.Locals.ContainsKey(name))
+                {
+                    if(ancestor == currentScope) return Result.LocalAlreadyDefinedInScope;
+                    else return Result.LocalDefinedInEnclosingScope;
+                }
                 ancestor = ancestor.ParentScope;
             }
 
@@ -42,6 +41,9 @@ namespace SymbolsTable
             return Result.Success;
         }
 
+        public Result GetLocal(string name, out Local local)
+            => GetLocal(name, -1, out local);
+
         public Result GetLocal(string name, int statementIndex, out Local local)
         {
             Scope ancestor = currentScope;
@@ -49,7 +51,7 @@ namespace SymbolsTable
             {
                 if (ancestor.Locals.TryGetValue(name, out BodyLocal bodyLocal))
                 {
-                    if (bodyLocal.Index > statementIndex)
+                    if (bodyLocal.Index > statementIndex && statementIndex >= 0)
                     {
                         local = null;
                         return Result.UsingLocalBeforeDeclaration;
@@ -73,7 +75,7 @@ namespace SymbolsTable
 
         public Result GetField(string name, bool isStatic, out Field field)
         {
-            if (current.Fields.TryGetValue(name, out field))
+            if (currentClass.Fields.TryGetValue(name, out field))
             {
                 if (!isStatic && field.Modifiers.IsStatic) return Result.InvalidStaticReference;
                 else if (isStatic && !field.Modifiers.IsStatic) return Result.InvalidInstanceReference;
@@ -117,7 +119,7 @@ namespace SymbolsTable
         }
 
         public Result GetMethod(string methodName, IEnumerable<ValueTypeInfo> paramTypes, out Method method)
-            => GetMethod(current, methodName, paramTypes, out method);
+            => GetMethod(currentClass, methodName, paramTypes, out method);
 
         public Result GetMethod(ClassNode classNode, string methodName, IEnumerable<ValueTypeInfo> paramTypes, out Method method)
         {
@@ -155,18 +157,18 @@ namespace SymbolsTable
 
         public Result GetClass(string name, out ClassNode classNode)
         {
-            if (current.CachedClasses.TryGetValue(name, out classNode))
+            if (currentClass.CachedClasses.TryGetValue(name, out classNode))
                 return Result.Success;
             else
             {
-                NamespaceNode parent = (NamespaceNode)current.Parent;
+                NamespaceNode parent = (NamespaceNode)currentClass.Parent;
                 while (parent != null)
                 {
                     if (parent.TryGetChild(name, out SymbolNode child))
                     {
                         if (child is ClassNode ret)
                         {
-                            current.CachedClasses.Add(name, ret);
+                            currentClass.CachedClasses.Add(name, ret);
                             classNode = ret;
                             return Result.Success;
                         }

@@ -13,75 +13,89 @@ using System.Threading.Tasks;
 
 namespace Generator
 {
-    static class Emitter
+    class Emitter
     {
-        private static ConstructorInfo objectCtor = typeof(object).GetConstructor(new System.Type[0]);
-        public static void EmitConstructorStart(ILGenerator generator, ClassBuildingInfo info)
+        private ILGenerator generator;
+        private Mappings maps;
+        SymbolsTable.SymbolsTable table;
+
+        public Emitter(Mappings maps, SymbolsTable.SymbolsTable table)
+        {
+            this.maps = maps;
+            this.table = table;
+        }
+
+        public void SetGenerator(ILGenerator generator) => this.generator = generator;
+
+        private ConstructorInfo objectCtor = typeof(object).GetConstructor(new System.Type[0]);
+        public void EmitConstructorStart(ClassBuildingInfo info)
         {
             foreach ((FieldBuilder field, Expression value) in info.DefaultedFields)
             {
                 generator.Emit(OpCodes.Ldarg_0);
-                EmitExpression(generator, value);
+                EmitExpression(value);
                 generator.Emit(OpCodes.Stfld, field);
             }
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Newobj, objectCtor);
         }
 
-        public static void EmitFunctionBody(ILGenerator generator, Mappings maps, SymbolsTable.SymbolsTable table, Constructor ctor)
+        public void EmitFunctionBody(Constructor ctor)
         {
             table.EnterFunction(ctor);
-            Emitter.EmitStatementSet(generator, maps, table, ctor.Declaration.Body.Statements);
+            EmitStatementSet(ctor.Declaration.Body.Statements);
+            generator.Emit(OpCodes.Ret);
             table.ExitFunction();
         }
 
-        public static void EmitFunctionBody(ILGenerator generator, Mappings maps, SymbolsTable.SymbolsTable table, Method method)
+        public void EmitFunctionBody(Method method)
         {
             table.EnterFunction(method);
-            Emitter.EmitStatementSet(generator, maps, table, method.Declaration.Body.Statements);
+            EmitStatementSet(method.Declaration.Body.Statements);
+            generator.Emit(OpCodes.Ret);
             table.ExitFunction();
         }
 
-        private static void EmitStatementSet(ILGenerator generator, Mappings maps, SymbolsTable.SymbolsTable table, Statement[] statements)
+        private void EmitStatementSet(Statement[] statements)
         {
             foreach (Statement statement in statements)
             {
-                EmitStatement(generator, maps, table, statement);
+                EmitStatement(statement);
             }
         }
 
-        private static void EmitStatement(ILGenerator generator, Mappings maps, SymbolsTable.SymbolsTable table, Statement statement)
+        private void EmitStatement(Statement statement)
         {
             switch (statement)
             {
                 case CodeBlock codeBlock:
                     {
-                        table.EnterScope();
-                        EmitStatementSet(generator, maps, table, codeBlock.Statements);
+                        table.EnterNextScope();
+                        EmitStatementSet(codeBlock.Statements);
                         table.ExitScope();
                     }
                     break;
                 case ForBlock forBlock:
                     {
-                        table.EnterScope();
+                        table.EnterNextScope();
 
                         Label bodyStart = generator.DefineLabel();
                         Label evalContinue = generator.DefineLabel();
 
                         //Start
-                        EmitStatement(generator, maps, table, forBlock.StartStatement);
+                        EmitStatement(forBlock.StartStatement);
                         generator.Emit(OpCodes.Br, evalContinue);
 
                         //Body
                         generator.MarkLabel(bodyStart);
-                        EmitStatement(generator, maps, table, forBlock.Body);
+                        EmitStatement(forBlock.Body);
 
                         //Iterate
-                        EmitStatement(generator, maps, table, forBlock.IterateStatement);
+                        EmitStatement(forBlock.IterateStatement);
 
                         //Continue check
                         generator.MarkLabel(evalContinue);
-                        EmitExpression(generator, forBlock.ContinueExpr);
+                        EmitExpression(forBlock.ContinueExpr);
                         generator.Emit(OpCodes.Brtrue, bodyStart);
 
                         table.ExitScope();
@@ -93,8 +107,13 @@ namespace Generator
                         case DeclAssignExpression declAssign:
                             {
                                 string name = ((IdentifierExpression)declAssign.To).Identifier.Text;
-                                //var local = generator.DeclareLocal()
+                                LocalBuilder local = EmitDeclaration(name);
+                                EmitExpression(declAssign.From);
+                                generator.Emit(OpCodes.Stloc, local);
                             }
+                            break;
+                        default:
+                            EmitExpression(exprStatement.Expression);
                             break;
                     }
                     break;
@@ -102,7 +121,16 @@ namespace Generator
             }
         }
 
-        public static void EmitExpression(ILGenerator generator, Expression expr)
+        public LocalBuilder EmitDeclaration(string name)
+        {
+            table.GetLocal(name, out Local local);
+            var type = maps[local.Type.Class];
+            LocalBuilder builder = generator.DeclareLocal(type);
+            maps.MapLocal(local, builder);
+            return builder;
+        }
+
+        public void EmitExpression(Expression expr)
         {
             switch (expr)
             {
@@ -121,16 +149,76 @@ namespace Generator
                             case 6: generator.Emit(OpCodes.Ldc_I4_6); return;
                             case 7: generator.Emit(OpCodes.Ldc_I4_7); return;
                             case 8: generator.Emit(OpCodes.Ldc_I4_8); return;
-                            default:
-                                if (value >= short.MinValue && value <= short.MaxValue)
-                                    generator.Emit(OpCodes.Ldc_I4_S, (short)value);
-                                else
-                                    generator.Emit(OpCodes.Ldc_I4, value);
-                                return;
+                            default: generator.Emit(OpCodes.Ldc_I4, value); return;
                         }
                     }
+                case IdentifierExpression identifier:
+                    {
+                        string text = identifier.Identifier.Text;
+                        Result getFieldRes = table.GetField(text, true, out Field field);
+                        switch (getFieldRes)
+                        {
+                            case Result.Success:
+                                generator.Emit(OpCodes.Ldsfld, maps[field]);
+                                break;
+                            case Result.InvalidInstanceReference:
+                                generator.Emit(OpCodes.Ldarg_0);
+                                generator.Emit(OpCodes.Ldfld, maps[field]);
+                                break;
+                            case Result.NoSuchMember:
+                                table.GetLocal(text, out Local local);
+                                if (local is ParamLocal paramLocal)
+                                    generator.Emit(OpCodes.Ldarg, paramLocal.Index);
+                                else generator.Emit(OpCodes.Ldloc, maps[local]);
+                                break;
+                            default: throw new NotImplementedException();
+                        }
+                    }
+                    return;
+                case PostIncrementExpression postIncr:
+                    switch(postIncr.BaseExpression)
+                    {
+                        default: throw new NotImplementedException();
+                    }
+                case PlusExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Add); return;
+                case MinusExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Sub); return;
+                case MultiplyExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Mul); return;
+                case DivideExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Div); return;
+                case ModuloExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Rem); return;
+                case LeftShiftExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Shl); return;
+                case RightShiftExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Shr); return;
+                case BitwiseAndExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.And); return;
+                case BitwiseOrExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Or); return;
+                case BitwiseXorExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Xor); return;
+                case LessThanExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Clt); return;
+                case GreaterThanExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Cgt); return;
+                case LessThanOrEqualToExpression _:
+                    EmitExpressionSides(expr);
+                    generator.Emit(OpCodes.Cgt);
+                    generator.Emit(OpCodes.Ldc_I4_0);
+                    generator.Emit(OpCodes.Ceq);
+                    return;
+                case GreaterThanOrEqualToExpression _:
+                    EmitExpressionSides(expr);
+                    generator.Emit(OpCodes.Clt);
+                    generator.Emit(OpCodes.Ldc_I4_0);
+                    generator.Emit(OpCodes.Ceq);
+                    return;
+                case EqualsExpression _: EmitExpressionSides(expr); generator.Emit(OpCodes.Ceq); return;
+                case NotEqualsExpression _:
+                    EmitExpressionSides(expr);
+                    generator.Emit(OpCodes.Ceq);
+                    generator.Emit(OpCodes.Ldc_I4_0);
+                    generator.Emit(OpCodes.Ceq);
+                    return;
                 default: throw new NotImplementedException();
             }
+        }
+
+        private void EmitExpressionSides(Expression expr)
+        {
+            EmitExpression(expr.RightExpr);
+            EmitExpression(expr.LeftExpr);
         }
     }
 }

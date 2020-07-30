@@ -24,38 +24,6 @@ namespace TypeChecker
             void Verify(SymbolsTableBuilder table, TypeInfo returnType, VerifyConstraints constraints);
         }
 
-        private struct FunctionScopeInfo : IScopeInfo
-        {
-            public int IndexInParent { get; private set; }
-            private ParameterListDeclaration parameterList;
-            private Statement[] statements;
-
-            public FunctionScopeInfo(ParameterListDeclaration parameters, Statement[] body)
-            {
-                parameterList = parameters;
-                statements = body;
-                IndexInParent = 1;
-            }
-
-            public void Verify(SymbolsTableBuilder table, TypeInfo returnType, VerifyConstraints constraints)
-            {
-                table.EnterFunction(parameterList);
-
-                List<IScopeInfo> childScopes = new List<IScopeInfo>();
-                for (int i = 0; i < statements.Length; i++)
-                {
-                    VerifyStatement(table, i, childScopes, statements[i], returnType, constraints);
-                }
-
-                foreach (IScopeInfo childScope in childScopes)
-                {
-                    childScope.Verify(table, returnType, constraints);
-                }
-
-                table.ExitFunction();
-            }
-        }
-
         private struct NormalScopeInfo : IScopeInfo
         {
             public int IndexInParent { get; private set; }

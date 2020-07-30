@@ -50,30 +50,56 @@ namespace TypeChecker
                 }
                 foreach (Method method in node.Methods)
                 {
-                    VerifyMethod(Table, method);
+                    VerifyMethod(builder, method);
                     if (method.Name == "Main" && method.Modifiers.IsStatic && method.Type.Parameters.Length == 0)
                     {
                         if (hasEntryPoint) throw new MultipleEntryPointsException();
                         else hasEntryPoint = true;
                     }    
                 }
-                foreach (Constructor ctor in node.Constructors) VerifyConstructor(Table, ctor);
+                foreach (Constructor ctor in node.Constructors) VerifyConstructor(builder, ctor);
             }
 
             if (!hasEntryPoint) throw new MissingEntryPointException();
         }
 
-        private static void VerifyMethod(SymbolsTable.SymbolsTable table, Method method)
+        private static void VerifyMethod(SymbolsTableBuilder table, Method method)
         {
-            VerifyConstraints options = method.Modifiers.IsStatic ? VerifyConstraints.RequireStatic : 0;
-            var scope = new FunctionScopeInfo(method.Declaration.ParameterList, method.Declaration.Body.Statements);
-            scope.Verify(table, method.Type.ReturnType, options);
+            VerifyConstraints constraints = method.Modifiers.IsStatic ? VerifyConstraints.RequireStatic : 0;
+            var statements = method.Declaration.Body.Statements;
+            table.EnterFunction(method);
+
+            List<IScopeInfo> childScopes = new List<IScopeInfo>();
+            for (int i = 0; i < statements.Length; i++)
+            {
+                VerifyStatement(table, i, childScopes, statements[i], method.Type.ReturnType, constraints);
+            }
+
+            foreach (IScopeInfo childScope in childScopes)
+            {
+                childScope.Verify(table, method.Type.ReturnType, constraints);
+            }
+
+            table.ExitFunction();
         }
 
-        private static void VerifyConstructor(SymbolsTable.SymbolsTable table, Constructor ctor)
+        private static void VerifyConstructor(SymbolsTableBuilder table, Constructor ctor)
         {
-            var scope = new FunctionScopeInfo(ctor.Declaration.ParameterList, ctor.Declaration.Body.Statements);
-            scope.Verify(table, VoidTypeInfo.Get(), 0);
+            var statements = ctor.Declaration.Body.Statements;
+            table.EnterFunction(ctor);
+
+            List<IScopeInfo> childScopes = new List<IScopeInfo>();
+            for (int i = 0; i < statements.Length; i++)
+            {
+                VerifyStatement(table, i, childScopes, statements[i], VoidTypeInfo.Get(), 0);
+            }
+
+            foreach (IScopeInfo childScope in childScopes)
+            {
+                childScope.Verify(table, VoidTypeInfo.Get(), 0);
+            }
+
+            table.ExitFunction();
         }
 
         private static void VerifyStatement(SymbolsTable.SymbolsTable table, int indexInParent, List<IScopeInfo> scopes, Statement statement, TypeInfo returnType, VerifyConstraints constraints)

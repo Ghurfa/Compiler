@@ -16,10 +16,11 @@ namespace Generator
 {
     class Mappings
     {
-        public Dictionary<ClassNode, ClassBuildingInfo> Classes { get; private set; }
-        public Dictionary<Field, FieldBuilder> Fields { get; private set; }
-        public Dictionary<Constructor, ConstructorBuilder> Constructors { get; private set; }
-        public Dictionary<Method, MethodBuilder> Methods { get; private set; }
+        private Dictionary<ClassNode, ClassBuildingInfo> Classes;
+        private Dictionary<Field, FieldBuilder> Fields;
+        private Dictionary<Constructor, ConstructorBuilder> Constructors;
+        private Dictionary<Method, MethodBuilder> Methods;
+        private Dictionary<Local, LocalBuilder> Locals;
 
         public Mappings()
         {
@@ -27,12 +28,29 @@ namespace Generator
             Fields = new Dictionary<Field, FieldBuilder>();
             Constructors = new Dictionary<Constructor, ConstructorBuilder>();
             Methods = new Dictionary<Method, MethodBuilder>();
+            Locals = new Dictionary<Local, LocalBuilder>();
         }
 
-        public ClassBuildingInfo this[ClassNode node] => Classes[node];
+        public Type this[ClassNode node]
+        { 
+            get
+            {
+                if (node is BuiltInClassNode builtIn)
+                {
+                    switch (builtIn.Name)
+                    {
+                        case "int": return typeof(int);
+                        default: throw new NotImplementedException();
+                    }
+                }
+                else return Classes[node].Builder;
+            }
+            private set { throw new InvalidOperationException(); }
+        }
         public FieldBuilder this[Field field] => Fields[field];
         public ConstructorBuilder this[Constructor constructor] => Constructors[constructor];
         public MethodBuilder this[Method method] => Methods[method];
+        public LocalBuilder this[Local local] => Locals[local];
 
         public void DefineClass(ModuleBuilder module, ClassNode node)
         {
@@ -74,5 +92,8 @@ namespace Generator
         public void MapField(Field field, FieldBuilder builder) => Fields.Add(field, builder);
         public void MapConstructor(Constructor constructor, ConstructorBuilder builder) => Constructors.Add(constructor, builder);
         public void MapMethod(Method method, MethodBuilder builder) => Methods.Add(method, builder);
+        public void MapLocal(Local local, LocalBuilder builder) => Locals.Add(local, builder);
+
+        public ClassBuildingInfo GetClassBuildingInfo(ClassNode node) => Classes[node];
     }
 }

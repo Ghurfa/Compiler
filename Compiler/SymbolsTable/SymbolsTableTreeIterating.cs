@@ -9,7 +9,10 @@ namespace SymbolsTable
 {
     public partial class SymbolsTable
     {
-        private ClassNode current;
+        private ClassNode currentClass;
+        protected Scope currentScope;
+        protected Dictionary<Method, FunctionScope> methodScopes;
+        protected Dictionary<Constructor, FunctionScope> constructorScopes;
 
         public IEnumerable<ClassNode> IterateWithStack => IterateThroughNamespace(globalNode, true, true);
         public IEnumerable<ClassNode> IterateWithoutStack => IterateThroughNamespace(globalNode, false, false);
@@ -58,26 +61,26 @@ namespace SymbolsTable
 
         private void EnterClass(ClassNode classNode)
         {
-            current = classNode;
+            currentClass = classNode;
         }
 
         private void ExitClass() { }
 
         public void EnterFunction(Method method)
         {
-            currentScope = method.FuncScope;
+            currentScope = methodScopes[method];
             currentScope.Begin();
         }
 
-        public void EnterFunction(Constructor ctor)
+        public void EnterFunction(Constructor constructor)
         {
-            currentScope = ctor.FuncScope;
+            currentScope = constructorScopes[constructor];
             currentScope.Begin();
         }
 
         public void ExitFunction() => ExitScope();
 
-        public void EnterScope()
+        public void EnterNextScope()
         {
             if (currentScope.TryGetNextChild(out Scope child))
             {

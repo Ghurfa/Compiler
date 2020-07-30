@@ -29,31 +29,34 @@ namespace Generator
 
             foreach (ClassNode node in table.IterateWithoutStack)
             {
-                ClassBuildingInfo info = maps[node];
+                ClassBuildingInfo info = maps.GetClassBuildingInfo(node);
                 foreach (Field field in node.Fields.Values) DefineField(maps, info, field);
                 foreach (Constructor ctor in node.Constructors) DefineConstructor(maps, info, ctor);
                 foreach (Method method in node.Methods) DefineMethod(maps, info, method);
             }
 
             MethodBuilder entryPoint = null;
+            Emitter emitter = new Emitter(maps, table);
 
             foreach (ClassNode node in table.IterateWithoutStack)
             {
-                ClassBuildingInfo info = maps[node];
+                ClassBuildingInfo info = maps.GetClassBuildingInfo(node);
                 foreach (Constructor ctor in node.Constructors)
                 {
                     ConstructorBuilder builder = maps[ctor];
-                    ILGenerator generator = builder.GetILGenerator();
-                    Emitter.EmitConstructorStart(generator, info);
 
-                    Emitter.EmitFunctionBody(generator, maps, table, ctor);
+                    emitter.SetGenerator(builder.GetILGenerator());
+                    emitter.EmitConstructorStart(info);
+                    emitter.EmitFunctionBody(ctor);
                 }
                 foreach (Method method in node.Methods)
                 {
                     MethodBuilder builder = maps[method];
                     if (method.Name == "Main" && method.Modifiers.IsStatic && method.Type.Parameters.Length == 0)
                         entryPoint = builder;
-                    Emitter.EmitFunctionBody(builder.GetILGenerator(), maps, table, method);
+
+                    emitter.SetGenerator(builder.GetILGenerator());
+                    emitter.EmitFunctionBody(method);
                 }
                 info.Builder.CreateType();
             }
@@ -64,7 +67,7 @@ namespace Generator
 
         private static void DefineField(Mappings types, ClassBuildingInfo info, Field node)
         {
-            FieldBuilder builder = info.Builder.DefineField(node.Name, types[node.Type.Class].Builder, GetFieldAttributes(node.Modifiers));
+            FieldBuilder builder = info.Builder.DefineField(node.Name, types[node.Type.Class], GetFieldAttributes(node.Modifiers));
             types.MapField(node, builder);
             if (node is InferredField iField)
             {
@@ -90,7 +93,7 @@ namespace Generator
 
         private static void DefineMethod(Mappings types, ClassBuildingInfo info, SymbolsTable.Method node)
         {
-            System.Type retType = node.Type.ReturnType is VoidTypeInfo ? typeof(void) : types[((ValueTypeInfo)node.Type.ReturnType).Class].Builder;
+            System.Type retType = node.Type.ReturnType is VoidTypeInfo ? typeof(void) : types[((ValueTypeInfo)node.Type.ReturnType).Class];
             System.Type[] paramTypes = GetTypes(types, node.Type.Parameters);
             MethodBuilder builder = info.Builder.DefineMethod(node.Name, GetMethodAttributes(node.Modifiers), retType, paramTypes);
             types.MapMethod(node, builder);
@@ -143,12 +146,12 @@ namespace Generator
             return attr;
         }
 
-        private static TypeBuilder[] GetTypes(Mappings maps, ValueTypeInfo[] types)
+        private static Type[] GetTypes(Mappings maps, ValueTypeInfo[] types)
         {
-            TypeBuilder[] ret = new TypeBuilder[types.Length];
+            Type[] ret = new Type[types.Length];
             for (int i = 0; i < ret.Length; i++)
             {
-                ret[i] = maps[types[i].Class].Builder;
+                ret[i] = maps[types[i].Class];
             }
             return ret;
         }

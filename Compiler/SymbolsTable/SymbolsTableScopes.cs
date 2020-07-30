@@ -43,14 +43,15 @@ namespace SymbolsTable
         protected class FunctionScope : Scope
         {
             public Dictionary<string, ParamLocal> Parameters { get; set; }
-            public FunctionScope(SymbolsTable table, ParameterListDeclaration paramList)
+            public FunctionScope(SymbolsTable table, ParameterListDeclaration paramList, bool isStatic)
                 : base(0, null)
             {
                 Parameters = new Dictionary<string, ParamLocal>();
+                int offset = isStatic ? 0 : 1;
                 for (int i = 0; i < paramList.Parameters.Length; i++)
                 {
                     var param = paramList.Parameters[i];
-                    var paramInfo = new ParamLocal(ValueTypeInfo.Get(table, param.Type), i);
+                    var paramInfo = new ParamLocal(ValueTypeInfo.Get(table, param.Type), i + offset);
                     Parameters.Add(param.Identifier.Text, paramInfo);
                 }
             }

@@ -12,6 +12,13 @@ namespace SymbolsTable
 {
     public class SymbolsTableBuilder : SymbolsTable
     {
+        protected Dictionary<string, ClassNode> defaultCachedClasses;
+
+        public SymbolsTableBuilder()
+        {
+            defaultCachedClasses = new Dictionary<string, ClassNode>();
+        }
+
         public void BuildTree(IEnumerable<NamespaceDeclaration> namespaces, out List<(InferredField, InferredFieldDeclaration)> inferredFields)
         {
             InitializeTree();
@@ -41,16 +48,21 @@ namespace SymbolsTable
                             }
                             break;
                         case SimpleFieldDeclaration sFieldDecl:
-                            {
-                                var newNode = new SimpleField(this, sFieldDecl);
-                                classNode.AddField(newNode);
-                            }
+                            classNode.AddField(new SimpleField(this, sFieldDecl));
                             break;
                         case MethodDeclaration methodDecl:
-                            classNode.AddMethod(new Method(this, methodDecl));
+                            {
+                                var newMethod = new Method(this, methodDecl);
+                                classNode.AddMethod(newMethod);
+                                methodScopes.Add(newMethod, new FunctionScope(this, newMethod.Declaration.ParameterList, newMethod.Modifiers.IsStatic));
+                            }
                             break;
                         case ConstructorDeclaration ctorDecl:
-                            classNode.AddConstructor(new Constructor(this, ctorDecl));
+                            {
+                                var newCtor = new Constructor(this, ctorDecl);
+                                classNode.AddConstructor(newCtor);
+                                constructorScopes.Add(newCtor, new FunctionScope(this, newCtor.Declaration.ParameterList, newCtor.Modifiers.IsStatic));
+                            }
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -61,7 +73,7 @@ namespace SymbolsTable
         public void EnterNewScope(int statementIndex)
         {
             currentScope.Children.Add(new Scope(statementIndex, currentScope));
-            EnterScope();
+            EnterNextScope();
         }
 
         private void InitializeTree()
@@ -88,6 +100,9 @@ namespace SymbolsTable
 
             ValueTypeInfo stringType = ValueTypeInfo.PrimitiveTypes["string"];
             objectNode.AddMethod(new Method("ToString", new FunctionTypeInfo(stringType, new ValueTypeInfo[] { }), Modifiers.Public));
+
+            methodScopes = new Dictionary<Method, FunctionScope>();
+            constructorScopes = new Dictionary<Constructor, FunctionScope>();
         }
 
         private NamespaceNode AddNamespace(NamespaceDeclaration namespaceDecl)
