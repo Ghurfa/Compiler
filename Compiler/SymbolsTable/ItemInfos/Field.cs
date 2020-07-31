@@ -10,7 +10,7 @@ namespace SymbolsTable
     public class Field : ClassMember
     {
         private ValueTypeInfo type;
-        public ValueTypeInfo Type
+        public virtual ValueTypeInfo Type
         {
             get => type; 
             set

@@ -9,7 +9,7 @@ namespace SymbolsTable
 {
     public partial class SymbolsTable
     {
-        private ClassNode currentClass;
+        protected ClassNode currentClass;
         protected Scope currentScope;
         protected Dictionary<Method, FunctionScope> methodScopes;
         protected Dictionary<Constructor, FunctionScope> constructorScopes;
@@ -20,12 +20,12 @@ namespace SymbolsTable
 
         private IEnumerable<ClassNode> IterateThroughNamespace(NamespaceNode node, bool initFields, bool modifyStack)
         {
+            if (node is LibraryNamespaceNode) yield break;
             if (modifyStack) EnterNamespace(node);
 
             foreach (SymbolNode child in node.Children)
             {
-                if (child is BuiltInClassNode _) continue;
-                else if (child is ClassNode classChild)
+                if (child is ClassNode classChild)
                 {
                     EnterClass(classChild);
                     yield return classChild;

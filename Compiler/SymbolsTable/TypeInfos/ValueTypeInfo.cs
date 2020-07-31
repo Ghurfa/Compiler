@@ -26,7 +26,7 @@ namespace SymbolsTable.TypeInfos
         {
             switch (type)
             {
-                case ArrayType arrType: return new ArrayTypeInfo(table, Get(table, arrType.BaseType));
+                case ArrayType arrType: return new ArrayTypeInfo(table, Get(table, arrType.BaseType), PrimitiveTypes["Array"].Class);
                 case PrimitiveType primType: return PrimitiveTypes[primType.TypeKeyword.Text];
                 case TupleType tupleType:
                     {
@@ -37,21 +37,34 @@ namespace SymbolsTable.TypeInfos
                         }
                         return TupleTypeInfo.Get(subTypes);
                     }
+                case QualifiedIdentifierType qualifiedType:
+                    {
+                        var result = table.GetClass(qualifiedType.ToString(), out ClassNode classNode);
+                        if (result != Result.Success) throw new InvalidOperationException();
+                        return Get(classNode);
+                    }
                 default: throw new NotImplementedException();
             }
         }
 
-        public static void Initialize(SymbolsTable table, string[] primitiveTypes)
+        public static void Initialize(SymbolsTable table)
         {
-            void add(string name)
+            void add(string name, string systemName)
             {
-                ClassNode node = table.GetBuiltInClass(name);
+                table.GetSystemClass(systemName, out ClassNode node);
                 ValueTypeInfo type = new ValueTypeInfo(node);
                 PrimitiveTypes.Add(name, type);
                 types.Add(node, type);
             }
-            foreach (string type in primitiveTypes)
-                add(type);
+            add("bool", "Boolean");
+            add("byte", "Byte");
+            add("char", "Char");
+            add("double", "Double");
+            add("float", "Single");
+            add("int", "Int32");
+            add("object", "Object");
+            add("string", "String");
+            add("Array", "Array");
         }
 
         public ClassNode Class { get; set; }

@@ -8,7 +8,7 @@ namespace SymbolsTable
 {
     public class Constructor : ClassMember
     {
-        public ValueTypeInfo[] ParamTypes { get; private set; }
+        public virtual ValueTypeInfo[] ParamTypes { get; protected set; }
         public ConstructorDeclaration Declaration { get; private set; }
 
         public Constructor(SymbolsTable table, ConstructorDeclaration ctorDecl)
@@ -20,6 +20,11 @@ namespace SymbolsTable
             {
                 ParamTypes[i] = ValueTypeInfo.Get(table, ctorDecl.ParameterList.Parameters[i].Type);
             }
+        }
+
+        protected Constructor(string name, Modifiers modifiers)
+            : base(name, modifiers)
+        {
         }
     }
 }

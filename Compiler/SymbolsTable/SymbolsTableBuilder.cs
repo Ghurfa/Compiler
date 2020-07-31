@@ -6,13 +6,13 @@ using SymbolsTable.Nodes;
 using SymbolsTable.TypeInfos;
 using Parser.SyntaxTreeItems;
 using Parser.SyntaxTreeItems.ClassItemDeclarations;
-using Parser;
 
 namespace SymbolsTable
 {
     public class SymbolsTableBuilder : SymbolsTable
     {
         protected Dictionary<string, ClassNode> defaultCachedClasses;
+        private ClassNode objectNode;
 
         public SymbolsTableBuilder()
         {
@@ -76,30 +76,65 @@ namespace SymbolsTable
             EnterNextScope();
         }
 
+        public override Result GetClass(string name, out ClassNode classNode)
+        {
+            if (base.GetClass(name, out classNode) == Result.Success)
+                return Result.Success;
+            else
+            {
+                NamespaceNode parent = (NamespaceNode)currentClass.Parent;
+                while (parent != null)
+                {
+                    if (parent.TryGetChild(name, out SymbolNode child))
+                    {
+                        if (child is ClassNode ret)
+                        {
+                            currentClass.CachedClasses.Add(name, ret);
+                            classNode = ret;
+                            return Result.Success;
+                        }
+                        else if (child is NamespaceNode)
+                        {
+                            classNode = null;
+                            return Result.NamespaceUsedAsType;
+                        }
+                        else throw new InvalidOperationException();
+                    }
+                    parent = (NamespaceNode)parent.Parent;
+                }
+
+                if (systemNamespace.TryGetChild(name, out SymbolNode systemChild))
+                {
+                    if (systemChild is ClassNode ret)
+                    {
+                        currentClass.CachedClasses.Add(name, ret);
+                        classNode = ret;
+                        return Result.Success;
+                    }
+                    else if (systemChild is NamespaceNode)
+                    {
+                        classNode = null;
+                        return Result.NamespaceUsedAsType;
+                    }
+                    else throw new InvalidOperationException();
+                }
+                else
+                {
+                    classNode = null;
+                    return Result.ClassNotFound;
+                }
+            }
+        }
+
         private void InitializeTree()
         {
-            void add(string name)
-            {
-                var newNode = new BuiltInClassNode(name, objectNode, globalNode);
-                globalNode.AddChild(newNode);
-                defaultCachedClasses.Add(name, newNode);
-            }
-
             globalNode = new GlobalNode();
-            objectNode = new BuiltInClassNode("object", null, globalNode);
-            ArrayNode = new BuiltInClassNode("array", objectNode, globalNode);
+            systemNamespace = new LibraryNamespaceNode(this, globalNode);
+            globalNode.AddChild(systemNamespace);
 
-            defaultCachedClasses.Clear();
+            GetSystemClass("Object", out objectNode);
 
-            string[] primitiveTypes = new[] { "int", "bool", "string", "char", "float", "double" };
-
-            foreach (string primType in primitiveTypes)
-                add(primType);
-
-            ValueTypeInfo.Initialize(this, primitiveTypes);
-
-            ValueTypeInfo stringType = ValueTypeInfo.PrimitiveTypes["string"];
-            objectNode.AddMethod(new Method("ToString", new FunctionTypeInfo(stringType, new ValueTypeInfo[] { }), Modifiers.Public));
+            ValueTypeInfo.Initialize(this);
 
             methodScopes = new Dictionary<Method, FunctionScope>();
             constructorScopes = new Dictionary<Constructor, FunctionScope>();

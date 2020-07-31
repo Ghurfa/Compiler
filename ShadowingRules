@@ -1,4 +1,5 @@
 # = Not implemented
+Ancestor = ancestor in terms of enclosing
 Class
     # May not shadow ancestor classes
 

@@ -6,14 +6,14 @@ using System.Reflection;
 using System.Text;
 using SymbolsTable.Nodes;
 using SymbolsTable.TypeInfos;
+using System.Xml.Serialization;
 
 namespace SymbolsTable
 {
     public partial class SymbolsTable
     {
-        internal BuiltInClassNode ArrayNode { get; set; }
         protected GlobalNode globalNode;
-        protected BuiltInClassNode objectNode;
+        protected LibraryNamespaceNode systemNamespace;
         protected Stack<Dictionary<string, ClassNode>> namespaceStack;
 
         public SymbolsTable()
@@ -24,17 +24,17 @@ namespace SymbolsTable
         public Result AddLocal(string name, ValueTypeInfo type, int index)
         {
             Scope ancestor = currentScope;
-            while(!(ancestor is FunctionScope))
+            while (!(ancestor is FunctionScope))
             {
-                if(ancestor.Locals.ContainsKey(name))
+                if (ancestor.Locals.ContainsKey(name))
                 {
-                    if(ancestor == currentScope) return Result.LocalAlreadyDefinedInScope;
+                    if (ancestor == currentScope) return Result.LocalAlreadyDefinedInScope;
                     else return Result.LocalDefinedInEnclosingScope;
                 }
                 ancestor = ancestor.ParentScope;
             }
 
-            if(((FunctionScope)ancestor).Parameters.ContainsKey(name)) return Result.LocalDefinedInEnclosingScope;
+            if (((FunctionScope)ancestor).Parameters.ContainsKey(name)) return Result.LocalDefinedInEnclosingScope;
 
             currentScope.Locals.Add(name, new BodyLocal(type, index + 1));
 
@@ -63,7 +63,17 @@ namespace SymbolsTable
                 ancestor = ancestor.ParentScope;
             }
 
-            if (((FunctionScope)ancestor).Parameters.TryGetValue(name, out ParamLocal paramLocal))
+            if (ancestor.Locals.TryGetValue(name, out BodyLocal funcBodyLocal))
+            {
+                if (funcBodyLocal.Index > statementIndex && statementIndex >= 0)
+                {
+                    local = null;
+                    return Result.UsingLocalBeforeDeclaration;
+                }
+                local = funcBodyLocal;
+                return Result.Success;
+            }
+            else if (((FunctionScope)ancestor).Parameters.TryGetValue(name, out ParamLocal paramLocal))
             {
                 local = paramLocal;
                 return Result.Success;
@@ -146,44 +156,57 @@ namespace SymbolsTable
             else return Result.NoSuchMember;
         }
 
-        internal BuiltInClassNode GetBuiltInClass(string name)
+        public Result GetConstructor(ClassNode classNode, IEnumerable<ValueTypeInfo> paramTypes, out Constructor constructor)
         {
-            if (globalNode.TryGetChild(name, out SymbolNode child))
+            ClassNode current = classNode;
+            while (current != null)
             {
-                return (BuiltInClassNode)child;
+                foreach (Constructor other in current.Constructors)
+                {
+                    if (Enumerable.SequenceEqual(other.ParamTypes, paramTypes))
+                    {
+                        constructor = other;
+                        return Result.Success;
+                    }
+                }
+                current = current.ParentClass;
             }
-            throw new InvalidOperationException();
+            constructor = null;
+            return Result.NoSuchConstructor;
         }
 
-        public Result GetClass(string name, out ClassNode classNode)
+        public virtual Result GetClass(string name, out ClassNode classNode)
         {
             if (currentClass.CachedClasses.TryGetValue(name, out classNode))
                 return Result.Success;
-            else
+            else return Result.ClassNotFound;
+        }
+
+        public Result GetSystemClass(string name, out ClassNode classNode)
+        {
+            if (systemNamespace.TryGetChild(name, out SymbolNode child))
             {
-                NamespaceNode parent = (NamespaceNode)currentClass.Parent;
-                while (parent != null)
+                if (child is ClassNode classChild)
                 {
-                    if (parent.TryGetChild(name, out SymbolNode child))
-                    {
-                        if (child is ClassNode ret)
-                        {
-                            currentClass.CachedClasses.Add(name, ret);
-                            classNode = ret;
-                            return Result.Success;
-                        }
-                        else if (child is NamespaceNode)
-                        {
-                            classNode = null;
-                            return Result.NamespaceUsedAsType;
-                        }
-                        else throw new InvalidOperationException();
-                    }
-                    parent = (NamespaceNode)parent.Parent;
+                    classNode = classChild;
+                    return Result.Success;
                 }
-                classNode = null;
-                return Result.ClassNotFound;
+                else if (child is NamespaceNode _)
+                {
+                    classNode = null;
+                    return Result.NamespaceUsedAsType;
+                }
+                else throw new InvalidOperationException();
             }
+            classNode = null;
+            return Result.ClassNotFound;
+        }
+
+        public Result GetLibraryClass(System.Type type, out LibraryClassNode node)
+        {
+            if (systemNamespace.TryGetChild(type, out node))
+                return Result.Success;
+            else return Result.ClassNotFound;
         }
     }
 }

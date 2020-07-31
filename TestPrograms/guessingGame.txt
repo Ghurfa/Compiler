@@ -4,31 +4,31 @@ myNamespace namespace
     {
         Main static void(args:string[])
         {
-            number:int = 50//Random.RandInt(0, 64)
-            guess:int = -1
+            rand := new Random()
             
-            end := false
-            while !end
+            while !(end := false)
             {
+                number := rand.Next(64)
+                guess := -1
                 while guess != number
                 {
                     guess = Console.ReadLine()
                     if (guess < number)
                     {
-                        Console.PrintLine("Too low")
+                        Console.WriteLine("Too low")
                     } 
                     else if(guess > number) 
                     {
-                       Console.PrintLine("Too high")
+                        Console.WriteLine("Too high")
                     }
                     else
                     {
-                        Console.Println("Correct")
+                        Console.WriteLine("Correct")
                     }
                 }
-                Console.Println("Continue? (y/n)")
+                Console.WriteLine("Continue? (y)")
                 option := Console.ReadLine()
-                end = option == "y" || option == "n"
+                end = option != "y"
             }
         }
     }

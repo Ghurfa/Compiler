@@ -12,13 +12,14 @@ namespace SymbolsTable.Nodes
     {
         public string FullName;
         public Modifiers Modifiers { get; set; }
-        public Dictionary<string, Field> Fields { get; set; }
         public List<SimpleField> SimpleDefaultedFields { get; set; }
-        public List<Method> Methods { get; set; }
-        public List<Constructor> Constructors { get; set; }
         public Dictionary<string, ClassNode> CachedClasses { get; set; }
         public ClassDeclaration Declaration { get; set; }
-        public ClassNode ParentClass { get; set; }
+
+        public virtual ClassNode ParentClass { get; set; }
+        public virtual Dictionary<string, Field> Fields { get; set; }
+        public virtual List<Constructor> Constructors { get; set; }
+        public virtual List<Method> Methods { get; set; }
 
         public ClassNode(string name, ClassDeclaration classDecl, ClassNode parentClass, SymbolNode parent, Modifiers modifiers, Dictionary<string, ClassNode> defaultCached)
             : base(name, parent)
@@ -35,6 +36,12 @@ namespace SymbolsTable.Nodes
             ParentClass = parentClass;
 
             FullName = GetFullName();
+        }
+
+        protected ClassNode(string name, SymbolNode parent, Modifiers modifiers)
+            :base(name, parent)
+        {
+            Modifiers = modifiers;
         }
 
         public Result AddField(Field field)

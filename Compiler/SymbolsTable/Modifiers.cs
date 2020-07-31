@@ -18,6 +18,12 @@ namespace SymbolsTable
         public AccessModifier AccessModifier { get; set; }
         public bool IsStatic { get; set; }
 
+        public Modifiers(AccessModifier accessModifier, bool isStatic)
+        {
+            AccessModifier = accessModifier;
+            IsStatic = isStatic;
+        }
+
         public Modifiers(ModifierList modifiers)
         {
             if (modifiers == null)
@@ -40,12 +46,6 @@ namespace SymbolsTable
                     }
                 }
             }
-        }
-
-        private Modifiers(AccessModifier accessModifier, bool isStatic)
-        {
-            AccessModifier = accessModifier;
-            IsStatic = isStatic;
         }
 
         public static Modifiers Public => new Modifiers(AccessModifier.PublicModifier, false);

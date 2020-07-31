@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SymbolsTable.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,8 +9,8 @@ namespace SymbolsTable.TypeInfos
     {
         public ValueTypeInfo BaseType { get; set; }
 
-        public ArrayTypeInfo(SymbolsTable table, ValueTypeInfo baseType)
-            :base(table.ArrayNode)
+        public ArrayTypeInfo(SymbolsTable table, ValueTypeInfo baseType, ClassNode arrayClass)
+            :base(arrayClass)
         {
             BaseType = baseType;
         }

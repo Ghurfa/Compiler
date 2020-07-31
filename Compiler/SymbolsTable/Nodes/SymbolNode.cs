@@ -23,7 +23,7 @@ namespace SymbolsTable
             children.Add(child);
         }
 
-        public bool TryGetChild(string name, out SymbolNode child)
+        public virtual bool TryGetChild(string name, out SymbolNode child)
         {
             foreach (SymbolNode childIter in children)
             {

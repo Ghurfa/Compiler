@@ -8,7 +8,7 @@ namespace SymbolsTable
 {
     public class Method : ClassMember
     {
-        public FunctionTypeInfo Type { get; private set; }
+        public virtual FunctionTypeInfo Type { get; protected set; }
         public MethodDeclaration Declaration { get; private set; }
 
         public Method(SymbolsTable table, MethodDeclaration methodDecl)
@@ -28,10 +28,9 @@ namespace SymbolsTable
             Type = new FunctionTypeInfo(retType, paramTypes);
         }
 
-        internal Method(string name, FunctionTypeInfo type, Modifiers modifiers)
+        protected Method(string name, Modifiers modifiers)
             :base(name, modifiers)
         {
-            Type = type;
         }
     }
 }

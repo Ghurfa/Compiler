@@ -13,7 +13,7 @@ namespace TestProgram
     {
         static void Main(string[] args)
         {
-            Compiler.Compiler.Compile(@"..\..\..\..\..\TestPrograms\TypeCheckerTest.txt", null);
+            Compiler.Compiler.Compile(@"..\..\..\..\..\TestPrograms\guessingGame.txt", null);
 
             Console.WriteLine("Finished");
             Console.ReadLine();

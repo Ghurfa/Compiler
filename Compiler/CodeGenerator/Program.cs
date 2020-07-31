@@ -12,6 +12,7 @@ namespace CodeGenerator
     {
         static void Main(string[] args)
         {
+            throw new NotImplementedException();
             TokensGenerator.GenerateTokenClasses(tokensDefPath: @"..\..\..\..\..\Definitions\TokenTypes.txt",
                                                  baseDir: @"..\..\..\..\..\Compiler\Tokenizer\Tokens\",
                                                  TCBPath: @"..\..\..\..\..\Compiler\Tokenizer\TokenCollectionBuilder.cs");

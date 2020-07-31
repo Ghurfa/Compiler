@@ -35,14 +35,8 @@ namespace Generator
         { 
             get
             {
-                if (node is BuiltInClassNode builtIn)
-                {
-                    switch (builtIn.Name)
-                    {
-                        case "int": return typeof(int);
-                        default: throw new NotImplementedException();
-                    }
-                }
+                if (node is LibraryClassNode libClassNode)
+                    return libClassNode.Type;
                 else return Classes[node].Builder;
             }
             private set { throw new InvalidOperationException(); }
@@ -54,7 +48,7 @@ namespace Generator
 
         public void DefineClass(ModuleBuilder module, ClassNode node)
         {
-            if (node is BuiltInClassNode || Classes.ContainsKey(node)) return;
+            if (Classes.ContainsKey(node)) return;
 
             TypeAttributes attr = TypeAttributes.Class;
             switch (node.Modifiers.AccessModifier)
@@ -70,7 +64,7 @@ namespace Generator
             }
 
             TypeBuilder type;
-            if (!(node.ParentClass is BuiltInClassNode))
+            if (!(node.ParentClass is LibraryClassNode))
             {
                 if (!Classes.TryGetValue(node.ParentClass, out ClassBuildingInfo parentTypeInfo))
                 {
