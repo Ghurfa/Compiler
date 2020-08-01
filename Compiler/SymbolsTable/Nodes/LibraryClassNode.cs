@@ -70,8 +70,12 @@ namespace SymbolsTable.Nodes
 
         private void LoadParentClass()
         {
-            table.GetLibraryClass(Type.BaseType, out LibraryClassNode parent);
-            base.ParentClass = parent;
+            System.Type baseType = Type.BaseType;
+            if (baseType != null)
+            {
+                table.GetLibraryClass(baseType, out LibraryClassNode parent);
+                base.ParentClass = parent;
+            }
             parentClassLoaded = true;
         }
 

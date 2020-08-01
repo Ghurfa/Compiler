@@ -78,12 +78,15 @@ namespace SymbolsTable.TypeInfos
             if (other is ValueTypeInfo otherValType)
             {
                 ValueTypeInfo ancestor = this;
-                while (ancestor != null)
+                while (true)
                 {
                     if (ancestor == otherValType) return true;
-                    ancestor = Get(ancestor.Class.ParentClass);
+                    else if (ancestor.Class.ParentClass == null) return false;
+                    else
+                    {
+                        ancestor = Get(ancestor.Class.ParentClass);
+                    }
                 }
-                return false;
             }
             else return false;
         }

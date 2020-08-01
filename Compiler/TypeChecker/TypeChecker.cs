@@ -9,6 +9,7 @@ using SymbolsTable;
 using Parser.SyntaxTreeItems;
 using Parser.SyntaxTreeItems.ClassItemDeclarations;
 using Parser;
+using Parser.SyntaxTreeItems.Statements;
 
 namespace TypeChecker
 {
@@ -46,16 +47,16 @@ namespace TypeChecker
                 foreach (SimpleField field in node.SimpleDefaultedFields)
                 {
                     SimpleFieldDeclaration sFieldDecl = field.Declaration;
-                    VerifyExpressionRequireType(Table, 0, sFieldDecl.DefaultValue, simpleCheckOptions, field.Type);
+                    VerifyExpressionRequireType(builder, 0, sFieldDecl.DefaultValue, simpleCheckOptions, field.Type);
                 }
                 foreach (Method method in node.Methods)
                 {
                     VerifyMethod(builder, method);
-                    if (method.Name == "Main" && method.Modifiers.IsStatic && method.Type.Parameters.Length == 0)
+                    if (method.Name == "Main" && method.Modifiers.IsStatic)
                     {
                         if (hasEntryPoint) throw new MultipleEntryPointsException();
                         else hasEntryPoint = true;
-                    }    
+                    }
                 }
                 foreach (Constructor ctor in node.Constructors) VerifyConstructor(builder, ctor);
             }
@@ -102,13 +103,21 @@ namespace TypeChecker
             table.ExitFunction();
         }
 
-        private static void VerifyStatement(SymbolsTable.SymbolsTable table, int indexInParent, List<IScopeInfo> scopes, Statement statement, TypeInfo returnType, VerifyConstraints constraints)
+        private static void VerifyStatement(SymbolsTableBuilder table, int indexInParent, List<IScopeInfo> scopes, Statement statement, TypeInfo returnType, VerifyConstraints constraints)
         {
             switch (statement)
             {
                 case CodeBlock codeBlock: scopes.Add(new NormalScopeInfo(codeBlock.Statements, indexInParent)); break;
                 case EmptyStatement _: break;
                 case ExpressionStatement exprStatement: VerifyExpression(table, indexInParent, exprStatement.Expression, constraints); break;
+                case IfBlock ifBlock:
+                    VerifyExpressionRequireType(table, indexInParent, ifBlock.Condition, constraints, ValueTypeInfo.PrimitiveTypes["bool"]);
+                    VerifyStatement(table, indexInParent, scopes, ifBlock.IfTrue, returnType, constraints);
+                    if(ifBlock.IfFalse != null)
+                    {
+                        VerifyStatement(table, indexInParent, scopes, ifBlock.IfFalse, returnType, constraints);
+                    }
+                    break;
                 case ForBlock forBlock: scopes.Add(new ForScopeInfo(forBlock, indexInParent)); break;
                 case WhileBlock whileBlock:
                     VerifyExpressionRequireType(table, indexInParent, whileBlock.Condition, constraints, ValueTypeInfo.PrimitiveTypes["bool"]);
@@ -128,7 +137,7 @@ namespace TypeChecker
             }
         }
 
-        private static TypeInfo VerifyExpression(SymbolsTable.SymbolsTable table, int index, Expression expr, VerifyConstraints constraints)
+        private static TypeInfo VerifyExpression(SymbolsTableBuilder table, int index, Expression expr, VerifyConstraints constraints)
         {
             ValueTypeInfo IntType = ValueTypeInfo.PrimitiveTypes["int"];
             ValueTypeInfo BoolType = ValueTypeInfo.PrimitiveTypes["bool"];
@@ -151,14 +160,14 @@ namespace TypeChecker
                     {
                         var requireStatic = constraints.HasFlag(VerifyConstraints.RequireStatic);
                         string name = identifier.Identifier.Text;
-                        if (table.GetField(name, requireStatic, out Field field) == Result.Success)
+                        if (table.GetLocal(name, index, out Local local) == Result.Success)
                         {
-                            return field.Type;
+                            return local.Type;
                         }
                         else
                         {
-                            Handle(table.GetLocal(name, index, out Local local));
-                            return local.Type;
+                            Handle(table.GetField(name, requireStatic, identifier, out Field field));
+                            return field.Type;
                         }
                     }
                 case DeclarationExpression declaration:
@@ -172,7 +181,7 @@ namespace TypeChecker
                 case MemberAccessExpression memberAccess:
                     if (memberAccess.BaseExpression is IdentifierExpression baseIdentifier)
                     {
-                        Handle(table.GetField(baseIdentifier.Identifier.Text, memberAccess.Item.Text, index, out Field field));
+                        Handle(table.GetField(baseIdentifier.Identifier.Text, memberAccess.Item.Text, index, memberAccess, out Field field));
                         return field.Type;
                     }
                     else
@@ -182,7 +191,7 @@ namespace TypeChecker
                         if (baseType is VoidTypeInfo) throw new VoidMemberAccessException();
                         else if (baseType is ValueTypeInfo valueTypeInfo)
                         {
-                            Handle(table.GetField(valueTypeInfo.Class, memberAccess.Item.Text, false, out Field field));
+                            Handle(table.GetField(valueTypeInfo.Class, memberAccess.Item.Text, false, memberAccess, out Field field));
                             return field.Type;
                         }
                         else throw new InvalidOperationException();
@@ -192,20 +201,52 @@ namespace TypeChecker
                         ValueTypeInfo[] argTypes = GetArgTypes(table, index, methodCall.Arguments, constraints);
                         if (methodCall.Method is IdentifierExpression identifierExpr)
                         {
-                            Handle(table.GetMethod(identifierExpr.Identifier.Text, argTypes, out Method method));
+                            Handle(table.GetMethod(identifierExpr.Identifier.Text, argTypes, methodCall, out Method method));
                             return method.Type.ReturnType;
                         }
                         else if (methodCall.Method is MemberAccessExpression memberAccess)
                         {
-                            TypeInfo baseType = VerifyExpression(table, index, memberAccess.BaseExpression, constraints);
-
-                            if (baseType is VoidTypeInfo) throw new VoidMemberAccessException();
-                            else if (baseType is ValueTypeInfo valueTypeInfo)
+                            string methodName = memberAccess.Item.Text;
+                            if (memberAccess.BaseExpression is IdentifierExpression identifierBase)
                             {
-                                Handle(table.GetMethod(valueTypeInfo.Class, memberAccess.Item.Text, argTypes, out Method method));
+                                string baseIdText = identifierBase.Identifier.Text;
+                                if (table.GetLocal(baseIdText, index, out Local baseLocal) == Result.Success)
+                                {
+                                    Handle(table.GetMethod(baseLocal.Type.Class, methodName, argTypes, methodCall, out Method method));
+                                    return method.Type.ReturnType;
+                                }
+                                else if (table.GetField(baseIdText, constraints.HasFlag(VerifyConstraints.RequireStatic), identifierBase, out Field baseField) == Result.Success)
+                                {
+                                    Handle(table.GetMethod(baseField.Type.Class, methodName, argTypes, methodCall, out Method method));
+                                    return method.Type.ReturnType;
+                                }
+                                else if (table.GetClass(baseIdText, out ClassNode classNode) == Result.Success)
+                                {
+                                    Handle(table.GetMethod(classNode, methodName, argTypes, methodCall, out Method method));
+                                    if (!method.Modifiers.IsStatic) throw new InvalidInstanceReferenceException();
+                                    return method.Type.ReturnType;
+                                }
+                                else throw new LocalNotFoundException();
+                            }
+                            else if(memberAccess.BaseExpression is PrimitiveTypeExpression primTypeBase)
+                            {
+                                ClassNode classNode = ValueTypeInfo.PrimitiveTypes[primTypeBase.PrimitiveType.Text].Class;
+                                Handle(table.GetMethod(classNode, methodName, argTypes, methodCall, out Method method));
+                                if (!method.Modifiers.IsStatic) throw new InvalidInstanceReferenceException();
                                 return method.Type.ReturnType;
                             }
-                            else throw new InvalidOperationException();
+                            else
+                            {
+                                TypeInfo baseType = VerifyExpression(table, index, memberAccess.BaseExpression, constraints);
+
+                                if (baseType is VoidTypeInfo) throw new VoidMemberAccessException();
+                                else if (baseType is ValueTypeInfo valueTypeInfo)
+                                {
+                                    Handle(table.GetMethod(valueTypeInfo.Class, methodName, argTypes, methodCall, out Method method));
+                                    return method.Type.ReturnType;
+                                }
+                                else throw new InvalidOperationException();
+                            }
                         }
                         else if (methodCall.Method is NullCondMemberAccessExpression nullCondMemberAccess)
                         {
@@ -218,7 +259,7 @@ namespace TypeChecker
                         ValueTypeInfo type = ValueTypeInfo.Get(table, newObject.Type);
                         ValueTypeInfo[] argTypes = GetArgTypes(table, index, newObject.Arguments, constraints);
                         ClassNode node = type.Class;
-                        Handle(table.GetConstructor(node, argTypes, out Constructor _));
+                        Handle(table.GetConstructor(node, argTypes, newObject, out Constructor _));
                         return type;
                     }
                 case PerenthesizedExpression perenthesized:
@@ -328,21 +369,21 @@ namespace TypeChecker
             }
         }
 
-        private static TypeInfo VerifySameTypeExprs(SymbolsTable.SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints constraints)
+        private static TypeInfo VerifySameTypeExprs(SymbolsTableBuilder table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints constraints)
         {
             var leftType = VerifyExpression(table, index, leftExpr, constraints);
             VerifyExpressionRequireType(table, index, rightExpr, constraints, leftType);
             return leftType;
         }
 
-        private static TypeInfo VerifySameRequiredTypeExprs(SymbolsTable.SymbolsTable table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints constraints, params TypeInfo[] allowedTypes)
+        private static TypeInfo VerifySameRequiredTypeExprs(SymbolsTableBuilder table, int index, Expression leftExpr, Expression rightExpr, VerifyConstraints constraints, params TypeInfo[] allowedTypes)
         {
             var leftType = VerifyExpressionRequireType(table, index, leftExpr, constraints, allowedTypes);
             VerifyExpressionRequireType(table, index, rightExpr, constraints, leftType);
             return leftType;
         }
 
-        private static TypeInfo VerifyExpressionRequireType(SymbolsTable.SymbolsTable table, int index, Expression expr, VerifyConstraints constraints, params TypeInfo[] allowedTypes)
+        private static TypeInfo VerifyExpressionRequireType(SymbolsTableBuilder table, int index, Expression expr, VerifyConstraints constraints, params TypeInfo[] allowedTypes)
         {
             var type = VerifyExpression(table, index, expr, constraints);
             foreach (TypeInfo allowedType in allowedTypes)
@@ -355,10 +396,10 @@ namespace TypeChecker
             throw new TypeMismatchException();
         }
 
-        private static ValueTypeInfo[] GetArgTypes(SymbolsTable.SymbolsTable table, int index, ArgumentList arguments, VerifyConstraints constraints)
+        private static ValueTypeInfo[] GetArgTypes(SymbolsTableBuilder table, int index, ArgumentList arguments, VerifyConstraints constraints)
         {
             ValueTypeInfo[] ret = new ValueTypeInfo[arguments.Arguments.Length];
-            for(int i = 0; i < ret.Length; i++)
+            for (int i = 0; i < ret.Length; i++)
             {
                 TypeInfo exprType = VerifyExpression(table, index, arguments.Arguments[i].Expression, constraints);
                 if (exprType is VoidTypeInfo) throw new VoidArgumentException();

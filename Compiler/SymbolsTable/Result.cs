@@ -27,7 +27,9 @@ namespace SymbolsTable
         InvalidInstanceReference,
         NoSuchOverload,
         NoSuchMember,
+        NoSuchField,
         NoSuchConstructor,
+        NoSuchMethod,
 
         //Local declaration
         LocalAlreadyDefinedInScope,

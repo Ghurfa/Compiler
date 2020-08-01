@@ -1,10 +1,9 @@
-﻿using Parser.SyntaxTreeItems;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Tokenizer;
 
-namespace Parser
+namespace Parser.SyntaxTreeItems
 {
     public abstract class PrimaryExpression : UnaryExpression
     {

@@ -12,6 +12,9 @@ namespace SymbolsTable
         {
             public int IndexInParent { get; private set; }
             public Dictionary<string, BodyLocal> Locals { get; private set; }
+            public Dictionary<PrimaryExpression, Field> ReferencedFields { get; private set; }
+            public Dictionary<NewObjectExpression, Constructor> ReferencedConstructors{ get; private set; }
+            public Dictionary<MethodCallExpression, Method> ReferencedMethods{ get; private set; }
             public Scope ParentScope { get; private set; }
             public List<Scope> Children { get; private set; }
 
@@ -19,6 +22,9 @@ namespace SymbolsTable
             {
                 IndexInParent = index;
                 Locals = new Dictionary<string, BodyLocal>();
+                ReferencedFields = new Dictionary<PrimaryExpression, Field>();
+                ReferencedConstructors = new Dictionary<NewObjectExpression, Constructor>();
+                ReferencedMethods = new Dictionary<MethodCallExpression, Method>();
                 ParentScope = parentScope;
                 Children = new List<Scope>();
             }

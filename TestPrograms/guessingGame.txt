@@ -2,17 +2,18 @@ myNamespace namespace
 {
     Program class
     {
-        Main static void(args:string[])
+        Main static void()
         {
             rand := new Random()
-            
-            while !(end := false)
+
+            end := false
+            while !(end)
             {
                 number := rand.Next(64)
                 guess := -1
                 while guess != number
                 {
-                    guess = Console.ReadLine()
+                    guess = int.Parse(Console.ReadLine())
                     if (guess < number)
                     {
                         Console.WriteLine("Too low")

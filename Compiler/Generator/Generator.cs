@@ -43,7 +43,7 @@ namespace Generator
                 ClassBuildingInfo info = maps.GetClassBuildingInfo(node);
                 foreach (Constructor ctor in node.Constructors)
                 {
-                    ConstructorBuilder builder = maps[ctor];
+                    ConstructorBuilder builder = (ConstructorBuilder)maps[ctor];
 
                     emitter.SetGenerator(builder.GetILGenerator());
                     emitter.EmitConstructorStart(info);
@@ -51,8 +51,8 @@ namespace Generator
                 }
                 foreach (Method method in node.Methods)
                 {
-                    MethodBuilder builder = maps[method];
-                    if (method.Name == "Main" && method.Modifiers.IsStatic && method.Type.Parameters.Length == 0)
+                    MethodBuilder builder = (MethodBuilder)maps[method];
+                    if (method.Name == "Main" && method.Modifiers.IsStatic)
                         entryPoint = builder;
 
                     emitter.SetGenerator(builder.GetILGenerator());

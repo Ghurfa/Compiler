@@ -1,15 +1,12 @@
 ﻿using SymbolsTable.Nodes;
 using SymbolsTable.TypeInfos;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace SymbolsTable.ItemInfos
 {
-    class LibraryConstructor : Constructor
+    public class LibraryConstructor : Constructor
     {
-        private ConstructorInfo ctorInfo;
+        public ConstructorInfo ConstructorInfo { get; private set; }
         private SymbolsTable table;
 
         private bool paramTypesLoaded = false;
@@ -26,12 +23,12 @@ namespace SymbolsTable.ItemInfos
             : base("$ctor", GetModifiers(constructor))
         {
             this.table = table;
-            ctorInfo = constructor;
+            ConstructorInfo = constructor;
         }
 
         private void LoadParamTypes()
         {
-            var parameters = ctorInfo.GetParameters();
+            var parameters = ConstructorInfo.GetParameters();
             base.ParamTypes = new ValueTypeInfo[parameters.Length];
             for (int i = 0; i < parameters.Length; i++)
             {

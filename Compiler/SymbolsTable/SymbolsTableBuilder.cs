@@ -6,6 +6,7 @@ using SymbolsTable.Nodes;
 using SymbolsTable.TypeInfos;
 using Parser.SyntaxTreeItems;
 using Parser.SyntaxTreeItems.ClassItemDeclarations;
+using System.Linq;
 
 namespace SymbolsTable
 {
@@ -182,5 +183,154 @@ namespace SymbolsTable
                 return Result.Success;
             }
         }
+
+
+        public Result AddLocal(string name, ValueTypeInfo type, int index)
+        {
+            Scope ancestor = currentScope;
+            while (!(ancestor is FunctionScope))
+            {
+                if (ancestor.Locals.ContainsKey(name))
+                {
+                    if (ancestor == currentScope) return Result.LocalAlreadyDefinedInScope;
+                    else return Result.LocalDefinedInEnclosingScope;
+                }
+                ancestor = ancestor.ParentScope;
+            }
+
+            if (((FunctionScope)ancestor).Parameters.ContainsKey(name)) return Result.LocalDefinedInEnclosingScope;
+
+            currentScope.Locals.Add(name, new BodyLocal(type, index + 1));
+
+            return Result.Success;
+        }
+
+        public Result GetLocal(string name, int statementIndex, out Local local)
+        {
+            Scope ancestor = currentScope;
+            while (!(ancestor is FunctionScope))
+            {
+                if (ancestor.Locals.TryGetValue(name, out BodyLocal bodyLocal))
+                {
+                    if (bodyLocal.Index > statementIndex && statementIndex >= 0)
+                    {
+                        local = null;
+                        return Result.UsingLocalBeforeDeclaration;
+                    }
+                    local = bodyLocal;
+                    return Result.Success;
+                }
+                statementIndex = ancestor.IndexInParent;
+                ancestor = ancestor.ParentScope;
+            }
+
+            if (ancestor.Locals.TryGetValue(name, out BodyLocal funcBodyLocal))
+            {
+                if (funcBodyLocal.Index > statementIndex && statementIndex >= 0)
+                {
+                    local = null;
+                    return Result.UsingLocalBeforeDeclaration;
+                }
+                local = funcBodyLocal;
+                return Result.Success;
+            }
+            else if (((FunctionScope)ancestor).Parameters.TryGetValue(name, out ParamLocal paramLocal))
+            {
+                local = paramLocal;
+                return Result.Success;
+            }
+
+            local = null;
+            return Result.LocalNotFound;
+        }
+
+        public Result GetField(string name, bool isStatic, PrimaryExpression expr, out Field field)
+            => GetField(currentClass, name, isStatic, expr, out field);
+
+
+        public Result GetField(string baseIdentifier, string fieldName, int statementIndex, PrimaryExpression expr, out Field field)
+        {
+            if (GetLocal(baseIdentifier, statementIndex, out Local baseLocal) == Result.Success)
+            {
+                return GetField(baseLocal.Type.Class, fieldName, false, expr, out field);
+            }
+            else
+            {
+                Result getClassResult = GetClass(baseIdentifier, out ClassNode classNode);
+                if (getClassResult != Result.Success)
+                {
+                    field = null;
+                    return getClassResult;
+                }
+
+                return GetField(classNode, fieldName, true, expr, out field);
+            }
+        }
+
+        public Result GetField(ClassNode classNode, string fieldName, bool isStatic, PrimaryExpression expr, out Field field)
+        {
+            if (classNode.Fields.TryGetValue(fieldName, out field))
+            {
+                currentScope.ReferencedFields[expr] = field;
+                if (!isStatic && field.Modifiers.IsStatic) return Result.InvalidStaticReference;
+                else if (isStatic && !field.Modifiers.IsStatic) return Result.InvalidInstanceReference;
+                else return Result.Success;
+            }
+            else
+            {
+                field = null;
+                return Result.NoSuchMember;
+            }
+        }
+
+        public Result GetMethod(string methodName, IEnumerable<ValueTypeInfo> paramTypes, MethodCallExpression methodCall, out Method method)
+            => GetMethod(currentClass, methodName, paramTypes, methodCall, out method);
+
+        public Result GetMethod(ClassNode classNode, string methodName, IEnumerable<ValueTypeInfo> paramTypes, MethodCallExpression methodCall, out Method method)
+        {
+            ClassNode current = classNode;
+            bool foundMethodWithName = false;
+            while (current != null)
+            {
+                foreach (Method other in current.Methods)
+                {
+                    if (other.Name == methodName)
+                    {
+                        if (Enumerable.SequenceEqual(other.Type.Parameters, paramTypes))
+                        {
+                            method = other;
+                            currentScope.ReferencedMethods[methodCall] = method;
+                            return Result.Success;
+                        }
+                        foundMethodWithName = true;
+                    }
+                }
+                current = current.ParentClass;
+            }
+            method = null;
+            if (foundMethodWithName) return Result.NoSuchOverload;
+            else return Result.NoSuchMember;
+        }
+
+        public Result GetConstructor(ClassNode classNode, IEnumerable<ValueTypeInfo> paramTypes, NewObjectExpression newObj, out Constructor constructor)
+        {
+            ClassNode current = classNode;
+            while (current != null)
+            {
+                foreach (Constructor other in current.Constructors)
+                {
+                    if (Enumerable.SequenceEqual(other.ParamTypes, paramTypes))
+                    {
+                        constructor = other;
+                        currentScope.ReferencedConstructors[newObj] = constructor;
+                        return Result.Success;
+                    }
+                }
+                current = current.ParentClass;
+            }
+            constructor = null;
+            return Result.NoSuchConstructor;
+        }
+
     }
 }

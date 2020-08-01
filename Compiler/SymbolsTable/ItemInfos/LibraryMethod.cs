@@ -9,7 +9,7 @@ namespace SymbolsTable.ItemInfos
 {
     public class LibraryMethod : Method
     {
-        private MethodInfo methodInfo;
+        public MethodInfo MethodInfo { get; private set; }
         private SymbolsTable table;
 
         private bool typeLoaded = false;
@@ -26,23 +26,23 @@ namespace SymbolsTable.ItemInfos
             : base(method.Name, GetModifiers(method))
         {
             this.table = table;
-            methodInfo = method;
+            MethodInfo = method;
         }
 
         private void LoadType()
         {
             TypeInfos.TypeInfo retType;
-            if (methodInfo.ReturnType == typeof(void))
+            if (MethodInfo.ReturnType == typeof(void))
             {
                 retType = VoidTypeInfo.Get();
             }
             else
             {
-                table.GetLibraryClass(methodInfo.ReturnType, out LibraryClassNode retNode);
+                table.GetLibraryClass(MethodInfo.ReturnType, out LibraryClassNode retNode);
                 retType = ValueTypeInfo.Get(retNode);
             }
 
-            var parameters = methodInfo.GetParameters();
+            var parameters = MethodInfo.GetParameters();
             ValueTypeInfo[] paramTypes = new ValueTypeInfo[parameters.Length];
             for(int i = 0; i < parameters.Length; i++)
             {

@@ -1,4 +1,5 @@
 ﻿using SymbolsTable;
+using SymbolsTable.ItemInfos;
 using SymbolsTable.Nodes;
 using SymbolsTable.TypeInfos;
 using System;
@@ -39,11 +40,38 @@ namespace Generator
                     return libClassNode.Type;
                 else return Classes[node].Builder;
             }
-            private set { throw new InvalidOperationException(); }
         }
-        public FieldBuilder this[Field field] => Fields[field];
-        public ConstructorBuilder this[Constructor constructor] => Constructors[constructor];
-        public MethodBuilder this[Method method] => Methods[method];
+
+        public FieldInfo this[Field field]
+        {
+            get
+            {
+                if (field is LibraryField libField)
+                    return libField.FieldInfo;
+                else return Fields[field];
+            }
+        }
+
+        public ConstructorInfo this[Constructor constructor]
+        {
+            get
+            {
+                if (constructor is LibraryConstructor libCtor)
+                    return libCtor.ConstructorInfo;
+                else return Constructors[constructor];
+            }
+        }
+
+        public MethodInfo this[Method method]
+        {
+            get
+            {
+                if (method is LibraryMethod libMethod)
+                    return libMethod.MethodInfo;
+                else return Methods[method];
+            }
+        }
+
         public LocalBuilder this[Local local] => Locals[local];
 
         public void DefineClass(ModuleBuilder module, ClassNode node)
